@@ -1,5 +1,5 @@
 // public/js/auth.js
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://localhost:8000/api';
 let currentUser = null;
 let authListeners = [];
 let authCheckPending = false;

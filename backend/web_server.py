@@ -670,44 +670,50 @@ async def register(req: RegisterRequest):
 
 @app.post("/api/auth/login")
 async def login(req: LoginRequest, response: Response):
-    """Вход пользователя — куки с domain='.localhost' для работы на одном порту"""
+    """Вход пользователя"""
     try:
         conn = get_db_connection()
         user = conn.execute(
-            "SELECT id, email, username, password_hash FROM users WHERE email = ?",
-            (req.email,)
+            "SELECT * FROM users WHERE email = ?", (req.email.strip(),)
         ).fetchone()
         conn.close()
-        
+
         if not user:
+            # Лог для отладки: пользователь не найден
+            print(f"⚠️ Login failed: User {req.email} not found")
             raise HTTPException(status_code=401, detail="Неверный email или пароль")
+
+        # Проверка пароля
+        stored_hash = user['password_hash']
+        # Убедимся, что работаем с байтами
+        if isinstance(stored_hash, str):
+            stored_hash = stored_hash.encode('utf-8')
         
-        if not bcrypt.checkpw(req.password.encode(), user["password_hash"].encode()):
+        password_bytes = req.password.encode('utf-8')
+
+        if not bcrypt.checkpw(password_bytes, stored_hash):
+            print(f"⚠️ Login failed: Wrong password for {req.email}")
             raise HTTPException(status_code=401, detail="Неверный email или пароль")
-        
-        # 🔥 Установка куки С domain для работы между разделами на одном порту
+
+        # Успешный вход: устанавливаем куки
+        # Важно: domain='.localhost' может не работать в некоторых браузерах локально.
+        # Попробуем без domain или с domain='localhost'
         response.set_cookie(
             key="user_id",
-            value=str(user["id"]),
+            value=str(user['id']),
             httponly=True,
-            secure=False,
+            max_age=60 * 60 * 24 * 7,  # 1 неделя
             samesite="lax",
-            domain=".localhost",  # ← КЛЮЧЕВОЕ: куки работают между /dashboard и /ui
-            path="/",
-            max_age=7*24*60*60
+            domain="localhost"  # Изменено с .localhost на localhost
         )
-        
-        print(f"✅ Вход: {req.email} (id={user['id']})", flush=True)
-        return {
-            "user": {"id": user["id"], "email": user["email"], "username": user["username"]},
-            "message": "Вход успешен"
-        }
-        
+
+        return {"status": "ok", "user_id": user['id'], "email": user['email']}
+
     except HTTPException:
         raise
     except Exception as e:
-        print(f"❌ Login error: {e}", flush=True)
-        raise HTTPException(status_code=500, detail="Ошибка входа")
+        print(f"❌ Login error: {e}")
+        raise HTTPException(status_code=500, detail="Ошибка сервера при входе")
 
 @app.get("/api/auth/me")
 async def get_me(request: Request):
