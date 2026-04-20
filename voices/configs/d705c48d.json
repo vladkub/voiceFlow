@@ -1,0 +1,12 @@
+{
+  "id": "d705c48d",
+  "name": "MyVoice",
+  "language": "auto",
+  "user_id": "anonymous_5j0rogrs",
+  "sample_path": "C:\\voice\\site\\voice-translator-web\\backend\\..\\voices\\samples\\d705c48d.mp3",
+  "sample_duration": 34.6,
+  "created_at": "2026-04-18 22:40:07",
+  "metadata": {
+    "original_filename": "savr-dordzhiev-demo-09-09-2025-diktorov.net.mp3"
+  }
+}

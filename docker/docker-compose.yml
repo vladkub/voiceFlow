@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  backend:
+    build: {context: .., dockerfile: docker/Dockerfile}
+    container_name: voice-translator-backend
+    ports: ["${PORT:-8000}:8000"]
+    environment:
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - ALLOWED_ORIGINS=["https://your-domain.com","http://localhost:3000"]
+      - LOG_LEVEL=INFO
+    volumes: [./logs:/app/logs, ./cache:/app/cache]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/api/health')"]
+      interval: 30s; timeout: 10s; retries: 3; start_period: 40s
+    networks: [translator-net]
+networks:
+  translator-net: {driver: bridge}
+volumes: {logs: {}, cache: {}}

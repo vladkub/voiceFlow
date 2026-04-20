@@ -1,0 +1,15 @@
+{
+  "name": "Voice Translator",
+  "short_name": "VoiceTrans",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f5f5f5",
+  "theme_color": "#2196f3",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

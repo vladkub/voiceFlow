@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceFlow AI — Голосовой перевод будущего</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #F5F7FC;
+            color: #1A1A2E;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Header тёмный */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 20px 0;
+            background: rgba(5, 5, 10, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 32px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00F0FF, #B847FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #B0B0C0;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: #00F0FF;
+        }
+
+        .btn-cyber {
+            border: 1px solid #00F0FF;
+            padding: 8px 24px;
+            border-radius: 4px;
+            background: transparent;
+            color: #00F0FF;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-cyber:hover {
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0,240,255,0.3);
+        }
+
+        /* кнопки */
+        .btn-primary-neon {
+            background: linear-gradient(105deg, #00C9FF, #7B2CBF);
+            color: white;
+            padding: 14px 36px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-primary-neon:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 201, 255, 0.5);
+        }
+
+        .btn-outline-neon {
+            background: transparent;
+            border: 1.5px solid #00F0FF;
+            color: #00F0FF;
+            padding: 14px 36px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-outline-neon:hover {
+            background: rgba(0, 240, 255, 0.1);
+        }
+
+        /* Hero секция (тёмная) */
+        .hero-wrapper {
+            background: #05050A;
+            position: relative;
+            margin-bottom: 60px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            padding: 80px 0 100px;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(0, 240, 255, 0.12);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            padding: 6px 16px;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+            color: #00F0FF;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            color: white;
+        }
+
+        .hero-gradient-text {
+            background: linear-gradient(135deg, #00F0FF, #B847FF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            color: #A0A0B5;
+            font-size: 1.2rem;
+            margin-bottom: 32px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #00F0FF;
+        }
+
+        .stat-label {
+            color: #A0A0B5;
+        }
+
+        .glass-card {
+            background: rgba(20, 20, 40, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 24px;
+            padding: 28px;
+        }
+
+        /* ========== СВЕТЛЫЕ БЛОКИ ========== */
+        .light-block {
+            background: white;
+            border-radius: 32px;
+            padding: 48px;
+            margin: 40px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            border: 1px solid #E9EEF4;
+        }
+
+        .light-card {
+            background: #F8FAFE;
+            border-radius: 24px;
+            padding: 28px;
+            border: 1px solid #E9EEF4;
+            transition: all 0.3s;
+        }
+
+        .section-title-dark {
+            font-size: 2.2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+            color: #0F172A;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        .feature-light {
+            background: #F8FAFE;
+            border: 1px solid #E9EEF4;
+            border-radius: 24px;
+            padding: 32px 24px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .feature-light:hover {
+            transform: translateY(-5px);
+            border-color: #00C9FF;
+        }
+
+        /* Модальные окна */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 32px;
+            padding: 48px;
+            max-width: 480px;
+            width: 90%;
+            position: relative;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 24px;
+            color: #0F172A;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #00C9FF;
+            box-shadow: 0 0 0 3px rgba(0,201,255,0.1);
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 14px;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: 0.2s;
+            margin-top: 16px;
+        }
+
+        .google-btn:hover {
+            background: #F8FAFE;
+            border-color: #00C9FF;
+        }
+
+        .modal-footer {
+            margin-top: 24px;
+            text-align: center;
+            color: #64748B;
+        }
+
+        .modal-footer a {
+            color: #00C9FF;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .close-modal-x {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #94A3B8;
+        }
+
+        .user-avatar-small {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #00C9FF, #7B2CBF);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        @media (max-width: 1000px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .light-block {
+                padding: 32px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">◢ VOICEFLOW</div>
+            <div class="nav-links">
+                <a class="nav-link active" data-page="home">Главная</a>
+                <a class="nav-link" data-page="tech">Технологии</a>
+                <a class="nav-link" data-page="pricing">Тарифы</a>
+                <a class="nav-link" data-page="docs">FAQ</a>
+                <a class="nav-link" data-page="dashboard">Кабинет</a>
+                <a class="btn-cyber" id="authBtn">Вход</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<main id="main-content">
+    <!-- Главная страница -->
+    <div id="home-page">
+        <div class="hero-wrapper">
+            <div class="container">
+                <div class="hero">
+                    <div>
+                        <div class="hero-badge">⚡ НЕЙРОСЕТЬ | РЕАЛЬНОЕ ВРЕМЯ</div>
+                        <h1>Говорите на русском — <span class="hero-gradient-text">мир слышит вас на английском</span></h1>
+                        <p>Синхронный голосовой перевод для Zoom, Teams и Discord. Задержка &lt;1 сек. Ваш голос, ваша интонация.</p>
+                        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                            <button class="btn-primary-neon" id="heroLaunchBtn">✨ Начать бесплатно</button>
+                            <button class="btn-outline-neon" onclick="alert('🎥 Демо: задержка 0.7с')">🎬 Смотреть демо</button>
+                        </div>
+                        <div class="hero-stats">
+                            <div><div class="stat-number">&lt;0.9с</div><div class="stat-label">задержка</div></div>
+                            <div><div class="stat-number">12+</div><div class="stat-label">языков</div></div>
+                            <div><div class="stat-number">100%</div><div class="stat-label">приватность</div></div>
+                        </div>
+                    </div>
+                    <div class="glass-card">
+                        <div style="display: flex; justify-content: center; gap: 30px; font-size: 48px; margin-bottom: 24px;">
+                            <i class="fab fa-zoom"></i> <i class="fas fa-arrow-right"></i> <i class="fab fa-discord"></i> <i class="fas fa-arrow-right"></i> <i class="fab fa-teams"></i>
+                        </div>
+                        <div style="background: rgba(0,0,0,0.4); border-radius: 20px; padding: 20px;">
+                            <p>🎤 <strong>Вы:</strong> "Утвердим дизайн до вторника"</p>
+                            <p>🇺🇸 <strong>Собеседник слышит (вашим голосом):</strong> "Let's approve the design by Tuesday"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="light-block">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                    <div style="background:#FEF2F2; padding:40px; border-radius:28px;">
+                        <i class="fas fa-robot" style="font-size: 48px; color:#EF4444;"></i>
+                        <h2 style="margin:20px 0 12px;">🚫 Старый подход</h2>
+                        <p>Роботизированный голос, потеря эмоций, задержки 3-5 секунд.</p>
+                    </div>
+                    <div style="background:#F0FDF4; padding:40px; border-radius:28px;">
+                        <i class="fas fa-bolt" style="font-size: 48px; color:#10B981;"></i>
+                        <h2 style="margin:20px 0 12px;">✅ VoiceFlow AI</h2>
+                        <p>Живой голос с клонированием, стриминг перевод, &lt;1 сек.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="light-block">
+                <h2 class="section-title-dark">Технологии будущего</h2>
+                <div class="features-grid">
+                    <div class="feature-light"><div style="font-size:48px;">🎙️</div><h3>Live Voice Cloning</h3><p>Ваш тембр, интонация, эмоции</p></div>
+                    <div class="feature-light"><div style="font-size:48px;">⚡</div><h3>Instant Translation</h3><p>Перевод по мере говорения</p></div>
+                    <div class="feature-light"><div style="font-size:48px;">🔒</div><h3>Privacy First</h3><p>Данные не уходят в облако</p></div>
+                    <div class="feature-light"><div style="font-size:48px;">🎛️</div><h3>Smart Control</h3><p>Выбор интонации</p></div>
+                </div>
+            </div>
+
+            <div class="light-block">
+                <div style="background:linear-gradient(135deg,#F0F9FF,#E8F0FE); border-radius:32px; padding:48px; text-align:center;">
+                    <div style="width:80px;height:80px;background:#E0F2FE;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-bottom:24px;" onclick="alert('🎥 Демо')">
+                        <i class="fas fa-play" style="font-size:32px; color:#00C9FF;"></i>
+                    </div>
+                    <h3 style="font-size:28px; margin-bottom:16px;">Видео-демонстрация</h3>
+                    <button class="btn-primary-neon" onclick="alert('Wow-эффект')">Смотреть демо</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Другие страницы (упрощённо) -->
+    <div id="tech-page" style="display: none;"><div class="container"><div class="light-block"><h2 class="section-title-dark">Технологии</h2><p>Локальный AI + нейросеть + виртуальный кабель</p></div></div></div>
+    <div id="pricing-page" style="display: none;"><div class="container"><div class="light-block"><h2 class="section-title-dark">Тарифы</h2><p>Free / Pro / Team / Self-Hosted</p></div></div></div>
+    <div id="docs-page" style="display: none;"><div class="container"><div class="light-block"><h2 class="section-title-dark">FAQ</h2><p>Настройка VB-Cable и другие вопросы</p></div></div></div>
+
+    <!-- Личный кабинет -->
+    <div id="dashboard-page" style="display: none;">
+        <div class="container">
+            <div class="light-block">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+                    <h2 style="font-size: 1.8rem;" id="dashboardUserName">Привет, Пользователь</h2>
+                    <div class="light-card" style="padding: 8px 20px;" id="dashboardUserEmail">Pro-тариф</div>
+                </div>
+                <div class="features-grid" style="margin-bottom: 32px;">
+                    <div class="feature-light"><div style="font-size:2rem; font-weight:700;">47</div><div>минут</div></div>
+                    <div class="feature-light"><div style="font-size:2rem; font-weight:700;">128</div><div>фраз</div></div>
+                    <div class="feature-light"><div style="font-size:2rem; font-weight:700;">5</div><div>голосов</div></div>
+                    <div class="feature-light"><div style="font-size:2rem; font-weight:700;">98%</div><div>точность</div></div>
+                </div>
+                <div style="background:linear-gradient(135deg,#F0F9FF,#E8F0FE); border-radius:32px; padding:48px; text-align:center; margin-bottom:24px;">
+                    <i class="fas fa-microphone-alt" style="font-size:56px; color:#00C9FF; margin-bottom:24px;"></i>
+                    <h3 style="margin-bottom:16px;">Запустить переводчик</h3>
+                    <button class="btn-primary-neon" id="dashboardLaunchBtn">🚀 Запустить приложение</button>
+                </div>
+                <div class="light-card"><h3>Подписка Pro</h3><div style="display:flex; justify-content:space-between; margin-top:20px;"><span>Следующий платёж: 15.05.2026</span><span>1 290 ₽</span><a href="#" style="color:#00C9FF;">Управление →</a></div></div>
+                <button class="btn-outline-neon" id="logoutBtn" style="margin-top: 20px; width:100%;">Выйти из аккаунта</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Модалка входа -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal-x" onclick="closeLoginModal()">&times;</span>
+        <h2>Вход в аккаунт</h2>
+        <div class="input-group"><input type="email" id="loginEmail" placeholder="Email" value="user@example.com"></div>
+        <div class="input-group"><input type="password" id="loginPassword" placeholder="Пароль" value="123456"></div>
+        <button class="btn-primary-neon" style="width:100%;" onclick="handleLogin()">Войти</button>
+        <button class="google-btn" onclick="handleGoogleLogin()"><i class="fab fa-google"></i> Войти через Google</button>
+        <div class="modal-footer">Нет аккаунта? <a onclick="openRegisterModal()">Зарегистрироваться</a></div>
+    </div>
+</div>
+
+<!-- Модалка регистрации -->
+<div id="registerModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal-x" onclick="closeRegisterModal()">&times;</span>
+        <h2>Регистрация</h2>
+        <div class="input-group"><input type="text" id="regName" placeholder="Имя"></div>
+        <div class="input-group"><input type="email" id="regEmail" placeholder="Email"></div>
+        <div class="input-group"><input type="password" id="regPassword" placeholder="Пароль"></div>
+        <button class="btn-primary-neon" style="width:100%;" onclick="handleRegister()">Зарегистрироваться</button>
+        <button class="google-btn" onclick="handleGoogleLogin()"><i class="fab fa-google"></i> Регистрация через Google</button>
+        <div class="modal-footer">Уже есть аккаунт? <a onclick="openLoginModal()">Войти</a></div>
+    </div>
+</div>
+
+<!-- Модалка приложения -->
+<div id="appModal" class="modal" style="background:rgba(0,0,0,0.95);">
+    <div style="width:95%; max-width:1400px; margin:20px auto; background:#0a0a1a; border-radius:24px; overflow:hidden; border:1px solid #00F0FF;">
+        <div style="padding:16px 24px; background:#05050A; display:flex; justify-content:space-between; border-bottom:1px solid #00F0FF; color:white;">
+            <span>🎙️ VoiceFlow AI Translator</span>
+            <button class="close-modal" style="background:none; border:none; color:#00F0FF; font-size:28px; cursor:pointer;" onclick="closeAppModal()">×</button>
+        </div>
+        <iframe id="appIframe" style="width:100%; height:80vh; border:none;" srcdoc='
+            <!DOCTYPE html><html><head><meta charset="UTF-8"><style>body{font-family:monospace;margin:0;padding:20px;background:#0a0a1a;color:#fff;}button{padding:12px 28px;margin:5px;border-radius:4px;border:none;cursor:pointer;}.start{background:#00C9FF;}.stop{background:#ff4466;}.status{padding:16px;margin:16px 0;border-radius:8px;}</style></head>
+            <body><h2>VoiceFlow AI Translator</h2><div id="status" class="status stopped">⏹️ Остановлен</div><button id="startBtn" class="start">▶️ Начать перевод</button><button id="stopBtn" class="stop">⏹️ Остановить</button><p>🎤 Говорите → перевод на английский вашим голосом</p><div id="log" style="height:200px; overflow-y:auto; margin-top:20px;"></div><script>let isRunning=false;const s=document.getElementById("startBtn"),t=document.getElementById("stopBtn"),st=document.getElementById("status"),log=document.getElementById("log");function addLog(m){const e=document.createElement("div");e.textContent="["+new Date().toLocaleTimeString()+"] "+m,log.appendChild(e),log.scrollTop=log.scrollHeight}s.onclick=()=>{isRunning=true,st.className="status running",st.innerHTML="✅ Активен",addLog("🔊 Запущен")};t.onclick=()=>{isRunning=false,st.className="status stopped",st.innerHTML="⏹️ Остановлен",addLog("⏹️ Остановлен")};addLog("✅ Готов");</script></body></html>
+        '></iframe>
+    </div>
+</div>
+
+<footer style="background:#0F172A; color:#94A3B8; padding:48px 0; text-align:center; margin-top:60px;">
+    <div class="container"><p>© 2025 VoiceFlow AI — Синхронный голосовой перевод. Приватность, скорость, естественность.</p></div>
+</footer>
+
+<script>
+    // Состояние пользователя
+    let currentUser = null;
+    
+    // DOM элементы
+    const pages = {
+        home: document.getElementById('home-page'),
+        tech: document.getElementById('tech-page'),
+        pricing: document.getElementById('pricing-page'),
+        docs: document.getElementById('docs-page'),
+        dashboard: document.getElementById('dashboard-page')
+    };
+    
+    const authBtn = document.getElementById('authBtn');
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+    const appModal = document.getElementById('appModal');
+    
+    // Показать страницу
+    function showPage(pageId) {
+        Object.keys(pages).forEach(k => pages[k].style.display = 'none');
+        pages[pageId].style.display = 'block';
+        document.querySelectorAll('.nav-link').forEach(l => {
+            l.classList.remove('active');
+            if(l.getAttribute('data-page') === pageId) l.classList.add('active');
+        });
+    }
+    
+    // Обновить UI в зависимости от авторизации
+    function updateAuthUI() {
+        if (currentUser) {
+            authBtn.innerHTML = `<div style="display:flex; align-items:center; gap:8px;"><div class="user-avatar-small">${currentUser.name.charAt(0)}</div> ${currentUser.name}</div>`;
+            document.getElementById('dashboardUserName').innerHTML = `Привет, ${currentUser.name}`;
+            document.getElementById('dashboardUserEmail').innerHTML = `${currentUser.email} • Pro-тариф`;
+        } else {
+            authBtn.innerHTML = 'Вход';
+        }
+    }
+    
+    // Сохранить пользователя в localStorage
+    function saveUser(user) {
+        localStorage.setItem('voiceflow_user', JSON.stringify(user));
+        currentUser = user;
+        updateAuthUI();
+    }
+    
+    function loadUser() {
+        const saved = localStorage.getItem('voiceflow_user');
+        if (saved) {
+            currentUser = JSON.parse(saved);
+            updateAuthUI();
+            return true;
+        }
+        return false;
+    }
+    
+    function logout() {
+        currentUser = null;
+        localStorage.removeItem('voiceflow_user');
+        updateAuthUI();
+        showPage('home');
+        alert('Вы вышли из аккаунта');
+    }
+    
+    // Регистрация
+    function handleRegister() {
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        
+        if (!name || !email || !password) {
+            alert('Заполните все поля');
+            return;
+        }
+        
+        const users = JSON.parse(localStorage.getItem('voiceflow_users') || '{}');
+        if (users[email]) {
+            alert('Пользователь с таким email уже существует');
+            return;
+        }
+        
+        users[email] = { name, email, password, registeredVia: 'email' };
+        localStorage.setItem('voiceflow_users', JSON.stringify(users));
+        
+        saveUser({ name, email });
+        closeRegisterModal();
+        showPage('dashboard');
+        alert('Регистрация успешна!');
+    }
+    
+    function handleLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        
+        const users = JSON.parse(localStorage.getItem('voiceflow_users') || '{}');
+        const user = users[email];
+        
+        if (user && user.password === password) {
+            saveUser({ name: user.name, email: user.email });
+            closeLoginModal();
+            showPage('dashboard');
+            alert(`Добро пожаловать, ${user.name}!`);
+        } else {
+            alert('Неверный email или пароль');
+        }
+    }
+    
+    function handleGoogleLogin() {
+        // Имитация входа через Google
+        const googleUser = {
+            name: 'Google User',
+            email: 'google_user_' + Math.floor(Math.random() * 1000) + '@gmail.com',
+            registeredVia: 'google'
+        };
+        
+        // Сохраняем в список пользователей
+        const users = JSON.parse(localStorage.getItem('voiceflow_users') || '{}');
+        if (!users[googleUser.email]) {
+            users[googleUser.email] = googleUser;
+            localStorage.setItem('voiceflow_users', JSON.stringify(users));
+        }
+        
+        saveUser(googleUser);
+        closeLoginModal();
+        closeRegisterModal();
+        showPage('dashboard');
+        alert(`Добро пожаловать, ${googleUser.name}! Вы вошли через Google.`);
+    }
+    
+    function openLoginModal() { loginModal.style.display = 'flex'; }
+    function closeLoginModal() { loginModal.style.display = 'none'; }
+    function openRegisterModal() { closeLoginModal(); registerModal.style.display = 'flex'; }
+    function closeRegisterModal() { registerModal.style.display = 'none'; }
+    
+    function openAppModal() {
+        if (!currentUser) {
+            alert('Пожалуйста, войдите в аккаунт');
+            openLoginModal();
+            return;
+        }
+        appModal.style.display = 'flex';
+    }
+    function closeAppModal() { appModal.style.display = 'none'; }
+    
+    // Навигация
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = link.getAttribute('data-page');
+            if (page === 'dashboard' && !currentUser) {
+                alert('Войдите в аккаунт');
+                openLoginModal();
+                return;
+            }
+            showPage(page);
+        });
+    });
+    
+    authBtn.addEventListener('click', () => {
+        if (currentUser) {
+            // Если уже авторизован - переходим в кабинет
+            showPage('dashboard');
+        } else {
+            openLoginModal();
+        }
+    });
+    
+    document.getElementById('heroLaunchBtn')?.addEventListener('click', openAppModal);
+    document.getElementById('dashboardLaunchBtn')?.addEventListener('click', openAppModal);
+    document.getElementById('logoutBtn')?.addEventListener('click', logout);
+    
+    // Закрытие модалок по клику вне области
+    window.addEventListener('click', (e) => {
+        if (e.target === loginModal) closeLoginModal();
+        if (e.target === registerModal) closeRegisterModal();
+        if (e.target === appModal) closeAppModal();
+    });
+    
+    // Загрузка сохранённого пользователя
+    loadUser();
+    showPage('home');
+</script>
+</body>
+</html>

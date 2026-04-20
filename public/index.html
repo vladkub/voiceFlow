@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceFlow — Голосовой переводчик нового поколения</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 🔥 Стили для лендинга */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #00C9FF 0%, #7B2CBF 100%);
+            --secondary-gradient: linear-gradient(135deg, #7B2CBF 0%, #00C9FF 100%);
+            --dark-bg: #0a0e1a;
+            --card-bg: #1a1f2e;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --accent: #00C9FF;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Навигация */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--accent); }
+
+        .nav-buttons { display: flex; gap: 1rem; }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--dark-bg);
+        }
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 201, 255, 0.3);
+        }
+
+        /* Hero секция */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            background: radial-gradient(ellipse at center, rgba(123, 44, 191, 0.15) 0%, transparent 70%);
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stat-item { text-align: center; }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Секции */
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0, 201, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-card h3 { font-size: 1.3rem; margin-bottom: 0.75rem; }
+        .feature-card p { color: var(--text-secondary); }
+
+        /* How it works */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step { text-align: center; position: relative; }
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+        .step h3 { margin-bottom: 0.75rem; }
+        .step p { color: var(--text-secondary); }
+
+        /* CTA секция */
+        .cta {
+            background: var(--primary-gradient);
+            padding: 4rem 2rem;
+            text-align: center;
+            border-radius: 24px;
+            margin: 4rem auto;
+            max-width: 1000px;
+        }
+
+        .cta h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .cta p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 2rem; }
+        .cta .btn { background: white; color: #7B2CBF; }
+        .cta .btn:hover { background: var(--dark-bg); color: white; }
+
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            padding: 4rem 2rem 2rem;
+            margin-top: 6rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+        }
+
+        .footer-section h4 { margin-bottom: 1.5rem; color: var(--accent); }
+        .footer-section ul { list-style: none; }
+        .footer-section li { margin-bottom: 0.75rem; }
+        .footer-section a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .footer-section a:hover { color: var(--accent); }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .hero-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* 🔥 Стили для модальных окон */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal.active { display: flex; }
+    </style>
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <a href="/" class="logo">
+            <i class="fas fa-microphone"></i> VoiceFlow
+        </a>
+        <ul class="nav-links">
+            <li><a href="/">Главная</a></li>
+            <li><a href="#features">Возможности</a></li>
+            <li><a href="/technology.html">Технологии</a></li>
+            <li><a href="/pricing.html">Тарифы</a></li>
+            <li><a href="/faq.html">FAQ</a></li>
+        </ul>
+        <div class="nav-buttons" id="navButtons">
+            <!-- Кнопки будут обновляться через auth-check.js -->
+            <button class="btn btn-outline" id="authBtn">
+                <i class="fas fa-sign-in-alt"></i> Войти
+            </button>
+            <button class="btn btn-primary" id="registerBtn">
+                <i class="fas fa-user-plus"></i> Регистрация
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero секция -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Голосовой переводчик<br>нового поколения</h1>
+            <p>Мгновенный перевод речи в реальном времени с использованием передовых технологий искусственного интеллекта</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" id="heroLaunchBtn">🚀 Начать бесплатно</button>
+                <a href="#how-it-works" class="btn btn-outline">Как это работает</a>
+            </div>
+            
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">322+</div>
+                    <div class="stat-label">Голосов</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Языков</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Точность</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">0.5s</div>
+                    <div class="stat-label">Задержка</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+        <h2 class="section-title">Почему VoiceFlow?</h2>
+        <p class="section-subtitle">Мы объединили передовые технологии для создания лучшего голосового переводчика</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Мгновенный перевод</h3>
+                <p>Перевод речи в реальном времени с задержкой менее 0.5 секунды. Общайтесь без пауз и ожидания.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-microphone"></i></div>
+                <h3>322+ Голоса</h3>
+                <p>Огромная библиотека естественных голосов для разных языков. Найдите идеальный голос для вашего проекта.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-brain"></i></div>
+                <h3>AI Технологии</h3>
+                <p>Нейронные сети последнего поколения обеспечивают точность перевода до 98%.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-globe"></i></div>
+                <h3>50+ Языков</h3>
+                <p>Поддержка всех основных языков мира. От английского до редких диалектов.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Безопасность</h3>
+                <p>Ваши данные защищены. Мы не храним аудио записи и используем шифрование.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-plug"></i></div>
+                <h3>API Доступ</h3>
+                <p>Интегрируйте VoiceFlow в свои приложения через наш простой и документированный API.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="section" id="how-it-works">
+        <h2 class="section-title">Как это работает</h2>
+        <p class="section-subtitle">Всего 3 простых шага для начала работы</p>
+        
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Зарегистрируйтесь</h3>
+                <p>Создайте бесплатный аккаунт за 30 секунд. Никакой кредитной карты не требуется.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Выберите языки</h3>
+                <p>Укажите язык источника и целевой язык. Настройте голос и параметры перевода.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Говорите</h3>
+                <p>Начните говорить — перевод появится мгновенно. Сохраняйте и экспортируйте результаты.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="section">
+        <div class="cta">
+            <h2>Готовы начать?</h2>
+            <p>Присоединяйтесь к тысячам пользователей, которые уже используют VoiceFlow</p>
+            <button class="btn" id="ctaLaunchBtn">🚀 Создать аккаунт бесплатно</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>VoiceFlow</h4>
+                <p style="color: var(--text-secondary);">Голосовой переводчик нового поколения на базе искусственного интеллекта.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Продукт</h4>
+                <ul>
+                    <li><a href="#features">Возможности</a></li>
+                    <li><a href="/technology.html">Технологии</a></li>
+                    <li><a href="/pricing.html">Тарифы</a></li>
+                    <li><a href="/dashboard.html">Личный кабинет</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Поддержка</h4>
+                <ul>
+                    <li><a href="/faq.html">FAQ</a></li>
+                    <li><a href="mailto:support@voiceflow.com">support@voiceflow.com</a></li>
+                    <li><a href="#">Документация API</a></li>
+                    <li><a href="#">Статус сервиса</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Компания</h4>
+                <ul>
+                    <li><a href="#">О нас</a></li>
+                    <li><a href="#">Блог</a></li>
+                    <li><a href="#">Карьера</a></li>
+                    <li><a href="#">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 VoiceFlow. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- 🔥 Модальные окна авторизации -->
+    <!-- Модальное окно входа -->
+    <div id="loginModal" class="modal">
+        <div style="background:white; border-radius:32px; padding:48px; max-width:480px; width:90%; position:relative;">
+            <span style="position:absolute; top:20px; right:24px; font-size:28px; cursor:pointer;" id="closeLoginBtn">&times;</span>
+            <h2 style="margin-bottom:24px; color:#1A1A2E;">Вход</h2>
+            
+            <div id="loginMessage" style="padding:12px; border-radius:8px; margin-bottom:16px; display:none; font-size:0.9rem;"></div>
+            
+            <input type="email" id="loginEmail" placeholder="Email" style="width:100%; padding:14px; margin-bottom:16px; border:1px solid #E2E8F0; border-radius:12px; font-size:1rem;">
+            <input type="password" id="loginPassword" placeholder="Пароль" style="width:100%; padding:14px; margin-bottom:16px; border:1px solid #E2E8F0; border-radius:12px; font-size:1rem;">
+            
+            <button class="btn-primary-neon" style="width:100%;" id="loginSubmitBtn">
+                <i class="fas fa-sign-in-alt"></i> Войти
+            </button>
+            
+            <button class="google-btn" style="width:100%; padding:14px; margin-top:16px; background:white; border:1px solid #E2E8F0; border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;" id="googleLoginBtn">
+                <i class="fab fa-google" style="color:#DB4437;"></i> Войти через Google
+            </button>
+            
+            <p style="margin-top:24px; text-align:center; color:#64748B;">
+                Нет аккаунта? <a href="#" id="switchToRegister" style="color:#00C9FF; cursor:pointer; text-decoration:none;">Зарегистрироваться</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Модальное окно регистрации -->
+    <div id="registerModal" class="modal">
+        <div style="background:white; border-radius:32px; padding:48px; max-width:480px; width:90%; position:relative;">
+            <span style="position:absolute; top:20px; right:24px; font-size:28px; cursor:pointer;" id="closeRegisterBtn">&times;</span>
+            <h2 style="margin-bottom:24px; color:#1A1A2E;">Регистрация</h2>
+            
+            <div id="registerMessage" style="padding:12px; border-radius:8px; margin-bottom:16px; display:none; font-size:0.9rem;"></div>
+            
+            <input type="text" id="regName" placeholder="Имя" style="width:100%; padding:14px; margin-bottom:16px; border:1px solid #E2E8F0; border-radius:12px; font-size:1rem;">
+            <input type="email" id="regEmail" placeholder="Email" style="width:100%; padding:14px; margin-bottom:16px; border:1px solid #E2E8F0; border-radius:12px; font-size:1rem;">
+            <input type="password" id="regPassword" placeholder="Пароль" style="width:100%; padding:14px; margin-bottom:16px; border:1px solid #E2E8F0; border-radius:12px; font-size:1rem;">
+            
+            <button class="btn-primary-neon" style="width:100%;" id="registerSubmitBtn">
+                <i class="fas fa-user-plus"></i> Зарегистрироваться
+            </button>
+            
+            <button class="google-btn" style="width:100%; padding:14px; margin-top:16px; background:white; border:1px solid #E2E8F0; border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;" id="googleRegisterBtn">
+                <i class="fab fa-google" style="color:#DB4437;"></i> Регистрация через Google
+            </button>
+            
+            <p style="margin-top:24px; text-align:center; color:#64748B;">
+                Уже есть аккаунт? <a href="#" id="switchToLogin" style="color:#00C9FF; cursor:pointer; text-decoration:none;">Войти</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- 🔥 СКРИПТЫ: auth.js ДОЛЖЕН быть первым -->
+    <script src="/js/auth.js?v=3"></script>
+    <script src="/js/auth-check.js?v=3"></script>
+    
+    <!-- 🔥 Инлайн-скрипт для модалок (после auth.js!) -->
+    <script>
+    (function() {
+        'use strict';
+        
+        let loginModal = null;
+        let registerModal = null;
+        
+        // 🔥 Функции открытия/закрытия модалок
+        window.openLoginModal = function() {
+            loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.style.display = 'flex';
+                setTimeout(() => document.getElementById('loginEmail')?.focus(), 100);
+            }
+        };
+        
+        window.closeLoginModal = function() {
+            if (loginModal) loginModal.style.display = 'none';
+            const msg = document.getElementById('loginMessage');
+            if (msg) { msg.textContent = ''; msg.style.display = 'none'; }
+        };
+        
+        window.openRegisterModal = function() {
+            closeLoginModal();
+            registerModal = document.getElementById('registerModal');
+            if (registerModal) {
+                registerModal.style.display = 'flex';
+                setTimeout(() => document.getElementById('regName')?.focus(), 100);
+            }
+        };
+        
+        window.closeRegisterModal = function() {
+            if (registerModal) registerModal.style.display = 'none';
+            const msg = document.getElementById('registerMessage');
+            if (msg) { msg.textContent = ''; msg.style.display = 'none'; }
+        };
+        
+        // 🔥 Закрытие по клику вне модалки
+        window.addEventListener('click', (e) => {
+            if (e.target === loginModal) closeLoginModal();
+            if (e.target === registerModal) closeRegisterModal();
+        });
+        
+        // 🔥 Закрытие по Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLoginModal();
+                closeRegisterModal();
+            }
+        });
+        
+        // 🔥 Инициализация после загрузки DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            loginModal = document.getElementById('loginModal');
+            registerModal = document.getElementById('registerModal');
+            
+            // 🔥 Кнопки открытия модалок
+            const authBtn = document.getElementById('authBtn');
+            const heroLaunchBtn = document.getElementById('heroLaunchBtn');
+            const ctaLaunchBtn = document.getElementById('ctaLaunchBtn');
+            
+            if (authBtn) {
+                authBtn.addEventListener('click', () => {
+                    if (window.isAuthenticated && window.isAuthenticated()) {
+                        window.location.href = '/dashboard.html';
+                    } else {
+                        openLoginModal();
+                    }
+                });
+            }
+            
+            if (heroLaunchBtn) heroLaunchBtn.addEventListener('click', openRegisterModal);
+            if (ctaLaunchBtn) ctaLaunchBtn.addEventListener('click', openRegisterModal);
+            
+            // 🔥 Кнопки закрытия модалок
+            const closeLoginBtn = document.getElementById('closeLoginBtn');
+            const closeRegisterBtn = document.getElementById('closeRegisterBtn');
+            if (closeLoginBtn) closeLoginBtn.addEventListener('click', closeLoginModal);
+            if (closeRegisterBtn) closeRegisterBtn.addEventListener('click', closeRegisterModal);
+            
+            // 🔥 Переключение между модалками
+            const switchToRegister = document.getElementById('switchToRegister');
+            const switchToLogin = document.getElementById('switchToLogin');
+            if (switchToRegister) switchToRegister.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeLoginModal();
+                openRegisterModal();
+            });
+            if (switchToLogin) switchToLogin.addEventListener('click', (e) => {
+                e.preventDefault();
+                closeRegisterModal();
+                openLoginModal();
+            });
+            
+            // 🔥 Google кнопки
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            const googleRegisterBtn = document.getElementById('googleRegisterBtn');
+            if (googleLoginBtn) googleLoginBtn.addEventListener('click', () => window.handleGoogleLogin?.());
+            if (googleRegisterBtn) googleRegisterBtn.addEventListener('click', () => window.handleGoogleLogin?.());
+        });
+    })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Translator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: system-ui, sans-serif; 
+            background: #0f172a; 
+            color: white; 
+            height: 100vh; 
+            display: flex; 
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            padding: 1rem 2rem;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .header-controls { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+        
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #0f172a;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #334155;
+        }
+        .language-switcher select {
+            background: transparent;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        
+        .conference-bar {
+            padding: 0.8rem 2rem;
+            background: #162032;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        .toggle-switch input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        .toggle-switch label {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            cursor: pointer;
+        }
+        
+        .chat-container {
+            flex: 1;
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            overflow: hidden;
+        }
+        .chat-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .chat-column-title {
+            position: sticky;
+            top: 0;
+            background: #0f172a;
+            padding: 0.5rem 0;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 1px solid #334155;
+            z-index: 1;
+        }
+        .chat-column-title.right { text-align: right; }
+        
+        .msg-bubble {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            align-self: flex-start;
+        }
+        .msg-bubble.partner { align-self: flex-end; }
+        .msg-content {
+            max-width: 90%;
+            background: #3b82f6;
+            padding: 0.8rem 1rem;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .msg-bubble.partner .msg-content { background: #22c55e; }
+        .msg-text { color: white; font-size: 1rem; }
+        .msg-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+        .msg-status { font-weight: 500; color: #eab308; }
+        
+        .footer {
+            padding: 0.8rem 2rem;
+            background: #1e293b;
+            border-top: 1px solid #334155;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-align: center;
+        }
+        
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .btn-start { background: #22c55e; color: white; }
+        .btn-stop { background: #ef4444; color: white; }
+        .btn-test { background: #3b82f6; color: white; }
+        .btn-reset { background: #dc2626; color: white; }
+        
+        select, input {
+            background: #0f172a;
+            color: white;
+            border: 1px solid #334155;
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            background: #22c55e;
+        }
+        .status.stopped { background: #64748b; }
+        
+        /* 🔥 Стили для клонированных голосов */
+        #voiceSelect option[data-cloned="true"] {
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.3), rgba(123, 44, 191, 0.3));
+            font-weight: 600;
+        }
+        #useClonedVoice:checked + span {
+            color: #22c55e;
+            font-weight: 600;
+        }
+        #useClonedVoice {
+            transition: all 0.3s;
+            accent-color: #a78bfa;
+        }
+        .cloned-voice-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #a78bfa;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1 data-i18n="appTitle">🎙️ Voice Translator</h1>
+    <div class="header-controls">
+        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.9rem;">
+            <input type="checkbox" id="aiToggle" tabindex="-1"> <span data-i18n="aiToggle">🤖 AI</span>
+        </label>
+        <div id="ai-topic-wrapper" style="display:none;align-items:center;gap:0.4rem;width:0;opacity:0;transition:all 0.3s;overflow:hidden;white-space:nowrap;">
+            <input type="text" id="aiTopicInput" data-i18n-placeholder="aiTopicPlaceholder" placeholder="Тема..." style="flex:1;min-width:150px;padding:0.4rem 0.8rem;background:#0f172a;border:1px solid #475569;border-radius:6px;color:white;font-size:0.85rem;outline:none;" />
+            <button id="aiTopicClear" style="background:transparent;border:none;color:#64748b;cursor:pointer;">✖</button>
+        </div>
+        
+        <!-- 🔥 Обновлённый блок с голосами -->
+        <div style="display:flex;align-items:center;gap:0.3rem;background:#0f172a;padding:0.2rem 0.5rem;border-radius:6px;border:1px solid #334155;">
+            <span style="font-size:0.85rem;color:#94a3b8;" data-i18n="voiceLabel">🎤 Голос:</span>
+            <select id="voiceSelect" style="background:transparent;border:none;color:white;font-size:0.85rem;outline:none;max-width:150px;cursor:pointer;" tabindex="-1">
+                <option value="en-US-JennyNeural">Загрузка...</option>
+            </select>
+            <button id="previewVoiceBtn" data-i18n-title="previewBtnTitle" style="background:transparent;border:none;color:#3b82f6;cursor:pointer;font-size:1rem;" title="Прослушать" tabindex="-1">🔊</button>
+            
+            <!-- 🔥 Галочка "Использовать клонированный голос" -->
+            <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.85rem;margin-left:0.5rem;padding-left:0.5rem;border-left:1px solid #334155;" title="Использовать клонированный голос">
+                <input type="checkbox" id="useClonedVoice" style="cursor:pointer;">
+                <span style="color:#a78bfa;">🎙️ Клон</span>
+            </label>
+            
+            <!-- Ссылка на управление голосами в личном кабинете -->
+            <a href="http://localhost:8001/cloning" target="_blank" 
+   style="background:transparent;border:none;color:#a78bfa;cursor:pointer;font-size:1rem;margin-left:0.3rem;" 
+   title="Управление клонированными голосами" tabindex="-1">
+   ⚙️
+</a>
+        </div>
+        
+        <div class="language-switcher">
+            <span style="font-size:0.85rem;color:#94a3b8;" data-i18n="languageLabel">🌐</span>
+            <select id="languageSelect" onchange="changeLanguage(this.value)" tabindex="-1">
+                <option value="ru">Русский</option>
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+            </select>
+        </div>
+        
+        <button id="reset-state" class="btn btn-reset" tabindex="-1" data-i18n="resetBtn">🔄 Сброс</button>
+        <button id="startBtn" class="btn btn-start" tabindex="-1" data-i18n="startBtn">▶️ Начать</button>
+        <button id="stopBtn" class="btn btn-stop" disabled tabindex="-1" data-i18n="stopBtn">⏹️ Стоп</button>
+        <button id="testBtn" class="btn btn-test" tabindex="-1" data-i18n="testBtn">🔊 Тест</button>
+    </div>
+</div>
+
+<div class="conference-bar">
+    <label class="toggle-switch">
+        <input type="checkbox" id="conferenceToggle" tabindex="-1">
+        <label for="conferenceToggle" data-i18n="conferenceMode">🔁 Режим конференции (VB-Cable)</label>
+    </label>
+    <span id="status" class="status stopped" style="margin-left:auto;" data-i18n="statusStopped">⏹️ Остановлен</span>
+</div>
+
+<div class="chat-container">
+    <div class="chat-column" id="user-column">
+        <div class="chat-column-title" data-i18n="youColumn">🔵 Вы</div>
+        <div id="user-messages"></div>
+    </div>
+    <div class="chat-column" id="partner-column">
+        <div class="chat-column-title right" data-i18n="partnerColumn">🟢 Собеседник</div>
+        <div id="partner-messages"></div>
+    </div>
+</div>
+
+<div class="footer" data-i18n="footerHint">
+    🎤 Говорите → Tab для редактирования → Enter для озвучки
+    <span style="margin-left:1rem;color:#a78bfa;">🎙️ = клонированные голоса</span>
+</div>
+
+<script src="https://unpkg.com/i18next@23.7.13/i18next.min.js"></script>
+<script src="/ui/translations.js"></script>
+<script src="/ui/app.js"></script>
+<script src="/ui/user-stats.js"></script>
+</body>
+</html>

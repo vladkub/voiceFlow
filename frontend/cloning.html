@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎙️ Мой голос — Клонирование</title>
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --text: #e2e8f0; --muted: #94a3b8; --green: #22c55e; --red: #ef4444; --blue: #3b82f6; --yellow: #eab308; --border: #334155; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; }
+        .header h1 { font-size: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .back-link { color: var(--blue); text-decoration: none; font-size: 0.9rem; }
+        .back-link:hover { text-decoration: underline; }
+        .card { background: var(--card); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .card h2 { margin-bottom: 1rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem; }
+        .upload-zone { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+        .upload-zone:hover, .upload-zone.dragover { border-color: var(--blue); }
+        .upload-zone input { display: none; }
+        .upload-icon { font-size: 3rem; margin-bottom: 1rem; color: var(--muted); }
+        .upload-hint { color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input, .form-group select { width: 100%; padding: 0.6rem 0.8rem; background: #0f172a; border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--blue); }
+        .btn { background: var(--blue); color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: opacity 0.2s; font-size: 0.95rem; }
+        .btn:hover { opacity: 0.9; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-green { background: var(--green); }
+        .btn-red { background: var(--red); }
+        .btn-sm { padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+        .voices-list { display: flex; flex-direction: column; gap: 0.8rem; }
+        .voice-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #0f172a; border-radius: 8px; border: 1px solid var(--border); }
+        .voice-info { flex: 1; }
+        .voice-name { font-weight: 600; margin-bottom: 0.2rem; }
+        .voice-meta { font-size: 0.85rem; color: var(--muted); }
+        .voice-actions { display: flex; gap: 0.5rem; }
+        .test-section { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+        .test-section textarea { width: 100%; min-height: 80px; padding: 0.8rem; background: #0f172a; border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 1rem; margin-bottom: 1rem; resize: vertical; }
+        .status { padding: 0.8rem; border-radius: 6px; margin: 1rem 0; font-size: 0.9rem; }
+        .status.success { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid #22c55e33; }
+        .status.error { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid #ef444433; }
+        .status.info { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid #3b82f633; }
+        .tips { background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 8px; padding: 1rem; font-size: 0.9rem; color: #fbbf24; }
+        .tips ul { margin-left: 1.5rem; margin-top: 0.5rem; }
+        .tips li { margin-bottom: 0.3rem; }
+        .loading { display: inline-block; width: 1rem; height: 1rem; border: 2px solid var(--muted); border-top-color: var(--blue); border-radius: 50%; animation: spin 1s linear infinite; vertical-align: middle; margin-right: 0.5rem; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .hidden { display: none !important; }
+        @media (max-width: 600px) { .voice-item { flex-direction: column; align-items: flex-start; gap: 0.8rem; } .voice-actions { width: 100%; justify-content: flex-end; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🎙️ Мой голос</h1>
+        <a href="http://localhost:8000/ui" class="back-link">← Вернуться к переводчику</a>
+    </div>
+    
+    <!-- 🔥 Секция: Загрузка образца -->
+    <div class="card">
+        <h2>📤 Добавить новый голос</h2>
+        
+        <!-- 🔥 Индикатор лимита голосов -->
+        <div id="voiceLimitIndicator" style="margin: 0.5rem 0 1rem 0; font-size: 0.9rem; color: var(--muted);">
+            Голоса: <span id="voiceCount">0</span>/<span id="voiceMax">10</span>
+            <span id="limitWarning" style="color: var(--red); display: none; margin-left: 0.5rem;">
+                ⚠️ Достигнут лимит
+            </span>
+        </div>
+        
+        <div class="tips">
+            <strong>💡 Советы для лучшего результата:</strong>
+            <ul>
+                <li>Запишите 6-30 секунд чёткой речи без шума и музыки</li>
+                <li>Говорите в том темпе и интонации, в которых хотите получать результат</li>
+                <li>Для русского голоса — говорите по-русски в образце</li>
+                <li>Форматы: WAV, MP3, OGG, FLAC (до 10 МБ)</li>
+            </ul>
+        </div>
+        
+        <form id="uploadForm" style="margin-top: 1.5rem;">
+            <div class="upload-zone" id="dropZone">
+                <div class="upload-icon">🎤</div>
+                <p id="dropZoneText"><strong>Перетащите аудио-файл сюда</strong></p>
+                <p class="upload-hint">или нажмите для выбора файла</p>
+                <input type="file" id="audioInput" accept=".wav,.mp3,.ogg,.flac" required>
+            </div>
+            
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <label for="voiceName">Название голоса *</label>
+                <input type="text" id="voiceName" placeholder="Например: Мой голос, Диктор, Лекция..." required>
+            </div>
+            
+            <div class="form-group">
+                <label for="voiceLanguage">Язык образца</label>
+                <select id="voiceLanguage">
+                    <option value="auto">🔄 Определить автоматически</option>
+                    <option value="ru">🇷🇺 Русский</option>
+                    <option value="en">🇬🇧 English</option>
+                    <option value="es">🇪🇸 Español</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="de">🇩🇪 Deutsch</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-green" id="uploadBtn">🚀 Сохранить голос</button>
+        </form>
+        
+        <div id="uploadStatus" class="status hidden"></div>
+    </div>
+    
+    <!-- 🔥 Секция: Список голосов -->
+    <div class="card">
+        <h2>📋 Мои голоса</h2>
+        <div id="voicesList" class="voices-list">
+            <div style="text-align: center; color: var(--muted); padding: 2rem;">Загрузка списка голосов...</div>
+        </div>
+    </div>
+    
+    <!-- 🔥 Секция: Тестирование -->
+    <div class="card test-section">
+        <h2>🧪 Протестировать голос</h2>
+        <div class="form-group">
+            <label for="testVoice">Выберите голос:</label>
+            <select id="testVoice">
+                <option value="">-- Выберите голос --</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="testText">Текст для озвучки:</label>
+            <textarea id="testText" placeholder="Введите текст, который нужно озвучить...">Привет! Это тест моего клонированного голоса.</textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="testSpeed">Скорость: <span id="speedValue">1.0</span>x</label>
+            <input type="range" id="testSpeed" min="0.5" max="2.0" step="0.1" value="1.0">
+        </div>
+        
+        <button class="btn" id="testBtn" disabled>🔊 Озвучить</button>
+        
+        <div id="testResult" style="margin-top: 1rem;"></div>
+        <div id="testStatus" class="status hidden"></div>
+    </div>
+    
+    <!-- 🔥 Информация -->
+    <div class="card">
+        <h2>ℹ️ О технологии</h2>
+        <p><strong>Coqui XTTS v2</strong> — нейросетевая модель для клонирования голоса.</p>
+        <ul style="margin: 0.5rem 0 0 1.5rem; color: var(--muted);">
+            <li>✅ Zero-shot клонирование (без обучения)</li>
+            <li>✅ Поддержка 17+ языков</li>
+            <li>✅ Локальная работа (ваши данные не отправляются в облако)</li>
+            <li>⚠️ Первое использование: загрузка модели ~2-5 минут</li>
+            <li>🔢 Лимит: максимум 10 клонированных голосов</li>
+        </ul>
+        <button class="btn btn-sm" id="checkModelBtn" style="margin-top: 1rem;">🔍 Проверить готовность модели</button>
+        <div id="modelStatus" class="status hidden" style="margin-top: 0.5rem;"></div>
+    </div>
+</div>
+
+<script src="/static/cloning.js"></script>
+</body>
+</html>

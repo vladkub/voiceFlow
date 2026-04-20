@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Технологии — VoiceFlow</title>
+    <!-- 🔥 Подключаем общий CSS -->
+    <link rel="stylesheet" href="/css/landing.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+    <a href="/" class="logo">
+        <i class="fas fa-microphone"></i> VoiceFlow
+    </a>
+    <ul class="nav-links">
+        <li><a href="/">Главная</a></li>
+        <li><a href="/index.html#features">Возможности</a></li>
+        <li><a href="/technology.html">Технологии</a></li>
+        <li><a href="/pricing.html">Тарифы</a></li>
+        <li><a href="/faq.html">FAQ</a></li>
+    </ul>
+    <div class="nav-buttons">
+        <a href="/dashboard.html" class="btn btn-outline">
+            <i class="fas fa-sign-in-alt"></i> Войти
+        </a>
+        <a href="/dashboard.html?register=1" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Регистрация
+        </a>
+    </div>
+</nav>
+
+    <header class="page-header">
+        <h1>🛠️ Наши технологии</h1>
+        <p>Современный стек технологий для максимальной производительности и точности</p>
+    </header>
+
+    <section class="section">
+        <h2 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">Технологический стек</h2>
+        
+        <div class="tech-stack">
+            <div class="tech-card">
+                <h3><i class="fas fa-microchip"></i> Распознавание речи</h3>
+                <ul>
+                    <li>Web Speech API (браузер)</li>
+                    <li>Google Cloud Speech-to-Text</li>
+                    <li>Whisper AI (OpenAI)</li>
+                    <li>Vosk (офлайн)</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3><i class="fas fa-language"></i> Перевод</h3>
+                <ul>
+                    <li>Google Translate API</li>
+                    <li>DeepL API</li>
+                    <li>ModernMT</li>
+                    <li>Собственные нейросети</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3><i class="fas fa-volume-up"></i> Синтез речи</h3>
+                <ul>
+                    <li>Google Text-to-Speech</li>
+                    <li>Amazon Polly</li>
+                    <li>Azure Cognitive Services</li>
+                    <li>ElevenLabs (премиум)</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3><i class="fas fa-server"></i> Бэкенд</h3>
+                <ul>
+                    <li>Node.js 18+</li>
+                    <li>Express.js</li>
+                    <li>SQLite / PostgreSQL</li>
+                    <li>Redis (кэширование)</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3><i class="fas fa-shield-alt"></i> Безопасность</h3>
+                <ul>
+                    <li>bcrypt (хеширование)</li>
+                    <li>JWT токены</li>
+                    <li>HTTPS / TLS 1.3</li>
+                    <li>CORS защита</li>
+                </ul>
+            </div>
+            <div class="tech-card">
+                <h3><i class="fas fa-credit-card"></i> Платежи</h3>
+                <ul>
+                    <li>Stripe (карты)</li>
+                    <li>NowPayments (крипто)</li>
+                    <li>Webhook уведомления</li>
+                    <li>Автоматическое продление</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="architecture">
+            <h2 style="margin-bottom: 1rem;">Архитектура системы</h2>
+            <p style="color: var(--text-secondary);">Микросервисная архитектура для масштабирования</p>
+            <!-- Можно добавить схему архитектуры -->
+            <div style="margin-top: 2rem; padding: 2rem; background: rgba(0,0,0,0.3); border-radius: 8px;">
+                <pre style="color: var(--accent); font-family: monospace; text-align: left;">
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   Клиент    │────▶│   API Gateway│────▶│  Сервисы    │
+│ (Browser)   │     │  (Express)   │     │ (Speech/Translate)│
+└─────────────┘     └──────────────┘     └─────────────┘
+                           │
+                           ▼
+                    ┌──────────────┐
+                    │   База данных │
+                    │   (SQLite)    │
+                    └──────────────┘
+                </pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (скопировать из index.html) -->
+    <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-section">
+            <h4>🎙️ VoiceFlow</h4>
+            <p style="color: var(--text-secondary);">Голосовой переводчик нового поколения на базе искусственного интеллекта.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Продукт</h4>
+            <ul>
+                <li><a href="/index.html#features">Возможности</a></li>
+                <li><a href="/technology.html">Технологии</a></li>
+                <li><a href="/pricing.html">Тарифы</a></li>
+                <li><a href="/dashboard.html">Личный кабинет</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Поддержка</h4>
+            <ul>
+                <li><a href="/faq.html">FAQ</a></li>
+                <li><a href="mailto:support@voiceflow.com">support@voiceflow.com</a></li>
+                <li><a href="#">Документация API</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Компания</h4>
+            <ul>
+                <li><a href="#">О нас</a></li>
+                <li><a href="#">Блог</a></li>
+                <li><a href="#">Контакты</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2026 VoiceFlow. Все права защищены.</p>
+    </div>
+</footer>
+    <script src="/js/auth-check.js"></script>
+</body>
+</html>

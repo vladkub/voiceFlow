@@ -1,0 +1,11 @@
+{
+  "id": "c3e8b1fb",
+  "name": "MyVoice2",
+  "language": "auto",
+  "sample_path": "C:\\voice\\site\\voice-translator-web\\backend\\..\\voices\\samples\\c3e8b1fb.mp3",
+  "sample_duration": 34.6,
+  "created_at": "2026-04-18 19:07:38",
+  "metadata": {
+    "original_filename": "savr-dordzhiev-demo-09-09-2025-diktorov.net.mp3"
+  }
+}
