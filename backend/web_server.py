@@ -547,26 +547,41 @@ def get_authorized_user_id(request: Request) -> str:
 
 # ================= 🌐 MAIN ROUTES =================
 
+# ================= 🌐 FRONTEND ROUTES =================
+
+# 🔥 Пути к папкам
+frontend_dir = os.path.join(BASE_DIR, "..", "frontend")  # Чат
+public_dir = os.path.join(BASE_DIR, "..", "public")       # Лендинг, дашборд, логин
+
+# 🔥 1. Главная страница (/ и /index.html) — ДОЛЖНА БЫТЬ ПЕРВОЙ!
 @app.get("/")
 async def root():
-    """Главная страница — редирект на чат"""
+    """Главная страница сайта (лендинг)"""
+    landing_path = os.path.join(public_dir, "index.html")
+    if os.path.exists(landing_path):
+        return FileResponse(landing_path)
     return Response(content="<script>window.location.href='/ui'</script>", media_type="text/html")
 
-# 🔥 РАЗДАЧА FRONTEND ФАЙЛОВ — ЧАТ (/ui)
-frontend_dir = os.path.join(BASE_DIR, "..", "frontend")
-public_dir = os.path.join(BASE_DIR, "..", "public")  # ← Для dashboard.html, login.html
+@app.get("/index.html")
+async def serve_main_index():
+    """Главная страница (лендинг)"""
+    landing_path = os.path.join(public_dir, "index.html")
+    if os.path.exists(landing_path):
+        return FileResponse(landing_path)
+    raise HTTPException(404, "Главная страница не найдена")
 
+# 🔥 2. Чат (/ui) — ПОСЛЕ главной!
 @app.get("/ui")
-async def serve_frontend_root():
-    """Чат — корень"""
-    index_path = os.path.join(frontend_dir, "index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path)
+async def serve_chat():
+    """Чат приложение"""
+    chat_path = os.path.join(frontend_dir, "index.html")
+    if os.path.exists(chat_path):
+        return FileResponse(chat_path)
     raise HTTPException(404, "frontend/index.html not found")
 
 @app.get("/ui/{filename:path}")
-async def serve_frontend_file(filename: str):
-    """Чат — статика"""
+async def serve_chat_file(filename: str):
+    """Статика для чата"""
     file_path = os.path.join(frontend_dir, filename)
     if not os.path.abspath(file_path).startswith(os.path.abspath(frontend_dir)):
         raise HTTPException(status_code=404, detail="File not found")
@@ -580,8 +595,7 @@ async def serve_frontend_file(filename: str):
         return FileResponse(file_path)
     raise HTTPException(status_code=404, detail=f"File {filename} not found")
 
-# 🔥 РАЗДАЧА FRONTEND ФАЙЛОВ — ЛИЧНЫЙ КАБИНЕТ (/dashboard.html, /login.html)
-
+# 🔥 3. Личный кабинет и вход
 @app.get("/dashboard.html")
 async def serve_dashboard():
     """Личный кабинет"""
@@ -598,9 +612,10 @@ async def serve_login():
         return FileResponse(login_path)
     raise HTTPException(404, "login.html not found")
 
-# 🔥 Раздача статики: CSS, JS для личного кабинета
+# 🔥 4. Статика для лендинга и дашборда
 @app.get("/css/{filename:path}")
 async def serve_css(filename: str):
+    """CSS файлы"""
     file_path = os.path.join(public_dir, "css", filename)
     if os.path.exists(file_path):
         return FileResponse(file_path, media_type="text/css")
@@ -608,66 +623,11 @@ async def serve_css(filename: str):
 
 @app.get("/js/{filename:path}")
 async def serve_js(filename: str):
+    """JS файлы"""
     file_path = os.path.join(public_dir, "js", filename)
     if os.path.exists(file_path):
         return FileResponse(file_path, media_type="application/javascript")
     raise HTTPException(404, "JS not found")
-
-# ================= 📊 API ENDPOINTS =================
-
-@app.get("/api/status", response_model=StatusResponse)
-async def get_status(): return engine.get_status()
-
-@app.get("/api/chat")
-async def get_chat(): return {"messages": engine.get_chat_history()}
-
-@app.post("/api/voice")
-async def voice_message(req: VoiceRequest):
-    if req.msg_id: return await engine.voice_message(req.msg_id, req.text, req.msg_type or "statement", voice_override=req.voice)
-    next_msg = engine.get_next_unvoiced()
-    if not next_msg: return {"status": "no_unvoiced_messages"}
-    return await engine.voice_message(next_msg["id"], req.text, req.msg_type or next_msg.get("msg_type", "statement"), voice_override=req.voice)
-
-@app.post("/api/suggestions")
-async def get_suggestions(req: VoiceRequest):
-    if not engine.ai_enabled: return {"suggestions": [], "ai_enabled": False}
-    if not req.text or not req.msg_id: return {"error": "text and msg_id required"}
-    topic = req.msg_type or engine.ai_topic; suggestions = await _generate_suggestion_async(req.text, topic)
-    return {"original": req.text, "suggestions": suggestions, "topic": topic}
-
-@app.post("/api/delete_message")
-async def delete_message(req: DeleteRequest): return {"status": "deleted" if engine.skip_message(req.msg_id) else "not_found"}
-
-@app.post("/api/control")
-async def control(req: ControlRequest):
-    try:
-        if req.action == "start": await engine.start(); return {"status": "started"}
-        elif req.action == "stop": await engine.stop(); return {"status": "stopped"}
-        else: raise HTTPException(400, "Unknown action")
-    except HTTPException: raise
-    except Exception as e: raise HTTPException(500, str(e))
-
-@app.post("/api/conference-mode")
-async def set_conference_mode(req: ConferenceModeRequest):
-    try: engine.set_conference_mode(req.enabled); return {"status": "ok"}
-    except Exception as e: raise HTTPException(500, str(e))
-
-@app.post("/api/unmute-mode")
-async def set_unmute_mode(req: UnmuteModeRequest):
-    try: engine.unmute_mode = req.enabled; return {"status": "ok"}
-    except Exception as e: raise HTTPException(500, str(e))
-
-@app.post("/api/ai-config")
-async def set_ai_config(req: AIConfigRequest):
-    try: engine.ai_enabled = req.enabled; engine.ai_topic = req.topic.strip(); return {"status": "ok"}
-    except Exception as e: raise HTTPException(500, str(e))
-
-@app.post("/api/reset-state")
-async def reset_state(req: ResetRequest = None):
-    try:
-        if os.path.exists(STATE_FILE): os.remove(STATE_FILE); engine.conference_mode = False
-        return {"status": "reset"}
-    except Exception as e: raise HTTPException(500, str(e))
 
 # ================= 🔐 AUTH ENDPOINTS =================
 
