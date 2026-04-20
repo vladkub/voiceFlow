@@ -939,6 +939,18 @@ async def get_cloned_voices_endpoint(request: Request):
 @app.get("/api/health")
 async def health(): return {"status": "ok"}
 
+# ================= 🔧 FIX: Missing endpoints for frontend =================
+@app.get("/api/status")
+async def api_status():
+    """Эндпоинт статуса для фронтенда"""
+    return {"status": "ok", "message": "Server is running"}
+
+@app.get("/api/chat")
+async def api_chat():
+    """Заглушка для чата (если фронтенд делает REST запрос вместо WebSocket)"""
+    return {"status": "ok", "message": "Chat service ready"}
+# ========================================================================
+
 # 🔐 ЗАЩИЩЁН: использует get_authorized_user_id() для проверки авторизации
 @app.get("/api/user/cloned-voices")
 async def get_user_cloned_voices(request: Request):
