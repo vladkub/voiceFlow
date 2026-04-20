@@ -32,8 +32,9 @@ temp/
 tmp/
 
 # 🔥 Модели и большие файлы (опционально)
-# models/
-# voices/samples/*.wav
+ models/
+ voices/samples/*.wav
+ node_modules
 
 # 🔥 ОС
 .DS_Store
@@ -42,3 +43,12 @@ Thumbs.db
 # 🔥 Конфиги с личными данными
 cache_hybrid.json
 conference_state.json
+
+backend/models/
+*.bin
+*.zip
+__pycache__/
+*.pyc
+voices/samples/
+voices/configs/
+cache_*.json
