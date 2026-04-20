@@ -1,44 +1,71 @@
-# 🔥 Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-.venv
-*.egg-info/
-dist/
-build/
-
-# 🔥 IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# 🔥 Секреты и ключи
-.env
-*.key
-*.pem
-config_secret.json
-
-# 🔥 Кэш и временные файлы
-*.cache
+```
+# Logs and temp files
 *.log
 *.tmp
-temp/
-tmp/
+*.swp
 
-# 🔥 Модели и большие файлы (опционально)
-# models/
-# voices/samples/*.wav
+# Environment
+.env
+.env.local
+*.env.*
 
-# 🔥 ОС
+# Editors
+.vscode/
+.idea/
+
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+dist/
+build/
+target/
+.gradle/
+
+# Compiled files
+*.pyc
+*.class
+*.o
+*.exe
+*.dll
+*.so
+*.a
+*.obj
+*.out
+
+# System files
 .DS_Store
 Thumbs.db
 
-# 🔥 Конфиги с личными данными
-cache_hybrid.json
-conference_state.json
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Compressed files
+*.zip
+*.gz
+*.tar
+*.tgz
+*.bz2
+*.xz
+*.7z
+*.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst
+```

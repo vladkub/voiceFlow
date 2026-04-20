@@ -143,13 +143,8 @@ window.handleLogin = async function() {
             if (typeof closeLoginModal === 'function') closeLoginModal();
             if (window.refreshAuthNav) window.refreshAuthNav();
             
-            // 🔥 Открываем чат с user_id в URL
-            const userId = result.user?.id;
-            if (userId) {
-                window.open(`http://localhost:8000/ui?user_id=${userId}`, '_blank');
-            } else {
-                window.location.href = '/dashboard.html';
-            }
+            // 🔥 Перенаправляем в личный кабинет
+            window.location.href = '/dashboard.html';
         }, 1000);
         
     } catch (err) { 
