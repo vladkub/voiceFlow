@@ -1868,9 +1868,55 @@ def get_authorized_user_id(request: Request) -> str:
     raise HTTPException(status_code=401, detail="Unauthorized")
 
 # ================= 🌐 FRONTEND ROUTES =================
-frontend_dir = os.path.join(BASE_DIR, "..", "frontend"); public_dir = os.path.join(BASE_DIR, "..", "public")
-if not os.path.isfile(os.path.join(public_dir, "checkout.html")):
-    print(f"⚠️ Нет файла checkout: {os.path.join(public_dir, 'checkout.html')} — GET /checkout.html вернёт 404. Проверьте клон репозитория и ветку.", flush=True)
+def _resolve_repo_public() -> str:
+    """Каталог public: сосед backend/, затем backend/public, затем ./public от cwd."""
+    base_abs = os.path.abspath(BASE_DIR)
+    repo_root = os.path.abspath(os.path.join(base_abs, ".."))
+    candidates = [
+        os.path.join(repo_root, "public"),
+        os.path.join(base_abs, "public"),
+        os.path.abspath(os.path.join(os.getcwd(), "public")),
+    ]
+    seen = set()
+    uniq = []
+    for raw in candidates:
+        c = os.path.realpath(raw)
+        if c in seen or not os.path.isdir(c):
+            continue
+        seen.add(c)
+        uniq.append(c)
+    if not uniq:
+        return os.path.realpath(candidates[0])
+    for c in uniq:
+        if os.path.isfile(os.path.join(c, "checkout.html")):
+            return c
+    markers = ("index.html", "pricing.html")
+    for c in uniq:
+        if any(os.path.isfile(os.path.join(c, m)) for m in markers):
+            return c
+    return uniq[0]
+
+
+def _resolve_repo_frontend() -> str:
+    base_abs = os.path.abspath(BASE_DIR)
+    repo_root = os.path.abspath(os.path.join(base_abs, ".."))
+    for raw in (
+        os.path.join(repo_root, "frontend"),
+        os.path.join(base_abs, "frontend"),
+        os.path.abspath(os.path.join(os.getcwd(), "frontend")),
+    ):
+        c = os.path.realpath(raw)
+        if os.path.isdir(c):
+            return c
+    return os.path.realpath(os.path.join(repo_root, "frontend"))
+
+
+public_dir = _resolve_repo_public()
+frontend_dir = _resolve_repo_frontend()
+_checkout_path = os.path.join(public_dir, "checkout.html")
+print(f"🌐 static: public_dir={public_dir}  checkout.html={'ok' if os.path.isfile(_checkout_path) else 'MISSING'}", flush=True)
+if not os.path.isfile(_checkout_path):
+    print(f"⚠️ Нет checkout: {_checkout_path} — GET /checkout.html вернёт 404. Сделайте git pull и проверьте ветку.", flush=True)
 
 @app.get("/")
 async def root():
@@ -1891,13 +1937,15 @@ def _public_html_response(basename: str) -> FileResponse:
     file_path = os.path.join(public_dir, f"{basename}.html")
     real_public = os.path.realpath(public_dir)
     real_file = os.path.realpath(file_path)
-    sep = os.sep
-    pub_n = os.path.normcase(real_public)
-    file_n = os.path.normcase(real_file)
-    inside = file_n == pub_n or file_n.startswith(pub_n + sep)
-    if not inside or not os.path.isfile(file_path):
+    try:
+        inside = os.path.commonpath([real_public, real_file]) == real_public
+    except ValueError:
+        inside = False
+    exists = os.path.isfile(file_path) or os.path.isfile(real_file)
+    if not os.path.isdir(real_public) or not inside or not exists:
         raise HTTPException(status_code=404, detail="Not Found")
-    return FileResponse(file_path, media_type="text/html")
+    send_path = real_file if os.path.isfile(real_file) else file_path
+    return FileResponse(send_path, media_type="text/html")
 
 @app.get("/ui")
 async def serve_chat():
