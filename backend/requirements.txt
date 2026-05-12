@@ -13,6 +13,7 @@ sounddevice>=0.4.6
 requests>=2.31.0
 pydantic>=2.4.0
 websockets>=12.0
+stripe>=7.0.0
 
 # FFmpeg должен быть установлен в системе отдельно:
 # https://ffmpeg.org/download.html

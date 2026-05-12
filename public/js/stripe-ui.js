@@ -28,12 +28,20 @@
   // Инициализация Stripe
   async function initStripe() {
     await loadStripeScript();
-    
-    // Получаем publishable key с сервера
+
     const response = await fetch('/api/config');
+    if (!response.ok) {
+      throw new Error('Не удалось загрузить настройки оплаты (HTTP ' + response.status + ')');
+    }
     const config = await response.json();
-    
-    stripe = Stripe(config.stripePublishableKey);
+    const pk = config.stripePublishableKey;
+    if (typeof pk !== 'string' || !pk.trim()) {
+      throw new Error(
+        'Платежи картой не настроены: в .env на сервере задайте STRIPE_PUBLISHABLE_KEY (pk_test_… или pk_live_…).'
+      );
+    }
+
+    stripe = Stripe(pk.trim());
     elements = stripe.elements();
     
     // Создаём элемент карты

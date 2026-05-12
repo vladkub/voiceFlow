@@ -1603,6 +1603,11 @@ class UserStatsUpdateRequest(BaseModel):
     phrasesTranslated: int = 0
     charsCount: int = 0
 
+
+class StripeCreateRequest(BaseModel):
+    amount: float
+    currency: str = "USD"
+
 # ================= 🔐 DATABASE FUNCTIONS =================
 def get_db_connection():
     db_path = os.path.join(BASE_DIR, "..", "database.db")
@@ -2445,6 +2450,61 @@ async def get_cloned_voices_endpoint(request: Request):
 
 @app.get("/api/health")
 async def health(): return {"status": "ok"}
+
+
+@app.get("/api/config")
+async def public_payment_config():
+    """Публичная конфигурация для Stripe.js (как в server.js). Секреты не отдаём."""
+    pk = (os.environ.get("STRIPE_PUBLISHABLE_KEY") or "").strip()
+    return {
+        "stripePublishableKey": pk if pk else None,
+        "nowPaymentsEnabled": bool((os.environ.get("NOWPAYMENTS_API_KEY") or "").strip()),
+        "stripeEnabled": bool((os.environ.get("STRIPE_SECRET_KEY") or "").strip()),
+    }
+
+
+@app.post("/api/stripe/create")
+async def api_stripe_create_payment(request: Request, body: StripeCreateRequest):
+    """Создание Payment Intent (клиент подтверждает карту через stripe-ui.js)."""
+    user_id = get_authorized_user_id(request)
+    if body.amount is None or float(body.amount) < 1:
+        raise HTTPException(status_code=400, detail="Минимальная сумма: $1")
+    sk = (os.environ.get("STRIPE_SECRET_KEY") or "").strip()
+    if not sk:
+        raise HTTPException(status_code=503, detail="Stripe не настроен: задайте STRIPE_SECRET_KEY на сервере")
+    try:
+        import stripe as stripe_mod
+    except ImportError:
+        raise HTTPException(status_code=503, detail="Установите пакет: pip install stripe")
+    stripe_mod.api_key = sk
+    order_id = f"stripe_{user_id}_{int(time.time() * 1000)}"
+    cur = (body.currency or "USD").strip().lower() or "usd"
+    try:
+        pi = stripe_mod.PaymentIntent.create(
+            amount=int(round(float(body.amount) * 100)),
+            currency=cur,
+            metadata={"userId": str(user_id), "orderId": order_id},
+            automatic_payment_methods={"enabled": True},
+        )
+    except Exception as e:
+        print(f"❌ Stripe PaymentIntent.create: {e}", flush=True)
+        raise HTTPException(status_code=500, detail=str(e))
+    conn = get_db_connection()
+    try:
+        conn.execute(
+            "INSERT INTO transactions (user_id, amount, description, type) VALUES (?, ?, ?, ?)",
+            (str(user_id), float(body.amount), f"Stripe pending {pi.id} ({order_id})", "stripe"),
+        )
+        conn.commit()
+    finally:
+        conn.close()
+    return {
+        "success": True,
+        "paymentIntentId": pi.id,
+        "clientSecret": pi.client_secret,
+        "amount": float(body.amount),
+        "currency": cur,
+    }
 
 
 def _client_ip_for_geo(request: Request) -> str:
