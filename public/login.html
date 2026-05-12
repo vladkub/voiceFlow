@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — VoiceFlow</title>
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=3">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <style>
+        body.login-page-body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(120% 80% at 50% 0%, #1e293b 0%, #0a0e1a 55%); color: #e2e8f0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        .login-shell { width: 100%; max-width: 400px; padding: 1.5rem; box-sizing: border-box; }
+        .login-card { background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 16px; padding: 1.75rem 1.5rem 1.5rem; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45); }
+        .login-card h1 { margin: 0 0 0.35rem; font-size: 1.35rem; font-weight: 700; color: #f8fafc; }
+        .login-card p.sub { margin: 0 0 1.25rem; font-size: 0.88rem; color: #94a3b8; line-height: 1.45; }
+        .login-card label { display: block; font-size: 0.8rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.35rem; }
+        .login-card input { width: 100%; box-sizing: border-box; padding: 0.65rem 0.75rem; border-radius: 10px; border: 1px solid rgba(148, 163, 184, 0.35); background: rgba(2, 6, 23, 0.55); color: #f8fafc; font-size: 0.95rem; margin-bottom: 0.85rem; }
+        .login-card input:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
+        .login-card button[type="submit"] { width: 100%; margin-top: 0.25rem; padding: 0.75rem 1rem; border: none; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer; color: #fff; background: linear-gradient(90deg, #7c3aed 0%, #2563eb 100%); }
+        .login-card button[type="submit"]:disabled { opacity: 0.65; cursor: not-allowed; }
+        #loginPageMessage { display: none; margin-bottom: 0.85rem; padding: 0.55rem 0.65rem; border-radius: 8px; font-size: 0.88rem; }
+        #loginPageMessage.is-error { display: block; background: rgba(239, 68, 68, 0.12); color: #fecaca; border: 1px solid rgba(239, 68, 68, 0.35); }
+        #loginPageMessage.is-ok { display: block; background: rgba(34, 197, 94, 0.12); color: #bbf7d0; border: 1px solid rgba(34, 197, 94, 0.35); }
+        .login-links { margin-top: 1.1rem; font-size: 0.86rem; color: #94a3b8; text-align: center; line-height: 1.6; }
+        .login-links a { color: #7dd3fc; text-decoration: none; }
+        .login-links a:hover { text-decoration: underline; }
+        .login-back { display: inline-block; margin-bottom: 1rem; font-size: 0.88rem; color: #94a3b8; text-decoration: none; }
+        .login-back:hover { color: #e2e8f0; }
+    </style>
+</head>
+<body class="login-page-body">
+    <div class="login-shell">
+        <a class="login-back" href="/pricing.html">← Тарифы</a>
+        <div class="login-card">
+            <h1>Вход в личный кабинет</h1>
+            <p class="sub">Введите email и пароль. После входа вы вернётесь к оформлению выбранного тарифа.</p>
+            <div id="loginPageMessage" role="alert"></div>
+            <form id="loginPageForm" autocomplete="on">
+                <label for="loginEmail">Email</label>
+                <input id="loginEmail" name="email" type="email" autocomplete="username" required>
+                <label for="loginPassword">Пароль</label>
+                <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+                <button type="submit" id="loginPageSubmit">Войти</button>
+            </form>
+            <div class="login-links">
+                <a id="loginRegLink" href="/dashboard.html?register=1">Регистрация</a>
+                ·
+                <a href="/">На главную</a>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function () {
+      'use strict';
+
+      function safeRedirect(raw) {
+        if (!raw || typeof raw !== 'string') return '/dashboard.html';
+        try {
+          var s = decodeURIComponent(raw).trim();
+          if (!s.startsWith('/') || s.startsWith('//')) return '/dashboard.html';
+          return s.split('#')[0];
+        } catch (e) {
+          return '/dashboard.html';
+        }
+      }
+
+      function registerHrefFromRedirect(redirectRaw) {
+        var base = '/dashboard.html?register=1';
+        try {
+          var path = safeRedirect(redirectRaw);
+          var q = path.indexOf('?') >= 0 ? path.slice(path.indexOf('?') + 1) : '';
+          if (!q) return base;
+          var sp = new URLSearchParams(q);
+          var pack = sp.get('pack');
+          var qty = sp.get('qty');
+          if (pack) base += '&pack=' + encodeURIComponent(pack);
+          if (qty) base += '&qty=' + encodeURIComponent(qty);
+          return base;
+        } catch (e) {
+          return base;
+        }
+      }
+
+      var sp = new URLSearchParams(window.location.search);
+      var redirectTarget = safeRedirect(sp.get('redirect') || '');
+      document.getElementById('loginRegLink').setAttribute('href', registerHrefFromRedirect(sp.get('redirect') || ''));
+
+      var form = document.getElementById('loginPageForm');
+      var msg = document.getElementById('loginPageMessage');
+      var submitBtn = document.getElementById('loginPageSubmit');
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var email = (document.getElementById('loginEmail').value || '').trim();
+        var password = document.getElementById('loginPassword').value || '';
+        msg.className = '';
+        msg.style.display = 'none';
+        msg.textContent = '';
+
+        if (!email || !password) {
+          msg.textContent = 'Укажите email и пароль';
+          msg.className = 'is-error';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        try {
+          var resp = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ email: email, password: password })
+          });
+          var data = await resp.json().catch(function () { return {}; });
+          if (!resp.ok) {
+            var d = data && data.detail;
+            var errText = 'Не удалось войти';
+            if (d != null) {
+              errText = Array.isArray(d) ? d.map(function (x) { return typeof x === 'string' ? x : (x.msg || JSON.stringify(x)); }).join(' ') : String(d);
+            } else if (data && data.error) errText = String(data.error);
+            msg.textContent = errText;
+            msg.className = 'is-error';
+            submitBtn.disabled = false;
+            return;
+          }
+          msg.textContent = 'Вход выполнен, перенаправление…';
+          msg.className = 'is-ok';
+          window.location.href = redirectTarget;
+        } catch (err) {
+          msg.textContent = 'Ошибка сети. Попробуйте ещё раз.';
+          msg.className = 'is-error';
+          submitBtn.disabled = false;
+        }
+      });
+    })();
+    </script>
+</body>
+</html>

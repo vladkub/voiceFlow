@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление покупки — VoiceFlow</title>
+    <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=3">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body.checkout-page { margin: 0; min-height: 100vh; background: #0f172a; color: #e2e8f0; }
+        .checkout-top { border-bottom: 1px solid rgba(148, 163, 184, 0.2); background: rgba(15, 23, 42, 0.95); }
+        .checkout-top-inner { max-width: 960px; margin: 0 auto; padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+        .checkout-top a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; }
+        .checkout-top a:hover { color: #e2e8f0; }
+        .checkout-main { max-width: 640px; margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
+        .checkout-order-card { background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 14px; padding: 1.25rem 1.35rem; margin-bottom: 1.75rem; }
+        .checkout-order-card h1 { margin: 0 0 0.75rem; font-size: 1.25rem; color: #f8fafc; }
+        .checkout-row { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.35rem 0; font-size: 0.92rem; color: #cbd5e1; }
+        .checkout-row strong { color: #f8fafc; }
+        .checkout-total { margin-top: 0.65rem; padding-top: 0.75rem; border-top: 1px solid rgba(148, 163, 184, 0.2); font-size: 1.05rem; font-weight: 700; color: #38bdf8; display: flex; justify-content: space-between; }
+        .checkout-hint { margin: 0.75rem 0 0; font-size: 0.82rem; color: #94a3b8; line-height: 1.45; }
+    </style>
+</head>
+<body class="checkout-page">
+    <header class="checkout-top">
+        <div class="checkout-top-inner">
+            <a href="/pricing.html"><i class="fas fa-arrow-left"></i> Тарифы</a>
+            <a href="/dashboard.html"><i class="fas fa-user"></i> Личный кабинет</a>
+        </div>
+    </header>
+
+    <main class="checkout-main">
+        <div class="checkout-order-card">
+            <h1 id="checkoutPackTitle">Пакет</h1>
+            <div class="checkout-row"><span>Количество пакетов</span><strong id="checkoutOrderQty">1</strong></div>
+            <div class="checkout-row"><span>Цена за 1 пакет</span><strong id="checkoutUnitPrice">—</strong></div>
+            <div class="checkout-total"><span>К оплате (USD)</span><span id="checkoutOrderTotal">—</span></div>
+            <p class="checkout-hint">Оплатите картой (Stripe) или криптовалютой (NowPayments). Средства зачислятся на баланс в USD по текущей логике сервиса.</p>
+        </div>
+
+        <div class="payment-section">
+            <h3><i class="fas fa-credit-card"></i> Оплата картой (Stripe)</h3>
+            <form id="stripeDepositForm" class="payment-form">
+                <div class="form-group">
+                    <label for="stripeAmount">Сумма (USD)</label>
+                    <input type="number" id="stripeAmount" required min="1" step="0.01" placeholder="Сумма">
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-credit-card"></i> Оплатить картой
+                </button>
+            </form>
+            <div id="stripeMessage" class="form-message"></div>
+        </div>
+
+        <div class="payment-section">
+            <h3><i class="fab fa-bitcoin"></i> Оплата криптовалютой</h3>
+            <div class="balance-display">
+                <div class="balance-label">Текущий баланс</div>
+                <div class="balance-amount" id="currentBalance">—</div>
+                <div class="balance-currency" id="balanceCurrency">USD</div>
+            </div>
+            <form id="cryptoDepositForm" class="payment-form">
+                <div class="form-group">
+                    <label for="cryptoAmount">Сумма (USD)</label>
+                    <input type="number" id="cryptoAmount" required min="5" step="0.01" placeholder="Минимум 5 USD">
+                </div>
+                <div class="form-group">
+                    <label for="cryptoCurrency">Криптовалюта</label>
+                    <select id="cryptoCurrency">
+                        <option value="USDT">USDT (TRC20)</option>
+                        <option value="USDC">USDC</option>
+                        <option value="BTC">Bitcoin</option>
+                        <option value="ETH">Ethereum</option>
+                        <option value="TON">TON</option>
+                        <option value="LTC">Litecoin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-rocket"></i> Создать платёж
+                </button>
+            </form>
+            <div id="cryptoMessage" class="form-message"></div>
+        </div>
+    </main>
+
+    <div id="stripePaymentModal" class="modal">
+        <div class="modal-content">
+            <button type="button" onclick="closeStripeModal()" class="modal-close">✖</button>
+            <h3>Оплата картой</h3>
+            <div class="modal-body">
+                <div class="modal-amount">
+                    <span>Сумма:</span>
+                    <strong id="stripeModalAmount">0 USD</strong>
+                </div>
+                <input type="hidden" id="stripe-client-secret">
+                <div class="form-group">
+                    <label>Имя держателя карты</label>
+                    <input type="text" id="stripe-card-holder" placeholder="John Doe">
+                </div>
+                <div id="stripe-card-element" class="card-element"></div>
+                <button id="stripe-submit-btn" type="button" onclick="confirmStripePayment()" class="btn btn-primary">Оплатить</button>
+                <div id="stripe-message" class="form-message"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cryptoPaymentModal" class="modal">
+        <div class="modal-content">
+            <button type="button" onclick="closeCryptoModal()" class="modal-close">✖</button>
+            <h3>Оплата криптовалютой</h3>
+            <div class="modal-body">
+                <div class="crypto-amount">
+                    <span>Сумма к оплате:</span>
+                    <strong id="cryptoPaymentAmount">0 USDT</strong>
+                </div>
+                <div class="crypto-address">
+                    <span>Адрес кошелька:</span>
+                    <div class="address-box">
+                        <code id="cryptoPaymentAddress">-</code>
+                        <button type="button" onclick="copyCryptoAddress()" class="btn-copy">📋</button>
+                    </div>
+                </div>
+                <div class="crypto-wait">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span>Ожидание платежа…<br>Не закрывайте окно до подтверждения</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/auth-check.js?v=7"></script>
+    <script src="/js/stripe-ui.js?v=2"></script>
+    <script src="/js/stripe-dashboard.js?v=1"></script>
+    <script src="/js/payment-ui.js?v=2"></script>
+    <script src="/js/checkout-pack.js?v=1"></script>
+</body>
+</html>

@@ -4,129 +4,479 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Тарифы — VoiceFlow</title>
-    <link rel="stylesheet" href="/css/landing.css">
+    <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060B18'/%3E%3Crect x='10' y='24' width='5' height='18' rx='2.5' fill='%232EC7FF'/%3E%3Crect x='19' y='19' width='6' height='28' rx='3' fill='%2346B2FF'/%3E%3Crect x='30' y='12' width='7' height='40' rx='3.5' fill='%236F84FF'/%3E%3Crect x='42' y='19' width='6' height='28' rx='3' fill='%238A66FF'/%3E%3Crect x='51' y='24' width='5' height='18' rx='2.5' fill='%23A64DFF'/%3E%3Ccircle cx='21.5' cy='32' r='1.7' fill='%2346B2FF'/%3E%3Ccircle cx='45.5' cy='32' r='1.7' fill='%238A66FF'/%3E%3C/svg%3E">
+    <link rel="shortcut icon" href="/favicon.svg?v=3">
+    <link rel="apple-touch-icon" href="/favicon.svg?v=3">
+    <meta name="description" content="Тарифы VoiceFlow: пакеты 1 час и 20 часов — Basic, Pro и Ultimate.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/landing.css?v=27">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <!-- Навигация -->
+<body class="pricing-page" data-site-title-key="pricing.metaTitle" data-site-desc-key="pricing.metaDesc">
     <nav class="navbar">
-        <a href="/" class="logo">
-            <i class="fas fa-microphone"></i> VoiceFlow
-        </a>
-        <ul class="nav-links">
-            <li><a href="/">Главная</a></li>
-            <li><a href="/index.html#features">Возможности</a></li>
-            <li><a href="/technology.html">Технологии</a></li>
-            <li><a href="/pricing.html">Тарифы</a></li>
-            <li><a href="/faq.html">FAQ</a></li>
-        </ul>
-        <div class="nav-buttons">
-            <a href="/dashboard.html" class="btn btn-outline">
-                <i class="fas fa-sign-in-alt"></i> Войти
+        <div class="navbar-inner">
+            <a href="/" class="logo">
+                <svg class="logo-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="navMarkGradPricing" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2EC7FF"/>
+                            <stop offset="100%" stop-color="#A64DFF"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="3.5" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#navMarkGradPricing)"/>
+                    <rect x="9.5" y="10" width="4" height="20" rx="2" fill="url(#navMarkGradPricing)"/>
+                    <rect x="16.5" y="5.5" width="4.5" height="29" rx="2.25" fill="url(#navMarkGradPricing)"/>
+                    <rect x="24.5" y="10" width="4" height="20" rx="2" fill="url(#navMarkGradPricing)"/>
+                    <rect x="31" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#navMarkGradPricing)"/>
+                    <circle cx="10.8" cy="20" r="1.1" fill="url(#navMarkGradPricing)"/>
+                    <circle cx="25.9" cy="20" r="1.1" fill="url(#navMarkGradPricing)"/>
+                </svg>
+                <span class="logo-text">
+                    <span class="logo-text-voice">Voice</span><span class="logo-text-flow">Flow</span>
+                </span>
             </a>
-            <a href="/dashboard.html?register=1" class="btn btn-primary">
-                <i class="fas fa-user-plus"></i> Регистрация
-            </a>
+            <ul class="nav-links">
+                <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
+                <li><a href="/features.html" data-site-i18n="nav.features">Возможности</a></li>
+                <li><a href="/technology.html" data-site-i18n="nav.tech">Технологии</a></li>
+                <li><a href="/pricing.html" data-site-i18n="nav.pricing">Тарифы</a></li>
+                <li><a href="/faq.html" data-site-i18n="nav.faq">FAQ</a></li>
+                <li><a href="/contacts.html" data-site-i18n="footer.contact">Контакты</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="nav-lang-wrap">
+                    <span class="nav-lang-sr" id="siteLangSelectLabel" data-site-i18n="nav.lang_label">Язык интерфейса</span>
+                    <div class="nav-lang-pill">
+                        <i class="fas fa-globe nav-lang-globe" aria-hidden="true"></i>
+                        <select id="siteLangSelect" class="nav-lang-select" aria-labelledby="siteLangSelectLabel">
+                            <option value="ru">RU</option>
+                            <option value="en">EN</option>
+                            <option value="de">DE</option>
+                            <option value="fr">FR</option>
+                            <option value="es">ES</option>
+                        </select>
+                        <i class="fas fa-chevron-down nav-lang-chevron" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="nav-buttons" id="navButtons">
+                    <a href="/dashboard.html" class="btn btn-outline">
+                        <span data-site-i18n="auth.login">Войти</span>
+                    </a>
+                    <a href="/dashboard.html?register=1" class="btn btn-primary">
+                        <span data-site-i18n="auth.register">Регистрация</span>
+                    </a>
+                </div>
+            </div>
         </div>
     </nav>
 
-    <!-- Header -->
-    <header class="page-header">
-        <h1><i class="fas fa-money-bill-wave"></i> Тарифные планы</h1>
-        <p>Выберите план, который подходит именно вам</p>
-    </header>
+    <section class="pricing-hero" aria-labelledby="pricingHeroTitle">
+        <div class="pricing-hero-inner">
+            <h1 id="pricingHeroTitle" class="pricing-hero-title">
+                <span class="pricing-hero-title-plain" data-site-i18n="pricing.header.title_dark">Тарифные</span><span class="pricing-hero-title-gap"> </span><span class="pricing-hero-title-accent" data-site-i18n="pricing.header.title_accent">планы</span>
+            </h1>
+            <p class="pricing-hero-sub">
+                <span class="pricing-hero-sub-line" data-site-i18n="pricing.header.sub_l1">Выберите план,</span>
+                <span class="pricing-hero-sub-line" data-site-i18n="pricing.header.sub_l2">который подходит именно вам</span>
+            </p>
+        </div>
+    </section>
 
-    <!-- Pricing Section -->
     <section class="pricing-section">
-        <div class="pricing-grid">
-            <!-- Free -->
-            <div class="pricing-card">
-                <h3 class="plan-name">Free</h3>
-                <div class="plan-price">$0</div>
-                <div class="plan-period">навсегда</div>
-                <ul class="plan-features">
-                    <li>60 минут перевода / мес</li>
-                    <li>5 голосов</li>
-                    <li>Базовые языки</li>
-                    <li class="disabled">Премиум голоса</li>
-                    <li class="disabled">Приоритетная поддержка</li>
-                    <li class="disabled">API доступ</li>
-                </ul>
-                <a href="/dashboard.html?register=1" class="btn btn-outline">Начать бесплатно</a>
-            </div>
+        <div class="pricing-section-inner">
+            <div class="pricing-plan-grid">
+                <article class="pricing-plan-card pricing-plan-card-free" data-pricing-pack="p1b" data-pricing-unit="6.99">
+                    <div class="pricing-plan-head">
+                        <h2 class="pricing-plan-name" data-site-i18n="pricing.p1b.name">1 час — Basic</h2>
+                        <div class="pricing-plan-icon" aria-hidden="true"><i class="fas fa-clock"></i></div>
+                    </div>
+                    <div class="pricing-plan-price-block">
+                        <span class="pricing-plan-price">$6.99</span>
+                        <span class="pricing-plan-period" data-site-i18n="pricing.pack_period">за пакет</span>
+                    </div>
+                    <ul class="pricing-plan-features">
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.60m">60 минут беседы</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.voices322">Возможность использования 322 голосов в качестве своей озвучки</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.phraseHelper">Помощник построения фразы</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.partnerTranslate">Перевод собеседника</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.editBeforeSpeak">Возможность редактирования своей фразы до озвучивания</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.history">История диалога</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.transparentWeb">Возможность прозрачного экрана в веб-версии</span></li>
+                    </ul>
+                    <div class="pricing-plan-footer">
+                        <div class="pricing-qty-row">
+                            <span class="pricing-qty-label" data-site-i18n="pricing.qty.short_label">Кол-во</span>
+                            <div class="pricing-qty-controls">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="-1" aria-label="Меньше">−</button>
+                                <input type="number" class="pricing-qty-input" min="1" max="99" value="1" inputmode="numeric" aria-label="Количество пакетов">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="1" aria-label="Больше">+</button>
+                            </div>
+                        </div>
+                        <div class="pricing-plan-total-row">
+                            <span data-site-i18n="pricing.qty.total">Итого</span>
+                            <strong class="pricing-plan-total-value">$6.99</strong>
+                        </div>
+                        <a href="/checkout.html?pack=p1b&amp;qty=1" class="btn btn-pricing-free pricing-checkout-btn" data-site-i18n="pricing.pack.btn">Оформить</a>
+                    </div>
+                </article>
 
-            <!-- Pro -->
-            <div class="pricing-card popular">
-                <h3 class="plan-name">Pro</h3>
-                <div class="plan-price">$19.99</div>
-                <div class="plan-period">в месяц</div>
-                <ul class="plan-features">
-                    <li>500 минут перевода / мес</li>
-                    <li>50 голосов</li>
-                    <li>Все языки</li>
-                    <li>Премиум голоса</li>
-                    <li>Приоритетная поддержка</li>
-                    <li>API доступ</li>
-                </ul>
-                <a href="/dashboard.html" class="btn btn-primary">Выбрать Pro</a>
-            </div>
+                <article class="pricing-plan-card pricing-plan-card-pro is-popular" data-pricing-pack="p1p" data-pricing-unit="8.99">
+                    <span class="pricing-plan-badge" data-site-i18n="pricing.badge_popular">POPULAR</span>
+                    <div class="pricing-plan-head">
+                        <h2 class="pricing-plan-name" data-site-i18n="pricing.p1p.name">1 час — Pro</h2>
+                        <div class="pricing-plan-icon" aria-hidden="true"><i class="fas fa-bolt"></i></div>
+                    </div>
+                    <div class="pricing-plan-price-block">
+                        <span class="pricing-plan-price">$8.99</span>
+                        <span class="pricing-plan-period" data-site-i18n="pricing.pack_period">за пакет</span>
+                    </div>
+                    <ul class="pricing-plan-features">
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.sameAsBasic">Те же возможности, что и в Basic</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.aiLive">AI подсказки во время диалога</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.aiScreen">AI подсказки отображения на экране в веб-версии</span></li>
+                    </ul>
+                    <div class="pricing-plan-footer">
+                        <div class="pricing-qty-row">
+                            <span class="pricing-qty-label" data-site-i18n="pricing.qty.short_label">Кол-во</span>
+                            <div class="pricing-qty-controls">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="-1" aria-label="Меньше">−</button>
+                                <input type="number" class="pricing-qty-input" min="1" max="99" value="1" inputmode="numeric" aria-label="Количество пакетов">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="1" aria-label="Больше">+</button>
+                            </div>
+                        </div>
+                        <div class="pricing-plan-total-row">
+                            <span data-site-i18n="pricing.qty.total">Итого</span>
+                            <strong class="pricing-plan-total-value">$8.99</strong>
+                        </div>
+                        <a href="/checkout.html?pack=p1p&amp;qty=1" class="btn btn-pricing-pro pricing-checkout-btn" data-site-i18n="pricing.pack.btn">Оформить</a>
+                    </div>
+                </article>
 
-            <!-- Team -->
-            <div class="pricing-card">
-                <h3 class="plan-name">Team</h3>
-                <div class="plan-price">$49.99</div>
-                <div class="plan-period">в месяц</div>
-                <ul class="plan-features">
-                    <li>Безлимитные минуты</li>
-                    <li>322+ голоса</li>
-                    <li>Все языки</li>
-                    <li>Все премиум функции</li>
-                    <li>Персональный менеджер</li>
-                    <li>API доступ + аналитика</li>
-                </ul>
-                <a href="/dashboard.html" class="btn btn-outline">Выбрать Team</a>
+                <article class="pricing-plan-card pricing-plan-card-ultimate" data-pricing-pack="p1u" data-pricing-unit="11.99">
+                    <div class="pricing-plan-head">
+                        <h2 class="pricing-plan-name" data-site-i18n="pricing.p1u.name">1 час — Ultimate</h2>
+                        <div class="pricing-plan-icon" aria-hidden="true"><i class="fas fa-crown"></i></div>
+                    </div>
+                    <div class="pricing-plan-price-block">
+                        <span class="pricing-plan-price">$11.99</span>
+                        <span class="pricing-plan-period" data-site-i18n="pricing.pack_period">за пакет</span>
+                    </div>
+                    <ul class="pricing-plan-features">
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.sameAsBasicPro">Те же возможности, что и в Basic и Pro</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.cloneVoice">Возможность клонирования своего голоса</span></li>
+                    </ul>
+                    <div class="pricing-plan-footer">
+                        <div class="pricing-qty-row">
+                            <span class="pricing-qty-label" data-site-i18n="pricing.qty.short_label">Кол-во</span>
+                            <div class="pricing-qty-controls">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="-1" aria-label="Меньше">−</button>
+                                <input type="number" class="pricing-qty-input" min="1" max="99" value="1" inputmode="numeric" aria-label="Количество пакетов">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="1" aria-label="Больше">+</button>
+                            </div>
+                        </div>
+                        <div class="pricing-plan-total-row">
+                            <span data-site-i18n="pricing.qty.total">Итого</span>
+                            <strong class="pricing-plan-total-value">$11.99</strong>
+                        </div>
+                        <a href="/checkout.html?pack=p1u&amp;qty=1" class="btn btn-pricing-ultimate pricing-checkout-btn" data-site-i18n="pricing.pack.btn">Оформить</a>
+                    </div>
+                </article>
+
+                <article class="pricing-plan-card pricing-plan-card-free" data-pricing-pack="p20b" data-pricing-unit="99.99">
+                    <div class="pricing-plan-head">
+                        <h2 class="pricing-plan-name" data-site-i18n="pricing.p20b.name">20 часов — Basic</h2>
+                        <div class="pricing-plan-icon" aria-hidden="true"><i class="fas fa-layer-group"></i></div>
+                    </div>
+                    <div class="pricing-plan-price-block">
+                        <span class="pricing-plan-price">$99.99</span>
+                        <span class="pricing-plan-period" data-site-i18n="pricing.pack_period">за пакет</span>
+                    </div>
+                    <ul class="pricing-plan-features">
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.20h">20 часов беседы (1200 минут)</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.voices322">Возможность использования 322 голосов в качестве своей озвучки</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.phraseHelper">Помощник построения фразы</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.partnerTranslate">Перевод собеседника</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.editBeforeSpeak">Возможность редактирования своей фразы до озвучивания</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.history">История диалога</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.core.transparentWeb">Возможность прозрачного экрана в веб-версии</span></li>
+                    </ul>
+                    <div class="pricing-plan-footer">
+                        <div class="pricing-qty-row">
+                            <span class="pricing-qty-label" data-site-i18n="pricing.qty.short_label">Кол-во</span>
+                            <div class="pricing-qty-controls">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="-1" aria-label="Меньше">−</button>
+                                <input type="number" class="pricing-qty-input" min="1" max="99" value="1" inputmode="numeric" aria-label="Количество пакетов">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="1" aria-label="Больше">+</button>
+                            </div>
+                        </div>
+                        <div class="pricing-plan-total-row">
+                            <span data-site-i18n="pricing.qty.total">Итого</span>
+                            <strong class="pricing-plan-total-value">$99.99</strong>
+                        </div>
+                        <a href="/checkout.html?pack=p20b&amp;qty=1" class="btn btn-pricing-free pricing-checkout-btn" data-site-i18n="pricing.pack.btn">Оформить</a>
+                    </div>
+                </article>
+
+                <article class="pricing-plan-card pricing-plan-card-pro" data-pricing-pack="p20p" data-pricing-unit="149.99">
+                    <div class="pricing-plan-head">
+                        <h2 class="pricing-plan-name" data-site-i18n="pricing.p20p.name">20 часов — Pro</h2>
+                        <div class="pricing-plan-icon" aria-hidden="true"><i class="fas fa-bolt"></i></div>
+                    </div>
+                    <div class="pricing-plan-price-block">
+                        <span class="pricing-plan-price">$149.99</span>
+                        <span class="pricing-plan-period" data-site-i18n="pricing.pack_period">за пакет</span>
+                    </div>
+                    <ul class="pricing-plan-features">
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.sameAs20Basic">Те же возможности, что в пакете 20 часов Basic</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.aiLive">AI подсказки во время диалога</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.aiScreen">AI подсказки отображения на экране в веб-версии</span></li>
+                    </ul>
+                    <div class="pricing-plan-footer">
+                        <div class="pricing-qty-row">
+                            <span class="pricing-qty-label" data-site-i18n="pricing.qty.short_label">Кол-во</span>
+                            <div class="pricing-qty-controls">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="-1" aria-label="Меньше">−</button>
+                                <input type="number" class="pricing-qty-input" min="1" max="99" value="1" inputmode="numeric" aria-label="Количество пакетов">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="1" aria-label="Больше">+</button>
+                            </div>
+                        </div>
+                        <div class="pricing-plan-total-row">
+                            <span data-site-i18n="pricing.qty.total">Итого</span>
+                            <strong class="pricing-plan-total-value">$149.99</strong>
+                        </div>
+                        <a href="/checkout.html?pack=p20p&amp;qty=1" class="btn btn-pricing-pro pricing-checkout-btn" data-site-i18n="pricing.pack.btn">Оформить</a>
+                    </div>
+                </article>
+
+                <article class="pricing-plan-card pricing-plan-card-ultimate" data-pricing-pack="p20u" data-pricing-unit="199.99">
+                    <div class="pricing-plan-head">
+                        <h2 class="pricing-plan-name" data-site-i18n="pricing.p20u.name">20 часов — Ultimate</h2>
+                        <div class="pricing-plan-icon" aria-hidden="true"><i class="fas fa-crown"></i></div>
+                    </div>
+                    <div class="pricing-plan-price-block">
+                        <span class="pricing-plan-price">$199.99</span>
+                        <span class="pricing-plan-period" data-site-i18n="pricing.pack_period">за пакет</span>
+                    </div>
+                    <ul class="pricing-plan-features">
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.sameAsBasicPro">Те же возможности, что и в Basic и Pro</span></li>
+                        <li class="pricing-plan-feature"><span class="pricing-plan-feature-mark is-on" aria-hidden="true"><i class="fas fa-check"></i></span><span data-site-i18n="pricing.plus.cloneVoice">Возможность клонирования своего голоса</span></li>
+                    </ul>
+                    <div class="pricing-plan-footer">
+                        <div class="pricing-qty-row">
+                            <span class="pricing-qty-label" data-site-i18n="pricing.qty.short_label">Кол-во</span>
+                            <div class="pricing-qty-controls">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="-1" aria-label="Меньше">−</button>
+                                <input type="number" class="pricing-qty-input" min="1" max="99" value="1" inputmode="numeric" aria-label="Количество пакетов">
+                                <button type="button" class="pricing-qty-btn" data-qty-step="1" aria-label="Больше">+</button>
+                            </div>
+                        </div>
+                        <div class="pricing-plan-total-row">
+                            <span data-site-i18n="pricing.qty.total">Итого</span>
+                            <strong class="pricing-plan-total-value">$199.99</strong>
+                        </div>
+                        <a href="/checkout.html?pack=p20u&amp;qty=1" class="btn btn-pricing-ultimate pricing-checkout-btn" data-site-i18n="pricing.pack.btn">Оформить</a>
+                    </div>
+                </article>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
+    <section class="pricing-section pricing-section-stats">
+        <div class="pricing-section-inner">
+            <div class="pricing-stats-strip" role="list">
+                <div class="pricing-stat" role="listitem">
+                    <div class="pricing-stat-badge" aria-hidden="true">
+                        <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="pricingStatsMicGrad" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+                                    <stop offset="0%" stop-color="#C084FC"/>
+                                    <stop offset="50%" stop-color="#A855F7"/>
+                                    <stop offset="100%" stop-color="#7C3AED"/>
+                                </linearGradient>
+                            </defs>
+                            <rect x="45" y="25" width="30" height="45" rx="15" fill="url(#pricingStatsMicGrad)"/>
+                            <rect x="45" y="47" width="30" height="4" rx="2" fill="#E9D5FF"/>
+                            <path d="M35 60C35 75 45 85 60 85C75 85 85 75 85 60" stroke="url(#pricingStatsMicGrad)" stroke-width="6" fill="none" stroke-linecap="round"/>
+                            <rect x="57" y="85" width="6" height="12" rx="3" fill="url(#pricingStatsMicGrad)"/>
+                            <rect x="45" y="97" width="30" height="6" rx="3" fill="url(#pricingStatsMicGrad)"/>
+                        </svg>
+                    </div>
+                    <div class="pricing-stat-copy">
+                        <div class="pricing-stat-number">322+</div>
+                        <div class="pricing-stat-label" data-site-i18n="index.stat.voices">Голосов</div>
+                    </div>
+                </div>
+                <div class="pricing-stat" role="listitem">
+                    <div class="pricing-stat-badge" aria-hidden="true">
+                        <svg class="stat-inline-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                            <circle cx="16" cy="16" r="10.5" stroke="currentColor" stroke-width="2" fill="none"/>
+                            <ellipse cx="16" cy="16" rx="4.2" ry="10.5" stroke="currentColor" stroke-width="1.75" fill="none"/>
+                            <ellipse cx="16" cy="16" rx="10.5" ry="4.2" stroke="currentColor" stroke-width="1.75" fill="none"/>
+                            <path d="M5.5 16h21" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="pricing-stat-copy">
+                        <div class="pricing-stat-number">50+</div>
+                        <div class="pricing-stat-label" data-site-i18n="index.stat.langs">Языков</div>
+                    </div>
+                </div>
+                <div class="pricing-stat" role="listitem">
+                    <div class="pricing-stat-badge" aria-hidden="true">
+                        <svg class="stat-inline-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" aria-hidden="true">
+                            <g fill="currentColor">
+                                <path d="M242.633,394.779c-79.31,0-143.826-64.529-143.826-143.825c0-79.324,64.516-143.839,143.826-143.839c79.311,0,143.84,64.516,143.84,143.839c0,29.977-9.234,57.833-24.99,80.9l28.646,27.597c22.28-30.41,35.448-67.916,35.448-108.504c0-101.514-82.294-183.808-183.808-183.808c-101.514,0-183.808,82.293-183.808,183.808c0,101.514,82.293,183.807,183.808,183.807c47.778,0,91.294-18.231,123.981-48.113l-30.852-25.456C309.905,382.137,277.721,394.779,242.633,394.779z"/>
+                                <path d="M332.242,303.686c9.103-15.467,14.33-33.488,14.33-52.731c0-57.522-46.625-104.147-104.133-104.147c-57.522,0-104.148,46.625-104.148,104.147c0,57.508,46.626,104.134,104.148,104.134c22.818,0,43.923-7.344,61.082-19.793l-37.05-30.57c-7.138,3.099-15.006,4.828-23.283,4.828c-32.366,0-58.604-26.236-58.604-58.606c0-32.365,26.239-58.604,58.604-58.604c32.362,0,58.604,26.239,58.604,58.604c0,7.029-1.265,13.755-3.537,19.997L332.242,303.686z"/>
+                                <path d="M453.709,405.172l-32.604-31.611c0.373-0.549-2.334-1.516-4.999-1.607l-26.233,3.906l-1.658-1.587L283.391,273.285l0.241-0.271c0.672-0.753,0.605-1.907-0.147-2.579l-0.027-0.024c-0.753-0.672-1.908-0.606-2.579,0.147l-0.268,0.3c-3.884-2.614-8.93-2.601-12.778-0.096l-24.926-19.23c-0.212-0.164-0.641,0-0.971,0.369l-0.012,0.014c-0.33,0.37-0.443,0.814-0.256,1.007l21.991,22.62c-1.913,4.063-1.309,8.956,1.672,12.448l-0.268,0.301c-0.672,0.753-0.605,1.908,0.147,2.579l0.027,0.024c0.753,0.672,1.907,0.605,2.579-0.147l0.242-0.271l112.276,92.641l4.202,3.468l-2.535-2.091l-0.878,26.063c-0.071,2.126,0.852,4.164,2.497,5.513l34.828,28.551c0.689,0.564,1.723,0.069,1.715-0.821l-0.261-28.027l13.403,11.062c0.666,0.552,1.501,0.788,2.313,0.725c0.501-0.038,0.986-0.204,1.427-0.47c0.096-0.057,0.194-0.105,0.284-0.174c0.03-0.023,0.056-0.055,0.085-0.078c0.133-0.107,0.264-0.219,0.381-0.35l0.006-0.006c0-0.001,0.001-0.001,0.002-0.002l0.041-0.047c0.001-0.001,0.001-0.001,0.001-0.001l0.007-0.007c0.244-0.274,0.422-0.586,0.557-0.91c0.023-0.057,0.058-0.111,0.078-0.17c0.002-0.006,0.002-0.014,0.005-0.02c0.132-0.383,0.191-0.785,0.176-1.184c-0.028-0.814-0.358-1.618-0.983-2.219l-8.428-8.109l-4.006-3.859l27.816-2.928C453.981,406.929,454.367,405.811,453.709,405.172z"/>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="pricing-stat-copy">
+                        <div class="pricing-stat-number">98%</div>
+                        <div class="pricing-stat-label" data-site-i18n="index.stat.acc">Точность</div>
+                    </div>
+                </div>
+                <div class="pricing-stat" role="listitem">
+                    <div class="pricing-stat-badge" aria-hidden="true">
+                        <svg class="stat-inline-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M10.6456 18.6327L11.3278 16.1316C11.4069 15.8415 11.4464 15.6965 11.3714 15.5983C11.2963 15.5 11.146 15.5 10.8454 15.5H8.90212C8.50324 15.5 8.30379 15.5 8.2324 15.3712C8.16101 15.2424 8.26671 15.0733 8.47812 14.735L10.0219 12.265C10.2333 11.9267 10.339 11.7576 10.2676 11.6288C10.1962 11.5 9.99676 11.5 9.59788 11.5H7.19371C6.87716 11.5 6.71888 11.5 6.64405 11.3962C6.56921 11.2924 6.61927 11.1422 6.71937 10.8419L9.38604 2.84189C9.44104 2.67688 9.46854 2.59438 9.53401 2.54719C9.59948 2.5 9.68645 2.5 9.86038 2.5H15.6169C16.0084 2.5 16.2042 2.5 16.276 2.62683C16.3478 2.75365 16.2471 2.92152 16.0457 3.25725L13.9543 6.74275C13.7529 7.07848 13.6522 7.24635 13.724 7.37317C13.7958 7.5 13.9916 7.5 14.3831 7.5H15.5C15.9363 7.5 16.1545 7.5 16.2236 7.6382C16.2927 7.77639 16.1618 7.95093 15.9 8.3L14.1 10.7C13.8382 11.0491 13.7073 11.2236 13.7764 11.3618C13.8455 11.5 14.0637 11.5 14.5 11.5H16.4682C16.9166 11.5 17.1408 11.5 17.2091 11.641C17.2774 11.782 17.1385 11.9579 16.8607 12.3098L11.5204 19.0741C10.9293 19.8229 10.6337 20.1973 10.4514 20.1053C10.2691 20.0134 10.3946 19.5531 10.6456 18.6327Z" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M19.5 4L18 6H20L18.5 8" stroke="currentColor" stroke-opacity="0.24" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M6.5 16L5 18H7L5.5 20" stroke="currentColor" stroke-opacity="0.24" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <div class="pricing-stat-copy">
+                        <div class="pricing-stat-number">0.5s</div>
+                        <div class="pricing-stat-label" data-site-i18n="index.stat.latency">Задержка</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>🎙️ VoiceFlow</h4>
-                <p style="color: var(--text-secondary);">Голосовой переводчик нового поколения на базе искусственного интеллекта.</p>
+                <h4><span data-site-i18n="footer.brand">VoiceFlow</span></h4>
+                <p style="color: var(--text-secondary);" data-site-i18n="footer.tagline">Голосовой переводчик нового поколения на базе искусственного интеллекта.</p>
             </div>
             <div class="footer-section">
-                <h4>Продукт</h4>
+                <h4 data-site-i18n="footer.product">Продукт</h4>
                 <ul>
-                    <li><a href="/index.html#features">Возможности</a></li>
-                    <li><a href="/technology.html">Технологии</a></li>
-                    <li><a href="/pricing.html">Тарифы</a></li>
-                    <li><a href="/dashboard.html">Личный кабинет</a></li>
+                    <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
+                    <li><a href="/features.html" data-site-i18n="nav.features">Возможности</a></li>
+                    <li><a href="/technology.html" data-site-i18n="nav.tech">Технологии</a></li>
+                    <li><a href="/pricing.html" data-site-i18n="nav.pricing">Тарифы</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Поддержка</h4>
+                <h4 data-site-i18n="footer.support">Поддержка</h4>
                 <ul>
-                    <li><a href="/faq.html">FAQ</a></li>
+                    <li><a href="/faq.html" data-site-i18n="nav.faq">FAQ</a></li>
+                    <li><a href="/contacts.html" data-site-i18n="footer.contact">Контакты</a></li>
                     <li><a href="mailto:support@voiceflow.com">support@voiceflow.com</a></li>
-                    <li><a href="#">Документация API</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Компания</h4>
+                <h4 data-site-i18n="footer.company">Компания</h4>
                 <ul>
-                    <li><a href="#">О нас</a></li>
-                    <li><a href="#">Блог</a></li>
-                    <li><a href="#">Контакты</a></li>
+                    <li><a href="/dashboard.html" data-site-i18n="auth.cabinet">Личный кабинет</a></li>
+                    <li><a href="/trial-setup.html">Демо-настройка</a></li>
+                    <li><a href="/trial-chat.html">Демо-чат</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 VoiceFlow. Все права защищены.</p>
+            <p data-site-i18n="footer.copy">&copy; 2026 VoiceFlow. Все права защищены.</p>
         </div>
     </footer>
 
-    <script src="/js/auth-check.js"></script>
+    <script src="/js/site-lang.js?v=5"></script>
+    <script src="/js/auth-check.js?v=5"></script>
+    <script src="/js/nav-active.js"></script>
+    <script>
+    (function () {
+      'use strict';
+      var MIN = 1;
+      var MAX = 99;
+
+      function money(n) {
+        return '$' + n.toFixed(2);
+      }
+
+      function syncCard(card) {
+        var unit = Number(card.getAttribute('data-pricing-unit'));
+        if (!Number.isFinite(unit)) unit = 0;
+        var pack = card.getAttribute('data-pricing-pack') || '';
+        var inp = card.querySelector('.pricing-qty-input');
+        var totalEl = card.querySelector('.pricing-plan-total-value');
+        var link = card.querySelector('.pricing-checkout-btn');
+        var dec = card.querySelector('.pricing-qty-btn[data-qty-step="-1"]');
+        var inc = card.querySelector('.pricing-qty-btn[data-qty-step="1"]');
+        if (!inp || !totalEl || !link) return;
+
+        var raw = parseInt(String(inp.value).replace(/\D/g, ''), 10);
+        var q = Number.isFinite(raw) ? raw : MIN;
+        q = Math.max(MIN, Math.min(MAX, q));
+        inp.value = String(q);
+
+        totalEl.textContent = money(unit * q);
+        link.setAttribute('href', '/checkout.html?pack=' + encodeURIComponent(pack) + '&qty=' + encodeURIComponent(String(q)));
+        if (dec) dec.disabled = q <= MIN;
+        if (inc) inc.disabled = q >= MAX;
+      }
+
+      function bindCard(card) {
+        var inp = card.querySelector('.pricing-qty-input');
+        var dec = card.querySelector('.pricing-qty-btn[data-qty-step="-1"]');
+        var inc = card.querySelector('.pricing-qty-btn[data-qty-step="1"]');
+        if (!inp) return;
+
+        if (dec) {
+          dec.addEventListener('click', function () {
+            var q = (parseInt(inp.value, 10) || MIN) - 1;
+            inp.value = String(Math.max(MIN, q));
+            syncCard(card);
+          });
+        }
+        if (inc) {
+          inc.addEventListener('click', function () {
+            var q = (parseInt(inp.value, 10) || MIN) + 1;
+            inp.value = String(Math.min(MAX, q));
+            syncCard(card);
+          });
+        }
+        inp.addEventListener('input', function () { syncCard(card); });
+        inp.addEventListener('change', function () { syncCard(card); });
+        syncCard(card);
+      }
+
+      document.querySelectorAll('.pricing-plan-card[data-pricing-pack]').forEach(bindCard);
+
+      function checkoutHrefFromAnchor(a) {
+        var h = a.getAttribute('href');
+        if (!h || h === '#') return '/dashboard.html?register=1';
+        return h;
+      }
+
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest && e.target.closest('a.pricing-checkout-btn');
+        if (!a) return;
+        e.preventDefault();
+        var href = checkoutHrefFromAnchor(a);
+        fetch('/api/auth/me', { credentials: 'include' })
+          .then(function (r) {
+            if (r.ok) {
+              window.location.href = href;
+            } else {
+              window.location.href = '/login.html?redirect=' + encodeURIComponent(href);
+            }
+          })
+          .catch(function () {
+            window.location.href = '/login.html?redirect=' + encodeURIComponent(href);
+          });
+      }, true);
+    })();
+    </script>
 </body>
 </html>
