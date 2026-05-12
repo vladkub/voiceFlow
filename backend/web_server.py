@@ -15,13 +15,22 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any, Tuple
 from contextlib import asynccontextmanager
 
-# 🔥 Загружаем .env файл
+# 🔥 Загружаем .env: сначала корень репозитория, затем backend/ (при запуске из backend cwd не видит ../.env)
 from dotenv import load_dotenv
+_backend_dir = os.path.dirname(os.path.abspath(__file__))
+_repo_root = os.path.abspath(os.path.join(_backend_dir, ".."))
+load_dotenv(os.path.join(_repo_root, ".env"))
+load_dotenv(os.path.join(_backend_dir, ".env"))
 load_dotenv()
 
 # 🔥 Отладка: проверяем что загрузилось
 print(f"🔍 AITUNNEL_API_KEY из env: {os.getenv('AITUNNEL_API_KEY', 'НЕ НАЙДЕН')[:20]}...", flush=True)
 print(f"🔍 AITUNNEL_BASE_URL из env: {os.getenv('AITUNNEL_BASE_URL', 'НЕ НАЙДЕН')}", flush=True)
+_stripe_sk = (os.getenv("STRIPE_SECRET_KEY") or os.getenv("STRIPE_API_KEY") or "").strip()
+print(
+    f"💳 Stripe: {'секретный ключ загружен' if _stripe_sk else 'STRIPE_SECRET_KEY не задан — /api/stripe/create вернёт 503'}",
+    flush=True,
+)
 
 # ================= 🔧 WINDOWS ENCODING FIX =================
 if sys.platform == 'win32':
@@ -2469,9 +2478,15 @@ async def api_stripe_create_payment(request: Request, body: StripeCreateRequest)
     user_id = get_authorized_user_id(request)
     if body.amount is None or float(body.amount) < 1:
         raise HTTPException(status_code=400, detail="Минимальная сумма: $1")
-    sk = (os.environ.get("STRIPE_SECRET_KEY") or "").strip()
+    sk = (
+        (os.environ.get("STRIPE_SECRET_KEY") or "").strip()
+        or (os.environ.get("STRIPE_API_KEY") or "").strip()
+    )
     if not sk:
-        raise HTTPException(status_code=503, detail="Stripe не настроен: задайте STRIPE_SECRET_KEY на сервере")
+        raise HTTPException(
+            status_code=503,
+            detail="Stripe не настроен: добавьте STRIPE_SECRET_KEY (sk_test_… или sk_live_…) в .env в корне проекта или в backend/.env и перезапустите сервер.",
+        )
     try:
         import stripe as stripe_mod
     except ImportError:

@@ -68,19 +68,24 @@
 
   // Создание платежа
   async function createStripePayment(amount, currency) {
-    try {
-      const response = await fetch('/api/stripe/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({ amount, currency })
-      });
-      
-      return await response.json();
-    } catch (err) {
-      console.error('Stripe payment error:', err);
-      throw err;
+    const response = await fetch('/api/stripe/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ amount, currency })
+    });
+    const data = await response.json().catch(function () { return {}; });
+    if (!response.ok) {
+      const d = data.detail;
+      const msg =
+        typeof d === 'string'
+          ? d
+          : Array.isArray(d)
+            ? d.map(function (x) { return x.msg || x.message || ''; }).filter(Boolean).join(' ')
+            : data.error || ('Ошибка сервера: HTTP ' + response.status);
+      return { success: false, error: msg || ('HTTP ' + response.status) };
     }
+    return data;
   }
 
   // Подтверждение платежа
