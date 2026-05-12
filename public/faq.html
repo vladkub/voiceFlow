@@ -6,10 +6,11 @@
     <title>Технологии — VoiceFlow</title>
     <!-- 🔥 Подключаем общий CSS -->
     <link rel="stylesheet" href="/css/landing.css">
+    <link rel="stylesheet" href="/css/site-navbar.css?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar navbar--legacy">
     <a href="/" class="logo">
         <i class="fas fa-microphone"></i> VoiceFlow
     </a>
@@ -20,7 +21,7 @@
         <li><a href="/pricing.html">Тарифы</a></li>
         <li><a href="/faq.html">FAQ</a></li>
     </ul>
-    <div class="nav-buttons">
+    <div class="nav-buttons" id="navButtons">
         <a href="/dashboard.html" class="btn btn-outline">
             <i class="fas fa-sign-in-alt"></i> Войти
         </a>

@@ -438,3 +438,11 @@ a.nav-user-dropdown-item {
         padding: 0.22rem 0.35rem;
     }
 }
+
+/* technology.html / faq.html — шапка без .navbar-inner (логотип | меню | кнопки) */
+.navbar.navbar--legacy {
+    justify-content: space-between;
+    padding: 0 clamp(0.85rem, 3vw, 2.75rem);
+    max-width: 100%;
+    box-sizing: border-box;
+}
