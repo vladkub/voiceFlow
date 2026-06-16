@@ -11,12 +11,16 @@ ENV/
 *.egg-info/
 dist/
 build/
+!desktop/build/
 
 # 🔥 IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# Contact form fallback (may contain PII)
+data/contact-inbox/*.json
 
 # 🔥 Секреты и ключи
 .env
@@ -63,3 +67,4 @@ temp_backup/
 temp/
 tmp/
 *.tmp
+node_modules

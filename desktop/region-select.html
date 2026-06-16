@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'" />
+  <title>Выделение области</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      cursor: crosshair;
+      user-select: none;
+    }
+    #dim {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.22);
+    }
+    #hint {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: min(720px, 94vw);
+      color: #fff;
+      text-shadow: 0 1px 3px #000;
+      font: 14px system-ui, -apple-system, Segoe UI, sans-serif;
+      padding: 10px 16px;
+      background: rgba(0, 0, 0, 0.62);
+      border-radius: 10px;
+      pointer-events: none;
+      text-align: center;
+      line-height: 1.45;
+    }
+    #rect {
+      position: absolute;
+      border: 2px solid #ef4444;
+      box-sizing: border-box;
+      display: none;
+      pointer-events: none;
+      box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+    }
+  </style>
+</head>
+<body>
+  <div id="dim"></div>
+  <div id="hint">Удерживайте <strong>левый Ctrl</strong> и перетащите мышью, чтобы обвести область красной рамкой. <strong>Esc</strong> — отмена.</div>
+  <div id="rect"></div>
+  <script>
+    (function () {
+      const api = window.regionSelectApi;
+      if (!api || typeof api.complete !== "function") return;
+
+      const rectEl = document.getElementById("rect");
+      let dragging = false;
+      let ax = 0,
+        ay = 0,
+        bx = 0,
+        by = 0;
+
+      function clientFromScreen(sx, sy) {
+        return { x: sx - window.screenX, y: sy - window.screenY };
+      }
+
+      function positionRect() {
+        const x = Math.min(ax, bx);
+        const y = Math.min(ay, by);
+        const w = Math.abs(bx - ax);
+        const h = Math.abs(by - ay);
+        const c = clientFromScreen(x, y);
+        rectEl.style.display = w > 0 && h > 0 ? "block" : "none";
+        rectEl.style.left = c.x + "px";
+        rectEl.style.top = c.y + "px";
+        rectEl.style.width = w + "px";
+        rectEl.style.height = h + "px";
+      }
+
+      window.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape") {
+          ev.preventDefault();
+          api.complete({ cancel: true });
+        }
+      });
+
+      window.addEventListener("pointerdown", function (ev) {
+        if (ev.button !== 0 || !ev.ctrlKey) return;
+        ev.preventDefault();
+        dragging = true;
+        ax = bx = ev.screenX;
+        ay = by = ev.screenY;
+        positionRect();
+      });
+
+      window.addEventListener("pointermove", function (ev) {
+        if (!dragging) return;
+        if (!ev.ctrlKey) {
+          dragging = false;
+          return;
+        }
+        bx = ev.screenX;
+        by = ev.screenY;
+        positionRect();
+      });
+
+      window.addEventListener("pointerup", function (ev) {
+        if (!dragging) return;
+        dragging = false;
+        bx = ev.screenX;
+        by = ev.screenY;
+        const x = Math.min(ax, bx);
+        const y = Math.min(ay, by);
+        const w = Math.abs(bx - ax);
+        const h = Math.abs(by - ay);
+        if (w < 8 || h < 8) {
+          api.complete({ cancel: true });
+          return;
+        }
+        api.complete({ rect: { x: x, y: y, width: w, height: h } });
+      });
+
+      window.addEventListener("pointercancel", function () {
+        if (dragging) {
+          dragging = false;
+          api.complete({ cancel: true });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+name: Build macOS desktop
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+    paths:
+      - 'desktop/**'
+      - '.github/workflows/build-macos-desktop.yml'
+
+jobs:
+  build-dmg:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+
+      - name: Install and build DMG
+        working-directory: desktop
+        run: |
+          npm ci
+          npm run dist:mac
+          npm run publish:mac
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Voice-Translator-dmg
+          path: public/downloads/Voice-Translator.dmg
+          if-no-files-found: error
+
+      - name: Deploy to talkpilot.pro
+        if: ${{ secrets.DEPLOY_SSH_KEY != '' }}
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          install -m 600 -d ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          HOST="${DEPLOY_USER}@${DEPLOY_HOST}"
+          scp -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no \
+            public/downloads/Voice-Translator.dmg \
+            "${HOST}:/var/www/voice-translator-web/public/downloads/Voice-Translator.dmg"

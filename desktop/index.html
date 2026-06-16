@@ -1,0 +1,27 @@
+<!doctype html>
+<!-- Не используется при обычном запуске: main.js открывает тот же URL, что и в браузере (см. chatUrl / loadURL). Оставлен как справочная вёрстка. -->
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoiceFlow Desktop</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=3" />
+  <link rel="shortcut icon" href="./favicon.svg?v=3" />
+  <link rel="apple-touch-icon" href="./favicon.svg?v=3" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">VoiceFlow Desktop</div>
+    <div class="actions">
+      <button id="stealthBtn" class="btn">Прозрачный режим: выкл</button>
+      <button id="openBrowserBtn" class="btn btn-muted">Открыть в браузере</button>
+    </div>
+  </header>
+
+  <iframe id="chatFrame" title="VoiceFlow Chat" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"></iframe>
+
+  <div class="hint">Горячая клавиша: Ctrl+Shift+X — вкл/выкл прозрачный режим</div>
+  <script src="./renderer.js"></script>
+</body>
+</html>

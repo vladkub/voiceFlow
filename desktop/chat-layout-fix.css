@@ -1,0 +1,603 @@
+/* VoiceFlow Desktop — адаптивная сетка настроек (preload, rev 20260519a) */
+
+html.vf-desktop-app .header {
+  flex-shrink: 0 !important;
+}
+
+html.vf-desktop-app .chat-session-settings-wrap {
+  flex-shrink: 0 !important;
+}
+
+html.vf-desktop-app #chatSettingsCollapseBar {
+  flex-shrink: 0 !important;
+}
+
+html.vf-desktop-app .vf-desktop-titlebar,
+html.vf-desktop-app .vf-desktop-titlebar[data-vf-preload="1"] {
+  display: none !important;
+}
+
+.chat-session-settings-wrap {
+
+  min-width: 0 !important;
+
+  width: 100% !important;
+
+  max-width: 100% !important;
+
+  overflow-x: hidden !important;
+
+}
+
+
+
+.chat-session-settings-wrap .header-controls.chat-session-toolbar {
+
+  display: grid !important;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+
+  gap: 0.55rem !important;
+
+  width: 100% !important;
+
+  max-width: 100% !important;
+
+  min-width: 0 !important;
+
+  padding-left: clamp(0.65rem, 2.5vw, 1.25rem) !important;
+
+  padding-right: clamp(0.65rem, 2.5vw, 1.25rem) !important;
+
+  box-sizing: border-box !important;
+
+}
+
+
+
+.chat-session-toolbar > * {
+
+  min-width: 0 !important;
+
+  max-width: 100% !important;
+
+}
+
+
+
+.chat-session-toolbar > .mode-toggle-group,
+
+.chat-session-toolbar > .auto-play-settings-group,
+
+.chat-session-toolbar > .ai-topic-group,
+
+.chat-session-toolbar > .voice-toolbar-cluster,
+
+.chat-session-toolbar > .lang-pair-card,
+
+.chat-session-toolbar > .lang-pair-card.audio-devices-card,
+
+.chat-session-toolbar > .a11y-menu-card,
+
+.chat-session-toolbar > .chat-phrase-pause-bar,
+
+.chat-session-toolbar > .ai-context-menu-card {
+
+  height: auto !important;
+
+  min-height: 122px !important;
+
+  overflow: hidden !important;
+
+}
+
+
+
+.ai-topic-hint-line span,
+
+.auto-play-settings-hint-text,
+
+.mode-diff-note {
+
+  white-space: normal !important;
+
+  overflow: visible !important;
+
+  text-overflow: unset !important;
+
+  line-height: 1.35 !important;
+
+  -webkit-line-clamp: unset !important;
+
+  -webkit-box-orient: unset !important;
+
+  display: block !important;
+
+}
+
+
+
+.desktop-extras-card:not([hidden]) {
+
+  grid-column: 1 / -1 !important;
+
+  width: 100% !important;
+
+  max-width: 100% !important;
+
+}
+
+
+
+.desktop-extras-toggle-slot {
+
+  flex-wrap: wrap !important;
+
+  width: 100% !important;
+
+  min-width: 0 !important;
+
+  max-width: 100% !important;
+
+}
+
+
+
+.desktop-extras-toggle-slot > .footer-toggle-row.auto-play-row {
+
+  min-width: 0 !important;
+
+  max-width: 100% !important;
+
+}
+
+
+
+.lang-pair-row select {
+
+  min-width: 0 !important;
+
+  flex: 1 1 4.5rem !important;
+
+  max-width: 100% !important;
+
+}
+
+
+
+.chat-columns-row {
+
+  padding-left: clamp(0.65rem, 2.5vw, 1.25rem) !important;
+
+  padding-right: clamp(0.65rem, 2.5vw, 1.25rem) !important;
+
+  min-width: 0 !important;
+
+}
+
+
+
+.header-top-row {
+
+  min-width: 0 !important;
+
+  max-width: 100% !important;
+
+}
+
+
+
+html.vf-desktop-app .header {
+
+  overflow: visible !important;
+
+  position: relative !important;
+
+  z-index: 40 !important;
+
+}
+
+
+
+html.vf-desktop-app .header-top-row {
+
+  overflow: visible !important;
+
+  display: grid !important;
+
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, max-content) var(--vf-desktop-win-col-w, 138px) !important;
+
+  grid-template-areas: "hdr-primary hdr-status hdr-actions hdr-win" !important;
+
+  align-items: center !important;
+
+  column-gap: 0.45rem !important;
+
+  row-gap: 0.35rem !important;
+
+  padding: 0.42rem 0 0.42rem 0.6rem !important;
+
+  box-sizing: border-box !important;
+
+}
+
+
+
+html.vf-desktop-app .header-top-left {
+
+  grid-area: hdr-primary !important;
+
+  min-width: 0 !important;
+
+  max-width: 100% !important;
+
+}
+
+
+
+html.vf-desktop-app .header-status-slot {
+
+  grid-area: hdr-status !important;
+
+  min-width: 0 !important;
+
+  max-width: 100% !important;
+
+  justify-content: center !important;
+
+  flex-shrink: 1 !important;
+
+}
+
+
+
+html.vf-desktop-app .header-plan-pill {
+
+  flex-shrink: 1 !important;
+
+  width: auto !important;
+
+  max-width: min(100%, 22rem) !important;
+
+  overflow: hidden !important;
+
+  text-overflow: ellipsis !important;
+
+}
+
+
+
+html.vf-desktop-app .header-plan-name,
+
+html.vf-desktop-app .header-plan-minutes {
+
+  overflow: hidden !important;
+
+  text-overflow: ellipsis !important;
+
+  flex-shrink: 1 !important;
+
+  min-width: 0 !important;
+
+}
+
+
+
+html.vf-desktop-app .header-actions-right {
+
+  grid-area: hdr-actions !important;
+
+  min-width: 0 !important;
+
+  max-width: 100% !important;
+
+  display: flex !important;
+
+  flex-wrap: nowrap !important;
+
+  align-items: center !important;
+
+  justify-content: flex-end !important;
+
+  gap: 0.35rem 0.4rem !important;
+
+}
+
+html.vf-desktop-app .desktop-account-wrap {
+
+  flex-shrink: 1 !important;
+
+  min-width: 0 !important;
+
+  max-width: min(14rem, 32vw) !important;
+
+}
+
+
+
+html.vf-desktop-app .desktop-window-controls {
+
+  grid-area: hdr-win !important;
+
+  position: static !important;
+
+  display: flex !important;
+
+  flex-wrap: nowrap !important;
+
+  align-items: center !important;
+
+  align-self: center !important;
+
+  justify-self: end !important;
+
+  width: var(--vf-desktop-win-col-w, 138px) !important;
+
+  min-width: var(--vf-desktop-win-col-w, 138px) !important;
+
+  max-width: var(--vf-desktop-win-col-w, 138px) !important;
+
+  margin-top: 0 !important;
+
+  margin-right: 1px !important;
+
+  margin-left: 0 !important;
+
+  box-sizing: border-box !important;
+
+  z-index: 20 !important;
+
+}
+
+
+
+html.vf-desktop-app .desktop-win-close {
+
+  border-top-right-radius: 14px !important;
+  font-size: 0 !important;
+  position: relative !important;
+
+}
+
+
+
+html.vf-desktop-app .desktop-win-close:hover {
+
+  border-top-right-radius: 14px !important;
+
+}
+
+html.vf-desktop-app .desktop-win-close::before {
+
+  content: "\00D7" !important;
+  display: inline-block !important;
+  font-size: 1rem !important;
+  line-height: 1 !important;
+  font-weight: 400 !important;
+  transform: translateY(-0.5px) !important;
+
+}
+
+
+
+html.vf-desktop-app .desktop-win-btn {
+
+  width: var(--vf-desktop-win-btn-w, 46px) !important;
+
+  height: var(--vf-desktop-win-btn-h, 36px) !important;
+
+  min-width: var(--vf-desktop-win-btn-w, 46px) !important;
+
+  max-width: var(--vf-desktop-win-btn-w, 46px) !important;
+
+  min-height: var(--vf-desktop-win-btn-h, 36px) !important;
+
+  max-height: var(--vf-desktop-win-btn-h, 36px) !important;
+
+  padding: 0 !important;
+
+  flex: 0 0 var(--vf-desktop-win-btn-w, 46px) !important;
+
+}
+
+
+
+html.vf-desktop-app .desktop-account-trigger {
+
+  max-width: 100% !important;
+
+  width: 100% !important;
+
+}
+
+
+
+html.vf-desktop-app .desktop-account-trigger span {
+
+  overflow: hidden !important;
+
+  text-overflow: ellipsis !important;
+
+  white-space: nowrap !important;
+
+}
+
+
+
+@media (max-width: 1180px) {
+
+  html.vf-desktop-app .header-top-row {
+
+    grid-template-columns: minmax(0, 1fr) var(--vf-desktop-win-col-w, 138px) !important;
+
+    grid-template-areas:
+
+      "hdr-primary hdr-win"
+
+      "hdr-status hdr-win"
+
+      "hdr-actions hdr-win" !important;
+
+  }
+
+  html.vf-desktop-app .header-status-slot {
+
+    justify-content: flex-start !important;
+
+  }
+
+  html.vf-desktop-app .header-actions-right {
+
+    justify-content: flex-start !important;
+
+    flex-wrap: wrap !important;
+
+  }
+
+}
+
+
+
+@media (max-width: 1100px) {
+
+  html.vf-desktop-app .header-plan-pill {
+
+    white-space: normal !important;
+
+    flex-wrap: wrap !important;
+
+  }
+
+}
+
+
+
+@media (max-width: 980px) {
+
+  html.vf-desktop-app .header-brand h1 {
+
+    display: none !important;
+
+  }
+
+  html.vf-desktop-app .header-menu-label {
+
+    display: none !important;
+
+  }
+
+  html.vf-desktop-app .theme-switcher-label {
+
+    display: none !important;
+
+  }
+
+  html.vf-desktop-app .theme-switcher select {
+
+    min-width: 0 !important;
+
+    max-width: 4.75rem !important;
+
+  }
+
+  html.vf-desktop-app .language-switcher span[data-i18n="languageLabel"] {
+
+    display: none !important;
+
+  }
+
+}
+
+
+
+@media (max-width: 860px) {
+
+  html.vf-desktop-app .header-training-btn {
+
+    display: none !important;
+
+  }
+
+}
+
+
+
+/* Узкое окно: 2 → 1 колонка */
+
+@media (max-width: 1180px) {
+
+  .chat-session-settings-wrap .header-controls.chat-session-toolbar {
+
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+
+  }
+
+}
+
+
+
+@media (min-width: 2000px) {
+
+  .chat-session-settings-wrap .header-controls.chat-session-toolbar {
+
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+
+  }
+
+}
+
+
+
+@media (max-width: 900px) {
+
+  .chat-session-settings-wrap .header-controls.chat-session-toolbar {
+
+    grid-template-columns: minmax(0, 1fr) !important;
+
+  }
+
+  .header-status-slot {
+
+    flex: 1 1 100% !important;
+
+    justify-content: flex-start !important;
+
+  }
+
+}
+
+
+
+@media (max-width: 900px) {
+
+  html.vf-desktop-app .footer {
+
+    padding-left: 0.75rem !important;
+
+    padding-right: 0.75rem !important;
+
+  }
+
+  html.vf-desktop-app .footer-main {
+
+    flex: 1 1 100% !important;
+
+    order: 2 !important;
+
+    justify-content: center !important;
+
+  }
+
+  html.vf-desktop-app .footer-right-tools {
+
+    margin-left: 0 !important;
+
+    width: 100% !important;
+
+    justify-content: flex-end !important;
+
+  }
+
+}
+
+
