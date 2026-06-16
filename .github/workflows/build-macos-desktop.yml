@@ -11,6 +11,8 @@ on:
 jobs:
   build-dmg:
     runs-on: macos-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -33,6 +35,16 @@ jobs:
           name: Voice-Translator-dmg
           path: public/downloads/Voice-Translator.dmg
           if-no-files-found: error
+
+      - name: Publish public GitHub Release (direct download URL)
+        uses: ncipollo/release-action@v1
+        with:
+          tag: desktop-macos-latest
+          name: TalkPilot macOS (latest)
+          allowUpdates: true
+          replacesArtifacts: true
+          artifacts: public/downloads/Voice-Translator.dmg
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Deploy to talkpilot.pro
         env:
