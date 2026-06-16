@@ -35,12 +35,15 @@ jobs:
           if-no-files-found: error
 
       - name: Deploy to talkpilot.pro
-        if: ${{ secrets.DEPLOY_SSH_KEY != '' }}
         env:
           DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
         run: |
+          if [ -z "${DEPLOY_SSH_KEY}" ]; then
+            echo "DEPLOY_SSH_KEY not set — skip deploy (artifact still uploaded above)."
+            exit 0
+          fi
           install -m 600 -d ~/.ssh
           printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
