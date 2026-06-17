@@ -15,6 +15,7 @@ const {
   dialog,
 } = require("electron");
 const pkg = require("./package.json");
+const { ensureBlackHoleInstalled } = require("./blackhole-mac");
 let autoUpdater = null;
 try {
   // Optional runtime dependency for manual updates.
@@ -1945,7 +1946,7 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   wireElectronMediaPermissions(session.defaultSession);
   wireDesktopPersistentSession();
   Menu.setApplicationMenu(null);
@@ -1953,6 +1954,10 @@ app.whenReady().then(() => {
   console.log("[desktop] DevTools: F12 или Ctrl+Shift+I");
   registerDevToolsGlobalShortcuts();
   uiohookLeftCtrlHookOk = setupAiRegionLeftCtrlGlobalHook();
+  if (process.platform === "darwin") {
+    const blackholeOk = await ensureBlackHoleInstalled();
+    if (!blackholeOk) return;
+  }
   createWindow();
   configureManualUpdater();
   refreshAiRegionShortcut();
@@ -2305,5 +2310,13 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  if (BrowserWindow.getAllWindows().length === 0) {
+    void (async () => {
+      if (process.platform === "darwin") {
+        const blackholeOk = await ensureBlackHoleInstalled();
+        if (!blackholeOk) return;
+      }
+      createWindow();
+    })();
+  }
 });

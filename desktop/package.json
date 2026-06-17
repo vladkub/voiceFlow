@@ -11,7 +11,7 @@
     "predist:portable": "node scripts/generate-icons.mjs",
     "predist:installer": "node scripts/generate-icons.mjs",
     "predist:dir": "node scripts/generate-icons.mjs",
-    "predist:mac": "node scripts/generate-icons.mjs",
+    "predist:mac": "node scripts/generate-icons.mjs && node scripts/fetch-blackhole-pkg.mjs",
     "dist:installer": "electron-builder --win nsis",
     "dist:portable": "electron-builder --win portable",
     "dist:dir": "electron-builder --dir",
@@ -88,7 +88,17 @@
           ]
         }
       ],
-      "artifactName": "Voice-Translator.dmg"
+      "artifactName": "Voice-Translator.dmg",
+      "extraResources": [
+        {
+          "from": "build/blackhole-bootstrap.sh",
+          "to": "blackhole-bootstrap.sh"
+        },
+        {
+          "from": "build/BlackHole2ch-0.6.1.pkg",
+          "to": "BlackHole2ch.pkg"
+        }
+      ]
     },
     "nsis": {
       "oneClick": false,
