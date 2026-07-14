@@ -1,6 +1,6 @@
 {
   "name": "voiceflow-desktop",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "VoiceFlow desktop wrapper",
   "main": "main.js",
   "author": "VoiceFlow",
@@ -35,6 +35,7 @@
     },
     "files": [
       "main.js",
+      "blackhole-mac.js",
       "preload.js",
       "chat-layout-fix.css",
       "region-select.html",

@@ -15,7 +15,12 @@ const {
   dialog,
 } = require("electron");
 const pkg = require("./package.json");
-const { ensureBlackHoleInstalled } = require("./blackhole-mac");
+let ensureBlackHoleInstalled = async () => true;
+try {
+  ({ ensureBlackHoleInstalled } = require("./blackhole-mac"));
+} catch (err) {
+  console.warn("[desktop] blackhole-mac unavailable:", err && err.message ? err.message : err);
+}
 let autoUpdater = null;
 try {
   // Optional runtime dependency for manual updates.
