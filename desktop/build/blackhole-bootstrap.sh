@@ -50,13 +50,29 @@ if [[ -z "$PKG" ]]; then
   fi
 fi
 
-echo "Installing BlackHole (administrator password required)..."
-INSTALL_SHELL=$(printf 'installer -pkg %q -target / && (/usr/bin/killall -9 coreaudiod >/dev/null 2>&1 || true)' "$PKG")
-/usr/bin/osascript -e "do shell script \"${INSTALL_SHELL}\" with administrator privileges"
+# Never embed the pkg path in AppleScript: spaces (e.g. Voice Translator.app)
+# break osascript quoting (error -2741). Use a tiny helper script instead.
+HELPER="$(mktemp /tmp/talkpilot-blackhole-XXXXXX.sh)"
+cleanup() {
+  rm -f "$HELPER"
+  if [[ -n "${TEMP_DIR:-}" ]]; then
+    rm -rf "$TEMP_DIR"
+  fi
+}
+trap cleanup EXIT
 
-if [[ -n "$TEMP_DIR" ]]; then
-  rm -rf "$TEMP_DIR"
-fi
+{
+  echo '#!/bin/bash'
+  echo 'set -euo pipefail'
+  printf 'installer -pkg %q -target /\n' "$PKG"
+  echo '/usr/bin/killall -9 coreaudiod >/dev/null 2>&1 || true'
+} > "$HELPER"
+chmod 700 "$HELPER"
+
+echo "Installing BlackHole (administrator password required)..."
+/usr/bin/osascript <<OSA
+do shell script "/bin/bash " & quoted form of "${HELPER}" with administrator privileges
+OSA
 
 sleep 1
 
