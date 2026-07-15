@@ -4127,6 +4127,11 @@
         html.vf-desktop-stealth body {
             background: transparent !important;
         }
+        html.vf-desktop-stealth[data-theme="light"] body,
+        html.vf-desktop-stealth[data-theme="light-soft"] body {
+            background: transparent !important;
+            color: #0f172a;
+        }
         html.vf-desktop-stealth .header {
             background: rgba(27, 38, 61, 0.55) !important;
         }
@@ -4170,7 +4175,25 @@
         }
         html.vf-desktop-stealth .chat-container,
         html.vf-desktop-stealth .chat-column,
-        html.vf-desktop-stealth .chat-column-title {
+        html.vf-desktop-stealth .chat-column-title,
+        html.vf-desktop-stealth .chat-columns-row {
+            background: transparent !important;
+        }
+        html.vf-desktop-stealth[data-theme="light"] .chat-container,
+        html.vf-desktop-stealth[data-theme="light"] .chat-column,
+        html.vf-desktop-stealth[data-theme="light"] .chat-column-title,
+        html.vf-desktop-stealth[data-theme="light"] .chat-columns-row,
+        html.vf-desktop-stealth[data-theme="light"] .main-workspace,
+        html.vf-desktop-stealth[data-theme="light-soft"] .chat-container,
+        html.vf-desktop-stealth[data-theme="light-soft"] .chat-column,
+        html.vf-desktop-stealth[data-theme="light-soft"] .chat-column-title,
+        html.vf-desktop-stealth[data-theme="light-soft"] .chat-columns-row,
+        html.vf-desktop-stealth[data-theme="light-soft"] .main-workspace {
+            background: transparent !important;
+            border-color: rgba(193, 206, 230, 0.35) !important;
+        }
+        html.vf-desktop-stealth[data-theme="light"] .chat-session-settings-wrap,
+        html.vf-desktop-stealth[data-theme="light-soft"] .chat-session-settings-wrap {
             background: transparent !important;
         }
         html.vf-desktop-stealth #ai-suggestions-panel.ai-suggestions-panel-root {
@@ -4919,7 +4942,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.13/i18next.min.js"></script>
 <script src="/js/chat-ui-lang-packs.js?v=5"></script>
-<script src="/ui/translations.js?v=17"></script>
+<script src="/ui/translations.js?v=18"></script>
 <script src="/ui/conference-setup.js?v=17"></script>
 <script src="/ui/app.js?v=67"></script>
 <!-- 🔥 ВРЕМЕННО ОТКЛЮЧЕНО для отладки -->

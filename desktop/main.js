@@ -907,9 +907,11 @@ function loginPageDiskPath() {
  * - окно остаётся развёрнутым (см. обработчик minimize при stealth).
  * Выключение: снова переключите в приложении или Ctrl+Shift+X (когда фокус в системе).
  */
-/** Windows/Linux: для «скрыть окно» нужен BrowserWindow с transparent:true; иначе setBackgroundColor(#00000000) не даёт сквозной фон. */
-const DESKTOP_WIN_NATIVE_TRANSPARENT =
-  process.platform === "win32" || process.platform === "linux";
+/**
+ * Прозрачный BrowserWindow нужен на всех ОС для режима «Скрыть окно»:
+ * иначе setBackgroundColor(#00000000) не даёт сквозной фон (на macOS окно остаётся серым/непрозрачным).
+ */
+const DESKTOP_NATIVE_TRANSPARENT = true;
 
 function applyStealthState() {
   if (!mainWindow || mainWindow.isDestroyed()) return;
@@ -925,11 +927,37 @@ function applyStealthState() {
     } catch (e) {
       console.warn("[desktop] setBackgroundColor stealth:", e);
     }
-    if (DESKTOP_WIN_NATIVE_TRANSPARENT) {
+    if (DESKTOP_NATIVE_TRANSPARENT) {
       try {
         mainWindow.setHasShadow(false);
       } catch (e) {
         console.warn("[desktop] setHasShadow stealth:", e);
+      }
+    }
+    if (process.platform === "darwin") {
+      try {
+        if (typeof mainWindow.setVibrancy === "function") {
+          mainWindow.setVibrancy(null);
+        }
+      } catch (_) {
+        /* ignore */
+      }
+      try {
+        // На macOS maximized + transparent иногда «залипает» серым — лёгкий nudge границ.
+        const b = mainWindow.getBounds();
+        if (b && b.width > 2 && b.height > 2) {
+          mainWindow.setBounds({ x: b.x, y: b.y, width: b.width - 1, height: b.height });
+          mainWindow.setBounds(b);
+        }
+      } catch (_) {
+        /* ignore */
+      }
+      try {
+        if (typeof mainWindow.invalidateShadow === "function") {
+          mainWindow.invalidateShadow();
+        }
+      } catch (_) {
+        /* ignore */
       }
     }
     mainWindow.setIgnoreMouseEvents(true, { forward: true });
@@ -948,15 +976,24 @@ function applyStealthState() {
     applyAlwaysOnTopForStealth();
     mainWindow.setOpacity(1);
     try {
-      mainWindow.setBackgroundColor(DESKTOP_WIN_NATIVE_TRANSPARENT ? "#ff0a0e1a" : "#0a0e1a");
+      mainWindow.setBackgroundColor(DESKTOP_NATIVE_TRANSPARENT ? "#ff0a0e1a" : "#0a0e1a");
     } catch (e) {
       mainWindow.setBackgroundColor("#0a0e1a");
     }
-    if (DESKTOP_WIN_NATIVE_TRANSPARENT) {
+    if (DESKTOP_NATIVE_TRANSPARENT) {
       try {
         mainWindow.setHasShadow(true);
       } catch (e) {
         console.warn("[desktop] setHasShadow normal:", e);
+      }
+    }
+    if (process.platform === "darwin") {
+      try {
+        if (typeof mainWindow.invalidateShadow === "function") {
+          mainWindow.invalidateShadow();
+        }
+      } catch (_) {
+        /* ignore */
       }
     }
     try {
@@ -1952,12 +1989,12 @@ function createWindow() {
     thickFrame: false,
     frame: false,
     /**
-     * transparent:true обязателен на Windows/Linux для режима «Скрыть окно» (сквозной фон HWND).
-     * В обычном режиме фон непрозрачный (#ff0a0e1a). На Windows возможна тонкая полоса title bar —
-     * перекрывается кастомным header в /ui.
+     * transparent:true обязателен для режима «Скрыть окно» (сквозной фон) на Windows/Linux/macOS.
+     * В обычном режиме фон непрозрачный (#ff0a0e1a).
      */
-    transparent: DESKTOP_WIN_NATIVE_TRANSPARENT,
-    backgroundColor: DESKTOP_WIN_NATIVE_TRANSPARENT ? "#ff0a0e1a" : "#0a0e1a",
+    transparent: DESKTOP_NATIVE_TRANSPARENT,
+    backgroundColor: DESKTOP_NATIVE_TRANSPARENT ? "#ff0a0e1a" : "#0a0e1a",
+    hasShadow: true,
     ...(process.platform === "win32" ? { roundedCorners: false } : {}),
     title: "Voice Translator",
     ...(icon ? { icon } : {}),

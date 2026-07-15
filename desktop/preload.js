@@ -378,7 +378,13 @@ ipcRenderer.on("desktop:layout-css", (_event, css) => {
 
 ipcRenderer.on("stealth:state", (_event, state) => {
   try {
-    document.documentElement.classList.toggle("vf-desktop-stealth", Boolean(state));
+    const on = Boolean(state);
+    document.documentElement.classList.toggle("vf-desktop-stealth", on);
+    if (on && document.body) {
+      document.body.style.background = "transparent";
+    } else if (document.body) {
+      document.body.style.removeProperty("background");
+    }
   } catch (_) {
     /* ignore */
   }
