@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Демо-диалог — TalkPilot</title>
+  <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060B18'/%3E%3Crect x='10' y='24' width='5' height='18' rx='2.5' fill='%232EC7FF'/%3E%3Crect x='19' y='19' width='6' height='28' rx='3' fill='%2346B2FF'/%3E%3Crect x='30' y='12' width='7' height='40' rx='3.5' fill='%236F84FF'/%3E%3Crect x='42' y='19' width='6' height='28' rx='3' fill='%238A66FF'/%3E%3Crect x='51' y='24' width='5' height='18' rx='2.5' fill='%23A64DFF'/%3E%3Ccircle cx='21.5' cy='32' r='1.7' fill='%2346B2FF'/%3E%3Ccircle cx='45.5' cy='32' r='1.7' fill='%238A66FF'/%3E%3C/svg%3E">
+  <link rel="shortcut icon" href="/favicon.svg?v=3">
+  <link rel="apple-touch-icon" href="/favicon.svg?v=3">
+  <style>
+    body { margin: 0; background: #0f172a; color: #e2e8f0; font-family: system-ui, sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+    header { padding: 0.75rem 1rem; background: #1e293b; border-bottom: 1px solid #334155; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+    header h1 { font-size: 1.05rem; margin: 0; color: #f8fafc; }
+    header a { color: #93c5fd; font-size: 0.85rem; }
+    #trialLog { flex: 1; overflow-y: auto; padding: 1rem; max-width: 640px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    .trial-bubble { max-width: 88%; padding: 0.65rem 0.85rem; border-radius: 12px; margin-bottom: 0.65rem; line-height: 1.45; font-size: 0.92rem; }
+    .trial-bubble--partner { background: #1e3a2f; border: 1px solid #2d6a4f; margin-right: auto; }
+    .trial-bubble--user { background: #1e2a4a; border: 1px solid #334155; margin-left: auto; }
+    .dock { padding: 0.75rem 1rem 1rem; background: #1e293b; border-top: 1px solid #334155; max-width: 640px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+    .dock textarea { width: 100%; min-height: 52px; resize: vertical; border-radius: 10px; border: 1px solid #475569; background: #0f172a; color: #e2e8f0; padding: 0.5rem 0.65rem; font-size: 0.9rem; box-sizing: border-box; }
+    .dock-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; align-items: center; }
+    .btn { padding: 0.5rem 0.9rem; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; font-size: 0.85rem; }
+    .btn-primary { background: linear-gradient(90deg, #7c3aed 0%, #2563eb 100%); color: #fff; }
+    .btn-mic { background: #334155; color: #e2e8f0; }
+    .btn-full { background: transparent; border: 1px solid #64748b; color: #e2e8f0; }
+    #trialUpgradeModal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.82); z-index: 50; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-box { background: #1e293b; border: 1px solid #475569; border-radius: 14px; padding: 1.25rem; max-width: 400px; width: 100%; }
+    .modal-box p { margin: 0 0 1rem; color: #cbd5e1; font-size: 0.9rem; line-height: 1.5; }
+    .modal-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .modal-actions a, .modal-actions button { flex: 1; min-width: 120px; text-align: center; padding: 0.5rem 0.65rem; border-radius: 8px; font-size: 0.85rem; font-weight: 600; text-decoration: none; border: none; cursor: pointer; }
+    .modal-actions a { background: #6366f1; color: #fff; display: inline-flex; align-items: center; justify-content: center; }
+    .modal-actions .secondary { background: #334155; color: #e2e8f0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Демо-диалог (независим от основного чата)</h1>
+    <a href="/trial-setup">← Настройки</a>
+  </header>
+  <div id="trialLog"></div>
+  <div class="dock">
+    <textarea id="trialUserInput" placeholder="Ваш ответ текстом…"></textarea>
+    <div class="dock-actions">
+      <button type="button" class="btn btn-mic" id="trialMicBtn">🎤 Говорить</button>
+      <button type="button" class="btn btn-primary" id="trialSendBtn">Отправить</button>
+      <button type="button" class="btn btn-full" id="trialOpenFullBtn">Открыть полный TalkPilot</button>
+    </div>
+  </div>
+
+  <div id="trialUpgradeModal">
+    <div class="modal-box">
+      <p id="trialUpgradeText"></p>
+      <div class="modal-actions">
+        <a id="trialUpReg" href="/login?register=1">Регистрация</a>
+        <a id="trialUpDash" class="secondary" href="/dashboard">Личный кабинет</a>
+        <a id="trialUpPrice" class="secondary" href="/pricing">Тарифы</a>
+        <button type="button" class="secondary" id="trialUpgradeClose">Закрыть</button>
+      </div>
+    </div>
+  </div>
+  <script src="/js/trial-chat.js?v=1"></script>
+</body>
+</html>

@@ -13,6 +13,12 @@
     '<h2 class="desktop-download-title" id="desktopDownloadModalTitle" data-site-i18n="index.desk.modal.title">Скачать TalkPilot</h2>' +
     '<p class="desktop-download-lead" data-site-i18n="index.desk.modal.sub">Выберите версию для вашей операционной системы</p>' +
     '<div class="desktop-download-options">' +
+    '<a href="/downloads/Install-TalkPilot-Mac.command" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacEasyBtn" download data-desktop-os="macos-easy">' +
+    '<i class="fab fa-apple platform-icon" aria-hidden="true"></i>' +
+    '<span class="desktop-download-option-text">' +
+    '<span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac_easy">macOS · простая установка</span>' +
+    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Рекомендуется · двойной клик</span>' +
+    '</span><i class="fas fa-download" aria-hidden="true"></i></a>' +
     '<a href="/downloads/Voice-Translator-Setup.exe" class="desktop-download-option desktop-download-option--win" id="desktopDownloadWinBtn" download data-desktop-os="windows">' +
     '<i class="fab fa-windows platform-icon" aria-hidden="true"></i>' +
     '<span class="desktop-download-option-text">' +
@@ -20,20 +26,14 @@
     '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.win_meta">Установщик · 64-bit</span>' +
     '</span><i class="fas fa-download" aria-hidden="true"></i></a>' +
     '<a href="/downloads/Voice-Translator.dmg" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacBtn" download data-desktop-os="macos">' +
-    '<i class="fab fa-apple platform-icon" aria-hidden="true"></i>' +
+    '<i class="fas fa-compact-disc platform-icon" aria-hidden="true"></i>' +
     '<span class="desktop-download-option-text">' +
-    '<span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac">macOS</span>' +
-    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_meta">DMG · затем «Install TalkPilot»</span>' +
-    '</span><i class="fas fa-download" aria-hidden="true"></i></a>' +
-    '<a href="/downloads/Install-TalkPilot-Mac.command" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacEasyBtn" download data-desktop-os="macos-easy">' +
-    '<i class="fas fa-magic platform-icon" aria-hidden="true"></i>' +
-    '<span class="desktop-download-option-text">' +
-    '<span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac_easy">macOS · простая установка</span>' +
-    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Один файл · двойной клик</span>' +
+    '<span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac">macOS · образ DMG</span>' +
+    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_meta">Внутри запустите «Install TalkPilot»</span>' +
     '</span><i class="fas fa-download" aria-hidden="true"></i></a>' +
     '</div>' +
     '<p class="desktop-download-hint" data-site-i18n="index.desk.modal.hint">После установки войдите в аккаунт — приложение подключится к серверу TalkPilot.</p>' +
-    '<p class="desktop-download-mac-tip" data-site-i18n="index.desk.modal.mac_tip">macOS: скачайте «простую установку» и дважды нажмите файл (если macOS спросит — правый клик → «Открыть»). Либо откройте DMG и запустите «Install TalkPilot».</p>' +
+    '<p class="desktop-download-mac-tip" data-site-i18n="index.desk.modal.mac_tip">macOS: выберите «простая установка», скачайте файл и дважды нажмите его. Если macOS спросит — правый клик → «Открыть». Не перетаскивайте .app вручную.</p>' +
     '</div></div>';
 
   function ensureModal() {
