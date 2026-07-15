@@ -403,6 +403,7 @@ contextBridge.exposeInMainWorld("voiceflowDesktop", {
   toggleDevTools: () => ipcRenderer.invoke("desktop:toggle-devtools"),
   /** Origin сервера чата (https://host) — для login.html с file:// и запросов к API */
   getChatOrigin: () => ipcRenderer.invoke("desktop:get-chat-origin"),
+  navigateAfterLogin: (redirect) => ipcRenderer.invoke("desktop:navigate-after-login", redirect),
   /** Вход в ЛК с file:// (cookie в ту же session, что у окна; без CORS file→https). */
   authLogin: (payload) => ipcRenderer.invoke("desktop:auth-login", payload),
   /** Google OAuth во внешнем браузере (desktop). */

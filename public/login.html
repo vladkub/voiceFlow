@@ -722,7 +722,33 @@
             }
             msg.textContent = siteT('login.ok.login_redirect');
             msg.className = 'is-ok';
-            window.location.href = absUrl(redirectTarget);
+            if (
+              typeof window.voiceflowDesktop !== 'undefined' &&
+              window.voiceflowDesktop &&
+              typeof window.voiceflowDesktop.navigateAfterLogin === 'function'
+            ) {
+              try {
+                await window.voiceflowDesktop.navigateAfterLogin(redirectTarget || '/ui');
+                return;
+              } catch (navErr) {
+                console.warn('navigateAfterLogin', navErr);
+              }
+            }
+            if (
+              isFileLoginPage() &&
+              typeof window.voiceflowDesktop !== 'undefined' &&
+              window.voiceflowDesktop &&
+              typeof window.voiceflowDesktop.getChatOrigin === 'function' &&
+              !apiOrigin
+            ) {
+              try {
+                apiOrigin = String(await window.voiceflowDesktop.getChatOrigin() || '')
+                  .trim()
+                  .replace(/\/$/, '');
+              } catch (_) { /* ignore */ }
+            }
+            window.location.href = absUrl(redirectTarget || '/ui');
+            return;
           } catch (err) {
             msg.textContent = siteT('login.err.network');
             msg.className = 'is-error';

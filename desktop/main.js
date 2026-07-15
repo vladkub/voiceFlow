@@ -2125,6 +2125,17 @@ app.whenReady().then(async () => {
     }
   });
 
+  /** После успешного входа с file://login — открыть /ui в том же окне. */
+  ipcMain.handle("desktop:navigate-after-login", async (_event, redirect) => {
+    try {
+      await navigateDesktopAfterLogin(redirect);
+      return { ok: true };
+    } catch (e) {
+      console.warn("[desktop] navigate-after-login:", e.message || e);
+      return { ok: false, error: String(e.message || e) };
+    }
+  });
+
   /** POST /api/auth/login от имени session окна (для login с file://). */
   ipcMain.handle("desktop:auth-login", async (_event, payload) => {
     if (!mainWindow || mainWindow.isDestroyed()) {
@@ -2150,11 +2161,21 @@ app.whenReady().then(async () => {
       } catch {
         body = { raw: text };
       }
-      if (r.ok && body && body.user_id != null) {
-        try {
-          await setElectronAuthCookie(mainWindow.webContents.session, body.user_id);
-        } catch (cookieErr) {
-          console.warn("[desktop] auth-login cookie:", cookieErr.message || cookieErr);
+      if (r.ok) {
+        const uid =
+          body && body.user_id != null
+            ? body.user_id
+            : body && body.user && body.user.id != null
+              ? body.user.id
+              : null;
+        if (uid != null) {
+          try {
+            await setElectronAuthCookie(mainWindow.webContents.session, uid);
+          } catch (cookieErr) {
+            console.warn("[desktop] auth-login cookie:", cookieErr.message || cookieErr);
+          }
+        } else {
+          console.warn("[desktop] auth-login: missing user id in response");
         }
       }
       return { ok: r.ok, status: r.status, body };
