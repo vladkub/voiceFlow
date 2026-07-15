@@ -36,13 +36,59 @@
     '<p class="desktop-download-mac-tip" data-site-i18n="index.desk.modal.mac_tip">macOS: выберите «простая установка», скачайте файл и дважды нажмите его. Если macOS спросит — правый клик → «Открыть». Не перетаскивайте .app вручную.</p>' +
     '</div></div>';
 
+  var MAC_EASY_BTN_HTML =
+    '<a href="/downloads/Install-TalkPilot-Mac.command" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacEasyBtn" download data-desktop-os="macos-easy">' +
+    '<i class="fab fa-apple platform-icon" aria-hidden="true"></i>' +
+    '<span class="desktop-download-option-text">' +
+    '<span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac_easy">macOS · простая установка</span>' +
+    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Рекомендуется · двойной клик</span>' +
+    '</span><i class="fas fa-download" aria-hidden="true"></i></a>';
+
+  function upgradeExistingModal(m) {
+    if (!m) return;
+    var options = m.querySelector('.desktop-download-options');
+    if (options && !document.getElementById('desktopDownloadMacEasyBtn')) {
+      var wrap = document.createElement('div');
+      wrap.innerHTML = MAC_EASY_BTN_HTML;
+      var easyBtn = wrap.firstElementChild;
+      var winBtn = document.getElementById('desktopDownloadWinBtn');
+      if (winBtn && winBtn.parentNode === options) {
+        options.insertBefore(easyBtn, winBtn);
+      } else {
+        options.insertBefore(easyBtn, options.firstChild);
+      }
+    }
+    var macBtn = document.getElementById('desktopDownloadMacBtn');
+    if (macBtn) {
+      var macLabel = macBtn.querySelector('[data-site-i18n="index.desk.modal.mac"]');
+      var macMeta = macBtn.querySelector('[data-site-i18n="index.desk.modal.mac_meta"]');
+      if (macLabel) macLabel.setAttribute('data-site-i18n', 'index.desk.modal.mac');
+      if (macMeta) macMeta.setAttribute('data-site-i18n', 'index.desk.modal.mac_meta');
+      var icon = macBtn.querySelector('i.platform-icon');
+      if (icon) {
+        icon.className = 'fas fa-compact-disc platform-icon';
+      }
+    }
+    if (!m.querySelector('.desktop-download-mac-tip')) {
+      var tip = document.createElement('p');
+      tip.className = 'desktop-download-mac-tip';
+      tip.setAttribute('data-site-i18n', 'index.desk.modal.mac_tip');
+      tip.textContent =
+        'macOS: выберите «простая установка», скачайте файл и дважды нажмите его. Если macOS спросит — правый клик → «Открыть». Не перетаскивайте .app вручную.';
+      var dialog = m.querySelector('.desktop-download-dialog') || m;
+      dialog.appendChild(tip);
+    }
+  }
+
   function ensureModal() {
     if (!modalEl) modalEl = document.getElementById('desktopDownloadModal');
-    if (modalEl) return modalEl;
-    var wrap = document.createElement('div');
-    wrap.innerHTML = MODAL_HTML;
-    modalEl = wrap.firstElementChild;
-    document.body.appendChild(modalEl);
+    if (!modalEl) {
+      var wrap = document.createElement('div');
+      wrap.innerHTML = MODAL_HTML;
+      modalEl = wrap.firstElementChild;
+      document.body.appendChild(modalEl);
+    }
+    upgradeExistingModal(modalEl);
     bindModalControls(modalEl);
     if (typeof window.applySiteLang === 'function') {
       try {
@@ -153,12 +199,9 @@
     bindDownloadLinks();
   }
 
-  if (typeof window.openDesktopDownloadModal !== 'function') {
-    window.openDesktopDownloadModal = openDesktopDownloadModal;
-  }
-  if (typeof window.closeDesktopDownloadModal !== 'function') {
-    window.closeDesktopDownloadModal = closeDesktopDownloadModal;
-  }
+  // Always own these APIs — index.html may redefine them with the old 2-button modal.
+  window.openDesktopDownloadModal = openDesktopDownloadModal;
+  window.closeDesktopDownloadModal = closeDesktopDownloadModal;
 
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
@@ -168,9 +211,10 @@
     }
   });
 
-  document.addEventListener('DOMContentLoaded', function () {
-    modalEl = document.getElementById('desktopDownloadModal');
-    if (modalEl) bindModalControls(modalEl);
+  function bootDesktopDownloadUi() {
+    window.openDesktopDownloadModal = openDesktopDownloadModal;
+    window.closeDesktopDownloadModal = closeDesktopDownloadModal;
+    ensureModal();
 
     var navBtn = document.getElementById('navDesktopDownloadBtn');
     if (navBtn && !navBtn.dataset.vfBound) {
@@ -178,10 +222,17 @@
       navBtn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        if (typeof window.openDesktopDownloadModal === 'function') {
-          window.openDesktopDownloadModal();
-        }
+        openDesktopDownloadModal();
       });
     }
-  });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootDesktopDownloadUi);
+  } else {
+    bootDesktopDownloadUi();
+  }
+  // index.html may redefine openDesktopDownloadModal after this file — reclaim it.
+  window.setTimeout(bootDesktopDownloadUi, 0);
+  window.setTimeout(bootDesktopDownloadUi, 400);
 })();

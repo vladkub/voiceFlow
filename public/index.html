@@ -3530,26 +3530,34 @@
             <button type="button" class="desktop-download-close" id="desktopDownloadModalClose" aria-label="???????">&times;</button>
             <h2 class="desktop-download-title" id="desktopDownloadModalTitle" data-site-i18n="index.desk.modal.title">??????? TalkPilot</h2>
             <p class="desktop-download-lead" data-site-i18n="index.desk.modal.sub">???????? ?????? ??? ????? ???????????? ???????</p>
-            <div class="desktop-download-options">
+                        <div class="desktop-download-options">
+                <a href="/downloads/Install-TalkPilot-Mac.command" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacEasyBtn" download data-desktop-os="macos-easy">
+                    <i class="fab fa-apple platform-icon" aria-hidden="true"></i>
+                    <span class="desktop-download-option-text">
+                        <span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac_easy">macOS · простая установка</span>
+                        <span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Рекомендуется · двойной клик</span>
+                    </span>
+                    <i class="fas fa-download" aria-hidden="true" style="margin-left:auto;opacity:0.65;"></i>
+                </a>
                 <a href="/downloads/Voice-Translator-Setup.exe" class="desktop-download-option desktop-download-option--win" id="desktopDownloadWinBtn" download data-desktop-os="windows">
                     <i class="fab fa-windows platform-icon" aria-hidden="true"></i>
                     <span class="desktop-download-option-text">
                         <span class="desktop-download-option-label" data-site-i18n="index.desk.modal.win">Windows</span>
-                        <span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.win_meta">?????????? ? 64-bit</span>
+                        <span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.win_meta">Установщик · 64-bit</span>
                     </span>
                     <i class="fas fa-download" aria-hidden="true" style="margin-left:auto;opacity:0.65;"></i>
                 </a>
                 <a href="/downloads/Voice-Translator.dmg" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacBtn" download data-desktop-os="macos">
-                    <i class="fab fa-apple platform-icon" aria-hidden="true"></i>
+                    <i class="fas fa-compact-disc platform-icon" aria-hidden="true"></i>
                     <span class="desktop-download-option-text">
-                        <span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac">macOS</span>
-                        <span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_meta">????? DMG ? Apple Silicon ? Intel</span>
+                        <span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac">macOS · образ DMG</span>
+                        <span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_meta">Внутри запустите «Install TalkPilot»</span>
                     </span>
                     <i class="fas fa-download" aria-hidden="true" style="margin-left:auto;opacity:0.65;"></i>
                 </a>
             </div>
             <p class="desktop-download-hint" data-site-i18n="index.desk.modal.hint">После установки войдите в аккаунт — приложение подключится к серверу TalkPilot.</p>
-            <p class="desktop-download-mac-tip" data-site-i18n="index.desk.modal.mac_tip">macOS: если система пишет «повреждено» или блокирует запуск — правый клик по приложению → «Открыть», либо в Терминале: xattr -cr "/Applications/Voice Translator.app"</p>
+            <p class="desktop-download-mac-tip" data-site-i18n="index.desk.modal.mac_tip">macOS: выберите «простая установка», скачайте файл и дважды нажмите его. Если macOS спросит — правый клик → «Открыть». Не перетаскивайте .app вручную.</p>
         </div>
     </div>
 
@@ -3574,7 +3582,7 @@
     <script src="/js/captcha-widget.js?v=3"></script>
     <script src="/js/auth.js?v=7"></script>
     <script src="/js/site-mobile-nav.js?v=6"></script>
-    <script src="/js/site-desktop-download.js?v=6"></script>
+    <script src="/js/site-desktop-download.js?v=7"></script>
     <script src="/js/auth-check.js?v=12"></script>
     <script src="/js/nav-active.js?v=4"></script>
     
