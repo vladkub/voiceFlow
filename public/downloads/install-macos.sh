@@ -55,7 +55,17 @@ EOF
 fi
 
 killall "Voice Translator" 2>/dev/null || true
+# Удаляем приложение из «Программы»
 rm -rf "${DEST}"
+# Старые cookies/сессия Electron НЕ лежат в .app — чистим Application Support,
+# иначе после переустановки может открыться «пустое» окно со старым кэшем.
+SUPPORT_DIR="${HOME}/Library/Application Support/Voice Translator"
+CACHE_DIR="${HOME}/Library/Caches/Voice Translator"
+rm -rf "${SUPPORT_DIR}" "${CACHE_DIR}" 2>/dev/null || true
+# На всякий случай — имя по appId (electron-builder иногда так кладёт профиль)
+rm -rf "${HOME}/Library/Application Support/voiceflow-desktop" \
+       "${HOME}/Library/Application Support/com.voiceflow.desktop" 2>/dev/null || true
+
 ditto "${SRC}" "${DEST}"
 xattr -cr "${DEST}" || true
 

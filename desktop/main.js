@@ -421,7 +421,7 @@ function readDesktopLocalUiScript(name) {
 }
 
 function wireDesktopPersistentSession() {
-  const part = "persist:voiceflow-translator-desktop-v1";
+  const part = "persist:voiceflow-translator-desktop-v2";
   const desktopSess = session.fromPartition(part);
   wireElectronMediaPermissions(desktopSess);
   installDesktopLocalUiOverrides(desktopSess);
@@ -942,7 +942,90 @@ const DESKTOP_FETCH_HEADERS = { [DESKTOP_CLIENT_HEADER]: "desktop" };
 
 function desktopSessionFetch(ses, url, init = {}) {
   const headers = { ...DESKTOP_FETCH_HEADERS, ...(init.headers || {}) };
-  return ses.fetch(url, { ...init, headers });
+  const timeoutMs = Number(init.timeoutMs) > 0 ? Number(init.timeoutMs) : 8000;
+  const { timeoutMs: _omit, ...fetchInit } = init;
+  const ctrl = typeof AbortController !== "undefined" ? new AbortController() : null;
+  const timer =
+    ctrl &&
+    setTimeout(() => {
+      try {
+        ctrl.abort();
+      } catch (_) {
+        /* ignore */
+      }
+    }, timeoutMs);
+  return ses
+    .fetch(url, { ...fetchInit, headers, ...(ctrl ? { signal: ctrl.signal } : {}) })
+    .finally(() => {
+      if (timer) clearTimeout(timer);
+    });
+}
+
+/** HTTPS login — надёжнее file:// (на macOS file:// давал пустое окно из‑за CSS i18n). */
+function desktopLoginHttpsUrl(redirectPath) {
+  let origin;
+  try {
+    origin = new URL(chatLoadUrl()).origin;
+  } catch {
+    origin = chatOrigin();
+  }
+  const red = String(redirectPath || "/ui").trim() || "/ui";
+  const safe = red.startsWith("/") && !red.startsWith("//") ? red : "/ui";
+  return new URL(
+    `/login?redirect=${encodeURIComponent(safe)}&vf_desktop=${encodeURIComponent(String(pkg.version || "1"))}`,
+    origin
+  ).href;
+}
+
+async function loadDesktopLoginPage(win, redirectPath, ua) {
+  if (!win || win.isDestroyed()) return;
+  const httpsUrl = desktopLoginHttpsUrl(redirectPath);
+  try {
+    await win.loadURL(httpsUrl, { userAgent: ua });
+    return;
+  } catch (e) {
+    console.warn("[desktop] HTTPS login failed, fallback to file:", e.message || e);
+  }
+  const p = loginPageDiskPath();
+  if (fs.existsSync(p)) {
+    await win.loadFile(p, { query: { redirect: String(redirectPath || "/ui") } });
+    return;
+  }
+  throw new Error("login page unavailable");
+}
+
+async function forceDesktopLoginVisible(wc) {
+  if (!wc || wc.isDestroyed()) return;
+  let url = "";
+  try {
+    url = wc.getURL() || "";
+  } catch {
+    return;
+  }
+  const isLogin =
+    /^file:/i.test(url) ||
+    /\/login(?:\?|#|$)/i.test(url) ||
+    /login\.html/i.test(url);
+  if (!isLogin) return;
+  try {
+    await wc.executeJavaScript(
+      `(function(){
+        var h=document.documentElement;
+        h.classList.add('vf-desktop-login','vf-desktop-app','site-lang-ready');
+        h.classList.remove('site-lang-loading');
+        var id='vf-desktop-login-visible';
+        if(!document.getElementById(id)){
+          var s=document.createElement('style');
+          s.id=id;
+          s.textContent='html.site-lang-loading body,html.site-lang-loading .login-card{visibility:visible!important;opacity:1!important}body.login-page-body{visibility:visible!important}';
+          (document.head||h).appendChild(s);
+        }
+      })();`,
+      true
+    );
+  } catch (e) {
+    console.warn("[desktop] force login visible:", e.message || e);
+  }
 }
 
 async function clearElectronAuthCookies(ses) {
@@ -1158,7 +1241,7 @@ function startDesktopOAuthBrowser(googleUrl, { origin, redirectClean }) {
       backgroundColor: "#f8fafc",
       ...(icon ? { icon } : {}),
       webPreferences: {
-        partition: "persist:voiceflow-translator-desktop-v1",
+        partition: "persist:voiceflow-translator-desktop-v2",
         contextIsolation: true,
         nodeIntegration: false,
         sandbox: true,
@@ -1423,7 +1506,7 @@ function createDesktopShellWindowOptions(extra) {
     autoHideMenuBar: true,
     show: false,
     webPreferences: {
-      partition: "persist:voiceflow-translator-desktop-v1",
+      partition: "persist:voiceflow-translator-desktop-v2",
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
@@ -1797,6 +1880,7 @@ async function resolveDesktopInitialLoad(win) {
       method: "GET",
       cache: "no-store",
       credentials: "include",
+      timeoutMs: 6000,
     });
     if (!r.ok) {
       return { kind: "loginFile", redirect: redirectBack };
@@ -1840,7 +1924,7 @@ function createWindow() {
     show: false,
     webPreferences: {
       /** Отдельная persistent-сессия: не тянем старые cookies из «дефолтного» профиля Electron (иначе чат думает, что вы уже в ЛК). При необходимости сброса всех клиентов — поменяйте суффикс (v2, v3…). */
-      partition: "persist:voiceflow-translator-desktop-v1",
+      partition: "persist:voiceflow-translator-desktop-v2",
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
       nodeIntegration: false,
@@ -1907,26 +1991,18 @@ function createWindow() {
       console.warn("[desktop] clearCache:", e.message || e);
     }
     if (spec.kind === "loginFile") {
-      const p = loginPageDiskPath();
       try {
-        if (!fs.existsSync(p)) {
-          throw new Error(`login page not found: ${p}`);
-        }
-        await mainWindow.loadFile(p, { query: { redirect: spec.redirect } });
+        await loadDesktopLoginPage(mainWindow, spec.redirect, ua);
       } catch (e) {
-        console.warn("[desktop] loadFile login, fallback to URL:", e.message || e);
-        let u;
+        console.warn("[desktop] load login failed:", e.message || e);
+        const fallback = desktopLoginHttpsUrl(spec.redirect);
         try {
-          u = new URL(chatLoadUrl());
-        } catch {
-          u = new URL("http://localhost:8000/ui");
+          await mainWindow.loadURL(fallback, { userAgent: ua });
+        } catch (e2) {
+          console.error("[desktop] login fallback also failed:", e2.message || e2);
         }
-        const fallback = new URL(
-          `/login?redirect=${encodeURIComponent(spec.redirect)}`,
-          u.origin
-        ).href;
-        mainWindow.loadURL(fallback, { userAgent: ua });
       }
+      await forceDesktopLoginVisible(mainWindow.webContents);
     } else {
       await mainWindow.loadURL(spec.url, { userAgent: ua });
     }
@@ -1935,12 +2011,26 @@ function createWindow() {
 
   mainWindow.webContents.on("did-finish-load", () => {
     const wc = mainWindow && mainWindow.webContents;
+    void forceDesktopLoginVisible(wc);
     void ensureDesktopLocalAppJsLoaded(wc);
     void applyDesktopResponsiveUi(wc);
     if (stealthMode && mainWindow && !mainWindow.isDestroyed()) {
       mainWindow.webContents.send("stealth:state", stealthMode);
     }
   });
+
+  /* Если страница зависла до ready-to-show — всё равно показать окно */
+  setTimeout(() => {
+    try {
+      if (!mainWindow || mainWindow.isDestroyed()) return;
+      if (!mainWindow.isVisible()) {
+        mainWindow.show();
+        void forceDesktopLoginVisible(mainWindow.webContents);
+      }
+    } catch (_) {
+      /* ignore */
+    }
+  }, 4000);
 
   mainWindow.webContents.on("did-fail-load", (_event, code, desc, url) => {
     console.error("[desktop] did-fail-load", code, desc, url);
@@ -2231,15 +2321,24 @@ app.whenReady().then(async () => {
     }
     const loginPath = loginPageDiskPath();
     try {
+      await loadDesktopLoginPage(mainWindow, back, ua);
+      await forceDesktopLoginVisible(mainWindow.webContents);
+      return true;
+    } catch (e) {
+      console.warn("[desktop] logout login page:", e.message || e);
+    }
+    try {
       if (fs.existsSync(loginPath)) {
         await mainWindow.loadFile(loginPath, { query: { redirect: back } });
+        await forceDesktopLoginVisible(mainWindow.webContents);
         return true;
       }
     } catch (e) {
       console.warn("[desktop] logout loadFile login:", e.message || e);
     }
-    const loginUrl = new URL(`/login?redirect=${encodeURIComponent(back)}`, u.origin).href;
+    const loginUrl = desktopLoginHttpsUrl(back);
     await mainWindow.loadURL(loginUrl, { userAgent: ua });
+    await forceDesktopLoginVisible(mainWindow.webContents);
     return true;
   });
 

@@ -1,4 +1,46 @@
-/* VoiceFlow — шапка (тёмная полоса, меню по центру) */
+/* TalkPilot — шапка (тёмная полоса, меню по центру) */
+@import url("site-desktop-download.css?v=3");
+
+/* Кнопка «Скачать» в шапке — только десктоп (≥769px) */
+.nav-download-btn {
+    display: none;
+}
+
+@media (min-width: 769px) {
+    .nav-download-btn {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 2.35rem;
+        height: 2.35rem;
+        padding: 0;
+        border: 1px solid rgba(148, 163, 184, 0.38);
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.65);
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 0.95rem;
+        flex-shrink: 0;
+        transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .nav-download-btn:hover {
+        border-color: rgba(56, 189, 248, 0.55);
+        background: rgba(15, 23, 42, 0.88);
+        color: #e2e8f0;
+    }
+
+    .nav-download-btn:focus {
+        outline: none;
+    }
+
+    .nav-download-btn:focus-visible {
+        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45);
+        border-color: rgba(56, 189, 248, 0.65);
+        color: #f8fafc;
+    }
+}
+
 .navbar {
     position: fixed;
     top: 0;
@@ -22,14 +64,14 @@
 
 .navbar-inner {
     width: 100%;
-    max-width: 1320px;
-    margin: 0 auto;
-    padding: 0 clamp(0.85rem, 3vw, 2.75rem);
-    /* Логотип и действия по ширине контента; меню — по центру свободного места между ними */
+    max-width: none;
+    margin: 0;
+    /* 40px от краёв + safe-area на вырезе */
+    padding: 0 calc(40px + env(safe-area-inset-right, 0px)) 0 calc(40px + env(safe-area-inset-left, 0px));
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    column-gap: 0.75rem;
+    column-gap: clamp(0.5rem, 1.5vw, 1rem);
     min-height: 68px;
     box-sizing: border-box;
 }
@@ -37,23 +79,16 @@
 .navbar-inner .logo {
     grid-column: 1;
     justify-self: start;
-    min-width: 0;
 }
 
 .navbar-inner .nav-links {
     grid-column: 2;
     justify-self: center;
-    width: max-content;
-    max-width: 100%;
-    min-width: 0;
-    justify-content: center;
-    box-sizing: border-box;
 }
 
 .navbar-inner .nav-right {
     grid-column: 3;
     justify-self: end;
-    min-width: 0;
 }
 
 .logo {
@@ -91,19 +126,20 @@
     color: #c4b5fd;
 }
 
+/* Футер: тот же логотип и отступ, что у заголовка колонки (h4) */
+.footer-section .footer-logo {
+    margin-bottom: 1.5rem;
+}
+
 .nav-links {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: clamp(0.5rem, 1.1vw, 1.35rem);
+    gap: clamp(1rem, 2.2vw, 2.25rem);
     list-style: none;
     margin: 0;
     padding: 0;
-}
-
-.nav-links > li {
-    flex-shrink: 0;
 }
 
 .nav-links a {
@@ -114,7 +150,6 @@
     padding: 0.42rem 0;
     border-bottom: 2px solid transparent;
     transition: color 0.2s ease, border-color 0.2s ease;
-    white-space: nowrap;
 }
 
 .nav-links a:hover {
@@ -133,7 +168,6 @@
     align-items: center;
     gap: 0.65rem;
     flex-shrink: 0;
-    flex-wrap: nowrap;
 }
 
 .nav-lang-wrap {
@@ -164,6 +198,36 @@
     border: 1px solid rgba(148, 163, 184, 0.38);
     border-radius: 10px;
     color-scheme: dark;
+    cursor: pointer;
+    font: inherit;
+}
+
+.nav-lang-pill:hover {
+    border-color: rgba(148, 163, 184, 0.55);
+    background: rgba(15, 23, 42, 0.82);
+}
+
+.nav-lang-pill:focus {
+    outline: none;
+}
+
+.nav-lang-pill:focus-visible {
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.45);
+    border-color: rgba(56, 189, 248, 0.65);
+}
+
+html.site-lang-loading body {
+    visibility: hidden;
+}
+
+/* Electron: не прятать весь body — иначе пустое окно, если i18n не успел/сорвался */
+html.vf-desktop-app.site-lang-loading body,
+html.vf-desktop-login.site-lang-loading body {
+    visibility: visible;
+}
+
+html.site-lang-ready body {
+    visibility: visible;
 }
 
 .nav-lang-globe {
@@ -191,11 +255,122 @@
     color-scheme: dark;
 }
 
-/* Выпадающий список ОС часто белый — тёмный текст гарантирует читаемость */
-.navbar .nav-lang-select option {
+/* Нативный <select> скрыт после JS-улучшения; до этого — светлый option под ОС */
+.navbar .nav-lang-select:not(.nav-lang-select--native) option {
     background-color: #ffffff;
     color: #0f172a;
     padding: 0.45rem 0.65rem;
+}
+
+.nav-lang-select--native {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    min-width: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.nav-lang-trigger {
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 6px;
+    margin: 0;
+    padding: 0.28rem 0.4rem;
+    min-width: 3.35rem;
+    font-size: 0.84rem;
+    font-weight: 600;
+    font-family: inherit;
+    letter-spacing: 0.03em;
+    pointer-events: none;
+    color: #f8fafc;
+    background-color: transparent;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.nav-lang-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 11.5rem;
+    max-width: min(92vw, 16rem);
+    max-height: min(70vh, 22rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 0;
+    margin-top: 0.35rem;
+    padding: 0.35rem 0;
+    list-style: none;
+    background: #0f172a;
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 10px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
+    z-index: 1100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+}
+
+.nav-lang-dropdown::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -10px;
+    height: 10px;
+}
+
+.nav-lang-wrap.nav-lang-menu-open .nav-lang-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.nav-lang-dropdown-li {
+    margin: 0;
+    padding: 0;
+}
+
+.nav-lang-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0.45rem 0.9rem;
+    margin: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-align: center;
+    color: #e2e8f0;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.nav-lang-dropdown-item:hover {
+    background: rgba(56, 189, 248, 0.12);
+    color: #f8fafc;
+}
+
+.nav-lang-dropdown-item[aria-selected="true"] {
+    background: rgba(56, 189, 248, 0.18);
+    color: #f8fafc;
 }
 
 .nav-lang-select:focus {
@@ -213,15 +388,19 @@
     margin-left: -0.1rem;
     margin-right: 0.15rem;
     pointer-events: none;
+    transition: transform 0.2s ease;
+}
+
+.nav-lang-wrap.nav-lang-menu-open .nav-lang-chevron {
+    transform: rotate(180deg);
 }
 
 .nav-buttons {
     display: flex;
     align-items: center;
     gap: 0.55rem;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: flex-end;
-    flex-shrink: 0;
 }
 
 .navbar .nav-buttons .btn {
@@ -270,11 +449,17 @@
     position: relative;
 }
 
-.navbar .nav-buttons .nav-user-btn {
+.navbar .nav-buttons .nav-user-btn,
+.navbar .nav-buttons button.nav-user-btn {
     border: 1px solid rgba(56, 189, 248, 0.65);
     color: #38bdf8;
     background: transparent;
     gap: 0.4rem;
+    text-decoration: none;
+    font: inherit;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
 }
 
 .navbar .nav-buttons .nav-user-btn:hover {
@@ -373,45 +558,34 @@ a.nav-user-dropdown-item {
     color: #fecaca;
 }
 
-/* Узкая шапка: компактнее ссылки и кнопки, меню по-прежнему в один ряд */
-@media (max-width: 1280px) {
-    .nav-links {
-        gap: clamp(0.35rem, 0.85vw, 0.95rem);
-    }
-
-    .nav-links a {
-        font-size: 0.86rem;
-        padding: 0.38rem 0;
-    }
-
-    .navbar .nav-buttons .btn {
-        padding: 0.42rem 0.72rem;
-        font-size: 0.82rem;
-    }
-
-    .nav-right {
-        gap: 0.45rem;
-    }
+/* Кнопка «гамбургер» — только мобильная ширина */
+.nav-menu-toggle {
+    display: none;
 }
 
-@media (max-width: 900px) {
-    .nav-links {
-        gap: 0.28rem;
-    }
-
-    .nav-links a {
-        font-size: 0.8rem;
-        padding: 0.32rem 0;
-    }
+.nav-menu-backdrop {
+    display: none;
 }
 
 @media (max-width: 768px) {
+    /* backdrop-filter на .navbar ломает position:fixed у потомков (меню ~68px) */
+    .navbar {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        background: rgba(10, 11, 16, 0.98);
+    }
+
     .navbar-inner {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        column-gap: 0.5rem;
+        column-gap: 0.35rem;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow: hidden;
+        padding: 0 calc(16px + env(safe-area-inset-right, 0px)) 0 calc(16px + env(safe-area-inset-left, 0px));
     }
 
     .navbar-inner .logo,
@@ -419,30 +593,635 @@ a.nav-user-dropdown-item {
         justify-self: auto;
     }
 
+    .navbar-inner .logo {
+        flex: 0 1 auto;
+        min-width: 0;
+    }
+
+    .logo-text {
+        font-size: 1.15rem;
+    }
+
+    .logo-mark {
+        width: 30px;
+        height: 30px;
+    }
+
     .nav-links {
         display: none !important;
     }
 
-    .nav-right {
+    .navbar-inner .nav-right {
+        display: flex !important;
+        align-items: center;
+        flex: 0 0 auto;
+        order: 2;
+        margin-left: auto;
+        margin-right: 0.35rem;
         gap: 0.35rem;
-        flex-wrap: wrap;
-        justify-content: flex-end;
     }
 
-    .navbar .nav-buttons .btn {
-        padding: 0.42rem 0.72rem;
-        font-size: 0.82rem;
+    /* .navbar-inner { overflow: hidden } обрезал .nav-lang-dropdown под шапкой */
+    .nav-right .nav-lang-wrap {
+        position: relative;
+        z-index: 1102;
     }
 
-    .nav-lang-pill {
-        padding: 0.22rem 0.35rem;
+    .nav-lang-wrap.nav-lang-menu-open .nav-lang-dropdown {
+        position: fixed;
+        top: calc(68px + env(safe-area-inset-top, 0px) + 0.35rem);
+        right: calc(16px + env(safe-area-inset-right, 0px));
+        left: auto;
+        margin-top: 0;
+        transform: none;
+        z-index: 1105;
+    }
+
+    .nav-mobile-drawer-footer .nav-lang-wrap.nav-lang-menu-open .nav-lang-dropdown {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        margin-top: 0.35rem;
+        transform: none;
+        z-index: 1105;
+    }
+
+    .navbar-inner .nav-right > .nav-buttons,
+    .navbar-inner .nav-right > .dashboard-nav-cta {
+        display: none !important;
+    }
+
+    .nav-mobile-panel {
+        display: none;
+    }
+
+    .nav-menu-toggle {
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        flex-shrink: 0;
+        width: 44px;
+        height: 44px;
+        margin: 0;
+        padding: 0;
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.65);
+        color: #f8fafc;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .nav-menu-toggle:hover {
+        background: rgba(56, 189, 248, 0.12);
+        border-color: rgba(125, 211, 252, 0.45);
+    }
+
+    .nav-menu-toggle-bar {
+        display: block;
+        width: 20px;
+        height: 2px;
+        border-radius: 2px;
+        background: currentColor;
+        transition: transform 0.22s ease, opacity 0.18s ease;
+    }
+
+    .navbar.nav-menu-open .nav-menu-toggle-bar:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+
+    .navbar.nav-menu-open .nav-menu-toggle-bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .navbar.nav-menu-open .nav-menu-toggle-bar:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .nav-menu-backdrop.nav-menu-backdrop--open {
+        display: block;
+        position: fixed;
+        inset: 68px 0 0;
+        z-index: 1098;
+        border: 0;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+        background: rgba(2, 6, 23, 0.82);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        cursor: pointer;
+    }
+
+    .nav-mobile-panel.nav-mobile-panel--open {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 68px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: 100%;
+        z-index: 1099;
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(180deg, rgba(12, 14, 22, 0.98) 0%, rgba(8, 10, 18, 0.99) 100%);
+        border-top: 1px solid rgba(148, 163, 184, 0.12);
+        box-sizing: border-box;
+        overflow-x: clip;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        isolation: isolate;
+    }
+
+    .nav-mobile-panel--open .nav-links {
+        display: flex !important;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 0;
+        margin: 0;
+        padding: 0.75rem 1rem 0;
+        overflow: visible;
+        list-style: none;
+        flex: 0 0 auto;
+    }
+
+    .nav-mobile-auth-items {
+        list-style: none;
+        margin: 0.35rem 0 0;
+        padding: 1rem 0 calc(0.5rem + env(safe-area-inset-bottom, 0px));
+        border-top: 1px solid rgba(148, 163, 184, 0.2);
+        border-bottom: none;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .nav-mobile-auth-items .nav-buttons,
+    .nav-mobile-auth-items #navMobileAuth {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0.65rem;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .nav-mobile-auth-items .btn,
+    .nav-mobile-auth-items a.btn {
+        display: inline-flex !important;
+        width: 100%;
+        justify-content: center;
+        padding: 0.78rem 1rem;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        line-height: 1.2;
+        cursor: pointer;
+    }
+
+    .nav-mobile-auth-items .btn-outline {
+        background: transparent;
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        color: #f8fafc;
+    }
+
+    .nav-mobile-auth-items .btn-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        border: 1px solid transparent;
+        color: #fff;
+    }
+
+    .nav-mobile-panel--open .nav-links li {
+        width: 100%;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .nav-mobile-panel--open .nav-links a {
+        display: block;
+        padding: 0.95rem 0.5rem;
+        font-size: 1.05rem;
+        border-bottom: none;
+    }
+
+    .nav-mobile-panel--open .nav-links a.nav-link-active,
+    .nav-mobile-panel--open .nav-links a[aria-current="page"] {
+        color: #7dd3fc;
+        background: rgba(56, 189, 248, 0.08);
+        border-radius: 8px;
+    }
+
+    .nav-mobile-drawer-footer {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.85rem;
+        padding: 1rem 1rem calc(1.25rem + env(safe-area-inset-bottom, 0px));
+        border-top: 1px solid rgba(148, 163, 184, 0.15);
+        background: rgba(8, 10, 18, 0.55);
+        overflow: visible;
+    }
+
+    .nav-mobile-drawer-footer .nav-lang-wrap {
+        width: 100%;
+    }
+
+    .nav-mobile-drawer-footer .nav-lang-pill {
+        width: 100%;
+        justify-content: space-between;
+        padding: 0.5rem 0.65rem;
+    }
+
+    .nav-mobile-drawer-footer .nav-lang-select {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .nav-mobile-panel--open .nav-mobile-drawer-footer {
+        display: flex !important;
+    }
+
+    .nav-mobile-drawer-footer .nav-buttons,
+    .nav-mobile-drawer-footer .nav-mobile-auth,
+    .nav-mobile-drawer-footer #navMobileAuth {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0.65rem;
+        width: 100%;
+    }
+
+    .nav-mobile-drawer-footer .nav-buttons .btn,
+    .nav-mobile-drawer-footer .nav-buttons a.btn,
+    .nav-mobile-drawer-footer .nav-mobile-auth .btn,
+    .nav-mobile-drawer-footer .nav-mobile-auth a.btn,
+    .nav-mobile-drawer-footer #navMobileAuth .btn,
+    .nav-mobile-drawer-footer #navMobileAuth a.btn {
+        display: inline-flex !important;
+        width: 100%;
+        justify-content: center;
+        padding: 0.72rem 1rem;
+        font-size: 0.95rem;
+        box-sizing: border-box;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        line-height: 1.2;
+        cursor: pointer;
+    }
+
+    .nav-mobile-drawer-footer .btn-outline {
+        background: transparent;
+        border: 1px solid rgba(148, 163, 184, 0.45);
+        color: #f8fafc;
+    }
+
+    .nav-mobile-drawer-footer .btn-primary {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        border: 1px solid transparent;
+        color: #fff;
+    }
+
+    .nav-mobile-drawer-footer .dashboard-nav-cta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+        width: 100%;
+    }
+
+    .nav-mobile-drawer-footer .dashboard-nav-cta .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .nav-mobile-drawer-footer .dashboard-nav-cta .user-menu {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.45rem;
+    }
+
+    .nav-mobile-drawer-footer .dashboard-nav-cta .user-menu-trigger {
+        display: inline-flex !important;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0.85rem;
+        box-sizing: border-box;
+        border: 1px solid rgba(148, 163, 184, 0.38) !important;
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.65) !important;
+        color: #f8fafc !important;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .nav-mobile-drawer-footer .dashboard-nav-cta .user-menu-dropdown {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        max-height: none;
+        overflow: visible;
+        pointer-events: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        padding: 0;
+        margin: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        min-width: 0;
+    }
+
+    .nav-mobile-drawer-footer .dashboard-nav-cta .user-menu-item {
+        width: 100%;
+        box-sizing: border-box;
+        border-radius: 10px;
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        background: rgba(15, 23, 42, 0.72);
+    }
+
+    /* Личный кабинет внизу drawer (не в прокрутке ссылок) */
+    .nav-mobile-auth-footer {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        padding-top: 0.15rem;
+        border-top: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .nav-mobile-auth-footer .nav-buttons,
+    .nav-mobile-auth-footer #navMobileAuth {
+        display: flex !important;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    /* Меню аккаунта: клик по имени — раскрыть пункты кабинета */
+    .nav-mobile-panel .nav-mobile-auth-items .nav-user-menu,
+    .nav-mobile-drawer-footer .nav-user-menu,
+    .nav-mobile-auth-footer .nav-user-menu {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        overflow: visible;
+        box-sizing: border-box;
+    }
+
+    .nav-mobile-panel .nav-mobile-auth-items .nav-user-btn,
+    .nav-mobile-drawer-footer .nav-user-btn,
+    .nav-mobile-auth-footer .nav-user-btn {
+        display: inline-flex !important;
+        width: 100%;
+        max-width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0.85rem;
+        margin: 0;
+        box-sizing: border-box;
+        appearance: none;
+        -webkit-appearance: none;
+        border: 1px solid rgba(148, 163, 184, 0.38) !important;
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.65) !important;
+        color: #f8fafc !important;
+        font-size: 0.95rem;
+        font-weight: 600;
+        line-height: 1.25;
+        white-space: normal;
+        text-align: left;
+        cursor: pointer;
+    }
+
+    .nav-mobile-panel .nav-mobile-auth-items .nav-user-btn span,
+    .nav-mobile-drawer-footer .nav-user-btn span,
+    .nav-mobile-auth-footer .nav-user-btn span {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .nav-mobile-panel .nav-mobile-auth-items .nav-user-dropdown,
+    .nav-mobile-drawer-footer .nav-user-dropdown,
+    .nav-mobile-auth-footer .nav-user-dropdown {
+        position: static;
+        top: auto;
+        right: auto;
+        left: auto;
+        opacity: 0;
+        visibility: hidden;
+        max-height: 0;
+        overflow: hidden;
+        transform: none;
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        margin: 0;
+        padding: 0;
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        box-shadow: none;
+        border: none;
+        background: transparent;
+        transition: opacity 0.18s ease, max-height 0.22s ease, margin-top 0.18s ease, visibility 0.18s;
+    }
+
+    .nav-mobile-panel .nav-mobile-auth-items .nav-user-menu.is-open .nav-user-dropdown,
+    .nav-mobile-drawer-footer .nav-user-menu.is-open .nav-user-dropdown,
+    .nav-mobile-auth-footer .nav-user-menu.is-open .nav-user-dropdown {
+        opacity: 1;
+        visibility: visible;
+        max-height: none;
+        margin-top: 0.5rem;
+        overflow: visible;
+        pointer-events: auto;
+    }
+
+    .nav-mobile-panel .nav-mobile-auth-items .nav-user-menu.is-open .nav-user-chevron,
+    .nav-mobile-drawer-footer .nav-user-menu.is-open .nav-user-chevron,
+    .nav-mobile-auth-footer .nav-user-menu.is-open .nav-user-chevron {
+        transform: rotate(180deg);
+    }
+
+    .nav-mobile-panel .nav-mobile-auth-items .nav-user-dropdown-item,
+    .nav-mobile-drawer-footer .nav-user-dropdown-item,
+    .nav-mobile-auth-footer .nav-user-dropdown-item {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        border-radius: 8px;
+        padding: 0.78rem 0.85rem;
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        background: rgba(15, 23, 42, 0.72);
+        color: #e2e8f0;
+        font-size: 0.92rem;
+        font-weight: 600;
+        line-height: 1.3;
+        white-space: normal;
+        text-align: left;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .nav-mobile-auth-footer .nav-user-dropdown-item--danger,
+    .nav-mobile-drawer-footer .nav-user-dropdown-item--danger {
+        color: #fca5a5;
+        border-color: rgba(248, 113, 113, 0.35);
+    }
+
+    /* Раскрыт кабинет на низком экране — прячем основные ссылки, остаётся блок аккаунта */
+    body.nav-menu-open.nav-account-menu-open .nav-mobile-panel--open .nav-links {
+        display: none !important;
+    }
+
+    body.nav-menu-open {
+        overflow: hidden;
+    }
+
+    body.nav-menu-open .navbar {
+        z-index: 1101;
+    }
+
+    .navbar-inner .logo {
+        flex: 1 1 auto;
+        order: 1;
+    }
+
+    .navbar-inner > .nav-menu-toggle {
+        order: 3;
+        flex: 0 0 auto;
+    }
+
+    /* Личный кабинет: язык и меню всегда в шапке */
+    body.dashboard-page .navbar-inner .nav-right {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        flex: 0 0 auto !important;
+        margin-left: auto !important;
+        min-width: 0 !important;
+        max-width: 52%;
+        gap: 0.35rem;
+    }
+
+    body.dashboard-page .navbar-inner .nav-right > .nav-lang-wrap {
+        display: flex !important;
+        visibility: visible !important;
+        flex-shrink: 0;
+    }
+
+    body.dashboard-page .navbar-inner > .nav-menu-toggle {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        flex-shrink: 0;
+    }
+
+    body.dashboard-page .navbar-inner .logo {
+        flex: 1 1 auto !important;
+        max-width: 46%;
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    body.dashboard-page .navbar-header-mobile {
+        flex-shrink: 0;
+    }
+
+    /* В drawer кабинета — только стандартный блок аккаунта (auth-check), без dashboard-nav-cta */
+    body.dashboard-page .nav-mobile-drawer-footer .dashboard-nav-cta {
+        display: none !important;
     }
 }
 
-/* technology.html / faq.html — шапка без .navbar-inner (логотип | меню | кнопки) */
-.navbar.navbar--legacy {
-    justify-content: space-between;
-    padding: 0 clamp(0.85rem, 3vw, 2.75rem);
-    max-width: 100%;
-    box-sizing: border-box;
+@media (max-width: 400px) {
+    body.dashboard-page .logo-text {
+        display: none;
+    }
+}
+
+/* Низкий экран: компактное меню */
+@media (max-height: 560px) and (max-width: 768px) {
+    .nav-mobile-panel--open .nav-links {
+        padding: 0.35rem 1rem 0;
+    }
+
+    .nav-mobile-panel--open .nav-links a {
+        padding: 0.55rem 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .nav-mobile-panel--open .nav-links li {
+        border-bottom-width: 0;
+    }
+
+    .nav-mobile-panel--open .nav-links li + li {
+        border-top: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .nav-mobile-auth-items {
+        padding: 0.65rem 0 calc(0.35rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    .nav-mobile-drawer-footer {
+        padding: 0.55rem 1rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+        gap: 0.45rem;
+    }
+
+    body.nav-menu-open.nav-account-menu-open .nav-mobile-drawer-footer {
+        padding-top: 0.75rem;
+        min-height: min(100%, calc(100dvh - 68px));
+        box-sizing: border-box;
+    }
+
+    .nav-mobile-auth-footer .nav-user-btn,
+    .nav-mobile-drawer-footer .nav-user-btn {
+        padding: 0.58rem 0.75rem;
+        font-size: 0.88rem;
+    }
+
+    .nav-mobile-auth-footer .nav-user-dropdown-item,
+    .nav-mobile-drawer-footer .nav-user-dropdown-item {
+        padding: 0.58rem 0.75rem;
+        font-size: 0.86rem;
+    }
+
+    .nav-mobile-auth-footer .nav-user-menu.is-open .nav-user-dropdown,
+    .nav-mobile-drawer-footer .nav-user-menu.is-open .nav-user-dropdown {
+        gap: 0.3rem;
+        margin-top: 0.3rem;
+    }
+}
+
+/* Средняя высота: при открытом кабинете тоже освобождаем место */
+@media (max-height: 640px) and (max-width: 768px) {
+    body.nav-menu-open.nav-account-menu-open .nav-mobile-panel--open .nav-links {
+        display: none !important;
+    }
 }
