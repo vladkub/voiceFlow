@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Установка TalkPilot на Mac</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/design-tokens.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg0: #070b18;
+      --bg1: #10182d;
+      --card: rgba(17, 24, 48, 0.92);
+      --line: rgba(148, 163, 184, 0.28);
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "SF Pro Display", "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 420px at 12% -10%, rgba(124, 58, 237, 0.28), transparent 55%),
+        radial-gradient(700px 380px at 88% 0%, rgba(37, 99, 235, 0.22), transparent 50%),
+        linear-gradient(180deg, var(--bg1), var(--bg0));
+    }
+    .wrap {
+      width: min(640px, 92vw);
+      margin: 0 auto;
+      padding: 2.5rem 0 3rem;
+    }
+    .brand {
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #a5b4fc;
+      margin: 0 0 0.75rem;
+    }
+    h1 {
+      margin: 0 0 0.6rem;
+      font-size: clamp(1.6rem, 4vw, 2.1rem);
+      line-height: 1.15;
+    }
+    .lead {
+      margin: 0 0 1.75rem;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 1.02rem;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 1.25rem 1.2rem 1.35rem;
+      margin-bottom: 0.9rem;
+    }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.7rem;
+      height: 1.7rem;
+      border-radius: 999px;
+      margin-right: 0.55rem;
+      background: var(--primary-gradient);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .step-title {
+      display: flex;
+      align-items: center;
+      margin: 0 0 0.55rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .step-text {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.95rem;
+    }
+    kbd {
+      display: inline-block;
+      padding: 0.1rem 0.4rem;
+      border-radius: 6px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      background: rgba(15, 23, 42, 0.75);
+      font-size: 0.85em;
+    }
+    .cmd {
+      margin: 0.85rem 0 0.75rem;
+      padding: 0.85rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid rgba(99, 102, 241, 0.35);
+      background: rgba(2, 6, 23, 0.72);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.4;
+      word-break: break-all;
+      color: #e2e8f0;
+    }
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 14px;
+      padding: 0.95rem 1.1rem;
+      width: 100%;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      font-size: 1.02rem;
+      color: #fff;
+      background: var(--primary-gradient);
+      box-shadow: var(--vf-shadow-primary-md);
+    }
+    .btn:hover { filter: brightness(1.05); }
+    .btn.is-done {
+      background: linear-gradient(90deg, #059669, #10b981);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.28);
+    }
+    .note {
+      margin: 1.1rem 0 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    .back {
+      display: inline-block;
+      margin-top: 1.25rem;
+      color: #a5b4fc;
+      text-decoration: none;
+    }
+    .back:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <p class="brand">TalkPilot</p>
+    <h1>Установка на Mac</h1>
+    <p class="lead">Без сертификата Apple двойной клик блокируется. Ниже — самый простой рабочий способ: одна команда в Терминале.</p>
+
+    <section class="card">
+      <h2 class="step-title"><span class="step-num">1</span> Откройте Терминал</h2>
+      <p class="step-text">Нажмите <kbd>⌘</kbd> + <kbd>Пробел</kbd>, введите <strong>Terminal</strong> и нажмите Enter.</p>
+    </section>
+
+    <section class="card">
+      <h2 class="step-title"><span class="step-num">2</span> Вставьте команду и Enter</h2>
+      <p class="step-text">Нажмите кнопку ниже, затем в Терминале <kbd>⌘</kbd> + <kbd>V</kbd> и Enter. Установка займёт около минуты.</p>
+      <pre class="cmd" id="macInstallCmd">curl -fsSL https://talkpilot.pro/downloads/install-macos.sh | bash</pre>
+      <button type="button" class="btn" id="copyMacInstallBtn">Скопировать команду</button>
+      <p class="note" id="copyStatus" hidden>Скопировано. Теперь вставьте в Терминал и нажмите Enter.</p>
+    </section>
+
+    <p class="note">После установки войдите в аккаунт TalkPilot. Если появится окно про BlackHole — введите пароль администратора Mac.</p>
+    <a class="back" href="/">← На главную</a>
+  </main>
+  <script>
+    (function () {
+      var cmd = document.getElementById('macInstallCmd').textContent.trim();
+      var btn = document.getElementById('copyMacInstallBtn');
+      var status = document.getElementById('copyStatus');
+      function markDone() {
+        btn.textContent = 'Скопировано — вставьте в Терминал';
+        btn.classList.add('is-done');
+        status.hidden = false;
+      }
+      btn.addEventListener('click', function () {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(cmd).then(markDone).catch(function () {
+            window.prompt('Скопируйте команду:', cmd);
+            markDone();
+          });
+        } else {
+          window.prompt('Скопируйте команду:', cmd);
+          markDone();
+        }
+        if (typeof window.vfTrack === 'function') {
+          window.vfTrack('desktop_app_download', {
+            platform: 'macos',
+            file_name: 'install-macos.sh',
+            install_mode: 'terminal_page'
+          });
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

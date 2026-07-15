@@ -17,8 +17,8 @@
     '<i class="fab fa-apple platform-icon" aria-hidden="true"></i>' +
     '<span class="desktop-download-option-text">' +
     '<span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac_easy">macOS · простая установка</span>' +
-    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Скопировать команду для Терминала</span>' +
-    '</span><i class="fas fa-copy" aria-hidden="true"></i></button>' +
+    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">2 шага · через Терминал</span>' +
+    '</span><i class="fas fa-arrow-right" aria-hidden="true"></i></button>' +
     '<a href="/downloads/Voice-Translator-Setup.exe" class="desktop-download-option desktop-download-option--win" id="desktopDownloadWinBtn" download data-desktop-os="windows">' +
     '<i class="fab fa-windows platform-icon" aria-hidden="true"></i>' +
     '<span class="desktop-download-option-text">' +
@@ -41,8 +41,8 @@
     '<i class="fab fa-apple platform-icon" aria-hidden="true"></i>' +
     '<span class="desktop-download-option-text">' +
     '<span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac_easy">macOS · простая установка</span>' +
-    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Скопировать команду для Терминала</span>' +
-    '</span><i class="fas fa-copy" aria-hidden="true"></i></button>';
+    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">2 шага · через Терминал</span>' +
+    '</span><i class="fas fa-arrow-right" aria-hidden="true"></i></button>';
 
   var MAC_INSTALL_CMD = 'curl -fsSL https://talkpilot.pro/downloads/install-macos.sh | bash';
 
@@ -143,22 +143,8 @@
   }
 
   function copyMacInstallCommand() {
-    var cmd = MAC_INSTALL_CMD;
-    var done = function () {
-      trackDesktopAppDownload('macos-easy', 'https://talkpilot.pro/downloads/install-macos.sh');
-      window.alert(
-        'Команда скопирована.\n\n1) Откройте Терминал (⌘+Пробел → Terminal)\n2) Вставьте ⌘+V и нажмите Enter\n\n' + cmd
-      );
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(cmd).then(done).catch(function () {
-        window.prompt('Скопируйте команду вручную:', cmd);
-        trackDesktopAppDownload('macos-easy', 'https://talkpilot.pro/downloads/install-macos.sh');
-      });
-    } else {
-      window.prompt('Скопируйте команду вручную:', cmd);
-      trackDesktopAppDownload('macos-easy', 'https://talkpilot.pro/downloads/install-macos.sh');
-    }
+    // Отдельная страница с двумя шагами — понятнее, чем alert.
+    window.location.assign('/mac-install.html');
   }
 
   function startDesktopDownload(os) {
