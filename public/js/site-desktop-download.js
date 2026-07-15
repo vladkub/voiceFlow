@@ -13,12 +13,12 @@
     '<h2 class="desktop-download-title" id="desktopDownloadModalTitle" data-site-i18n="index.desk.modal.title">Скачать TalkPilot</h2>' +
     '<p class="desktop-download-lead" data-site-i18n="index.desk.modal.sub">Выберите версию для вашей операционной системы</p>' +
     '<div class="desktop-download-options">' +
-    '<a href="/downloads/Install-TalkPilot-Mac.command" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacEasyBtn" download data-desktop-os="macos-easy">' +
+    '<button type="button" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacEasyBtn" data-desktop-os="macos-easy">' +
     '<i class="fab fa-apple platform-icon" aria-hidden="true"></i>' +
     '<span class="desktop-download-option-text">' +
     '<span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac_easy">macOS · простая установка</span>' +
-    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Рекомендуется · двойной клик</span>' +
-    '</span><i class="fas fa-download" aria-hidden="true"></i></a>' +
+    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Скопировать команду для Терминала</span>' +
+    '</span><i class="fas fa-copy" aria-hidden="true"></i></button>' +
     '<a href="/downloads/Voice-Translator-Setup.exe" class="desktop-download-option desktop-download-option--win" id="desktopDownloadWinBtn" download data-desktop-os="windows">' +
     '<i class="fab fa-windows platform-icon" aria-hidden="true"></i>' +
     '<span class="desktop-download-option-text">' +
@@ -33,51 +33,56 @@
     '</span><i class="fas fa-download" aria-hidden="true"></i></a>' +
     '</div>' +
     '<p class="desktop-download-hint" data-site-i18n="index.desk.modal.hint">После установки войдите в аккаунт — приложение подключится к серверу TalkPilot.</p>' +
-    '<p class="desktop-download-mac-tip" data-site-i18n="index.desk.modal.mac_tip">macOS: выберите «простая установка», скачайте файл и дважды нажмите его. Если macOS спросит — правый клик → «Открыть». Не перетаскивайте .app вручную.</p>' +
+    '<p class="desktop-download-mac-tip" data-site-i18n="index.desk.modal.mac_tip">macOS: нажмите «простая установка» — команда скопируется. Откройте Терминал (⌘+Пробел → Terminal), вставьте ⌘+V и Enter. Не скачивайте .command двойным кликом — macOS его блокирует.</p>' +
     '</div></div>';
 
   var MAC_EASY_BTN_HTML =
-    '<a href="/downloads/Install-TalkPilot-Mac.command" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacEasyBtn" download data-desktop-os="macos-easy">' +
+    '<button type="button" class="desktop-download-option desktop-download-option--mac" id="desktopDownloadMacEasyBtn" data-desktop-os="macos-easy">' +
     '<i class="fab fa-apple platform-icon" aria-hidden="true"></i>' +
     '<span class="desktop-download-option-text">' +
     '<span class="desktop-download-option-label" data-site-i18n="index.desk.modal.mac_easy">macOS · простая установка</span>' +
-    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Рекомендуется · двойной клик</span>' +
-    '</span><i class="fas fa-download" aria-hidden="true"></i></a>';
+    '<span class="desktop-download-option-meta" data-site-i18n="index.desk.modal.mac_easy_meta">Скопировать команду для Терминала</span>' +
+    '</span><i class="fas fa-copy" aria-hidden="true"></i></button>';
+
+  var MAC_INSTALL_CMD = 'curl -fsSL https://talkpilot.pro/downloads/install-macos.sh | bash';
 
   function upgradeExistingModal(m) {
     if (!m) return;
     var options = m.querySelector('.desktop-download-options');
-    if (options && !document.getElementById('desktopDownloadMacEasyBtn')) {
-      var wrap = document.createElement('div');
-      wrap.innerHTML = MAC_EASY_BTN_HTML;
-      var easyBtn = wrap.firstElementChild;
-      var winBtn = document.getElementById('desktopDownloadWinBtn');
-      if (winBtn && winBtn.parentNode === options) {
-        options.insertBefore(easyBtn, winBtn);
-      } else {
-        options.insertBefore(easyBtn, options.firstChild);
+    var easyExisting = document.getElementById('desktopDownloadMacEasyBtn');
+    if (options) {
+      if (easyExisting && easyExisting.tagName === 'A') {
+        easyExisting.remove();
+        easyExisting = null;
+      }
+      if (!document.getElementById('desktopDownloadMacEasyBtn')) {
+        var wrap = document.createElement('div');
+        wrap.innerHTML = MAC_EASY_BTN_HTML;
+        var easyBtn = wrap.firstElementChild;
+        var winBtn = document.getElementById('desktopDownloadWinBtn');
+        if (winBtn && winBtn.parentNode === options) {
+          options.insertBefore(easyBtn, winBtn);
+        } else {
+          options.insertBefore(easyBtn, options.firstChild);
+        }
       }
     }
     var macBtn = document.getElementById('desktopDownloadMacBtn');
     if (macBtn) {
-      var macLabel = macBtn.querySelector('[data-site-i18n="index.desk.modal.mac"]');
-      var macMeta = macBtn.querySelector('[data-site-i18n="index.desk.modal.mac_meta"]');
-      if (macLabel) macLabel.setAttribute('data-site-i18n', 'index.desk.modal.mac');
-      if (macMeta) macMeta.setAttribute('data-site-i18n', 'index.desk.modal.mac_meta');
       var icon = macBtn.querySelector('i.platform-icon');
       if (icon) {
         icon.className = 'fas fa-compact-disc platform-icon';
       }
     }
-    if (!m.querySelector('.desktop-download-mac-tip')) {
-      var tip = document.createElement('p');
-      tip.className = 'desktop-download-mac-tip';
-      tip.setAttribute('data-site-i18n', 'index.desk.modal.mac_tip');
-      tip.textContent =
-        'macOS: выберите «простая установка», скачайте файл и дважды нажмите его. Если macOS спросит — правый клик → «Открыть». Не перетаскивайте .app вручную.';
+    var tipEl = m.querySelector('.desktop-download-mac-tip');
+    if (!tipEl) {
+      tipEl = document.createElement('p');
+      tipEl.className = 'desktop-download-mac-tip';
+      tipEl.setAttribute('data-site-i18n', 'index.desk.modal.mac_tip');
       var dialog = m.querySelector('.desktop-download-dialog') || m;
-      dialog.appendChild(tip);
+      dialog.appendChild(tipEl);
     }
+    tipEl.setAttribute('data-site-i18n', 'index.desk.modal.mac_tip');
   }
 
   function ensureModal() {
@@ -123,7 +128,7 @@
   function trackDesktopAppDownload(os, url) {
     var fileName =
       os === 'macos-easy'
-        ? 'Install-TalkPilot-Mac.command'
+        ? 'install-macos.sh'
         : os === 'macos'
           ? 'Voice-Translator.dmg'
           : 'Voice-Translator-Setup.exe';
@@ -137,13 +142,34 @@
     });
   }
 
+  function copyMacInstallCommand() {
+    var cmd = MAC_INSTALL_CMD;
+    var done = function () {
+      trackDesktopAppDownload('macos-easy', 'https://talkpilot.pro/downloads/install-macos.sh');
+      window.alert(
+        'Команда скопирована.\n\n1) Откройте Терминал (⌘+Пробел → Terminal)\n2) Вставьте ⌘+V и нажмите Enter\n\n' + cmd
+      );
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(cmd).then(done).catch(function () {
+        window.prompt('Скопируйте команду вручную:', cmd);
+        trackDesktopAppDownload('macos-easy', 'https://talkpilot.pro/downloads/install-macos.sh');
+      });
+    } else {
+      window.prompt('Скопируйте команду вручную:', cmd);
+      trackDesktopAppDownload('macos-easy', 'https://talkpilot.pro/downloads/install-macos.sh');
+    }
+  }
+
   function startDesktopDownload(os) {
+    if (os === 'macos-easy') {
+      copyMacInstallCommand();
+      return;
+    }
     var base =
-      os === 'macos-easy'
-        ? 'https://talkpilot.pro/downloads/Install-TalkPilot-Mac.command'
-        : os === 'macos'
-          ? 'https://talkpilot.pro/downloads/Voice-Translator.dmg'
-          : 'https://talkpilot.pro/downloads/Voice-Translator-Setup.exe';
+      os === 'macos'
+        ? 'https://talkpilot.pro/downloads/Voice-Translator.dmg'
+        : 'https://talkpilot.pro/downloads/Voice-Translator-Setup.exe';
     var url = base + '?t=' + Date.now();
     trackDesktopAppDownload(os, url);
     window.setTimeout(function () {
@@ -153,6 +179,7 @@
 
   window.vfTrackDesktopAppDownload = trackDesktopAppDownload;
   window.vfStartDesktopDownload = startDesktopDownload;
+  window.vfCopyMacInstallCommand = copyMacInstallCommand;
 
   function bindDownloadLinks() {
     var winBtn = document.getElementById('desktopDownloadWinBtn');
