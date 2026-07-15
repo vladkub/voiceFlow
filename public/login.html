@@ -2,7 +2,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <script>(function(){if(/^\/[a-z]{2}(?:\/|$)/.test(location.pathname||'/'))return;document.documentElement.classList.add('site-lang-loading');})();</script>
+    <script>(function(){
+      try {
+        /* Electron file:// login: нет site-lang-*.js — иначе .login-card остаётся visibility:hidden */
+        if (/^file:/i.test(location.protocol || '')) return;
+        if (/VoiceTranslatorDesktop/i.test(navigator.userAgent || '')) return;
+      } catch (e) { /* ignore */ }
+      if (/^\/[a-z]{2}(?:\/|$)/.test(location.pathname||'/')) return;
+      document.documentElement.classList.add('site-lang-loading');
+    })();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="noindex, nofollow">
     <title>Вход — TalkPilot</title>
@@ -24,6 +32,8 @@
         .login-lang-bar { display: flex; justify-content: flex-end; margin-bottom: 0.75rem; }
         .login-lang-bar .nav-lang-wrap { margin: 0; }
         html.site-lang-loading .login-card { visibility: hidden; }
+        /* file:// / desktop: i18n-скрипты сняты — форму нельзя оставлять скрытой */
+        html.vf-desktop-login.site-lang-loading .login-card { visibility: visible; }
         .login-oauth-divider {
             display: flex;
             align-items: center;
@@ -197,6 +207,7 @@
         var ua = typeof navigator !== 'undefined' && navigator.userAgent ? navigator.userAgent : '';
         if (/VoiceTranslatorDesktop/i.test(ua) || /^file:/i.test(window.location.protocol) || (typeof window !== 'undefined' && window.voiceflowDesktop)) {
           document.documentElement.classList.add('vf-desktop-login');
+          document.documentElement.classList.remove('site-lang-loading');
         }
       } catch (e) { /* ignore */ }
     })();
@@ -471,6 +482,8 @@
 
       async function init() {
         if (isFileLoginPage()) {
+          document.documentElement.classList.add('vf-desktop-login');
+          document.documentElement.classList.remove('site-lang-loading');
           document.querySelectorAll('link[href^="/"]').forEach(function (n) {
             n.remove();
           });

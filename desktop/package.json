@@ -1,6 +1,6 @@
 {
   "name": "voiceflow-desktop",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "VoiceFlow desktop wrapper",
   "main": "main.js",
   "author": "VoiceFlow",
