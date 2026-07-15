@@ -2174,6 +2174,14 @@ app.whenReady().then(async () => {
           } catch (cookieErr) {
             console.warn("[desktop] auth-login cookie:", cookieErr.message || cookieErr);
           }
+          // Navigate from main process: from file:// login, window.location.href
+          // often does nothing on macOS Electron, so the UI looks stuck after login.
+          const redirect = readRedirectFromWebContents(mainWindow.webContents);
+          setTimeout(() => {
+            void navigateDesktopAfterLogin(redirect || "/ui").catch((e) => {
+              console.warn("[desktop] auth-login navigate:", e.message || e);
+            });
+          }, 80);
         } else {
           console.warn("[desktop] auth-login: missing user id in response");
         }
