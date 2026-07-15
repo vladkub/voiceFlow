@@ -147,10 +147,18 @@ async function checkDesktopUpdatesOnce() {
     cleanupDesktopUpdaterPending();
     await autoUpdater.checkForUpdates();
   } catch (err) {
-    setDesktopUpdateState({
-      status: "error",
-      message: String(err && err.message ? err.message : err),
-    });
+    if (isBenignDesktopUpdateMiss(err)) {
+      setDesktopUpdateState({
+        status: "latest",
+        message: "No update feed for this platform",
+        availableVersion: "",
+      });
+    } else {
+      setDesktopUpdateState({
+        status: "error",
+        message: String(err && err.message ? err.message : err),
+      });
+    }
   } finally {
     desktopUpdateCheckInFlight = false;
   }
@@ -179,6 +187,16 @@ async function downloadDesktopUpdateOnce() {
   return desktopUpdateState;
 }
 
+function isBenignDesktopUpdateMiss(err) {
+  const msg = String(err && err.message ? err.message : err || "");
+  return (
+    /latest-mac\.yml/i.test(msg) ||
+    /Cannot find channel/i.test(msg) ||
+    /404[\s\S]*latest(-mac)?\.yml/i.test(msg) ||
+    (/HttpError:\s*404/i.test(msg) && /\/downloads\//i.test(msg))
+  );
+}
+
 function configureManualUpdater() {
   if (!app.isPackaged) {
     setDesktopUpdateState({
@@ -186,6 +204,21 @@ function configureManualUpdater() {
       status: "dev",
       message: "Auto-update is disabled in development",
       version: pkg.version || "",
+    });
+    return;
+  }
+  /**
+   * macOS: сборка без подписи Apple — electron-updater требует latest-mac.yml + zip
+   * и всё равно не обновит неподписанное приложение. Обновление только через
+   * curl install-macos.sh (см. https://talkpilot.pro/mac-install.html).
+   */
+  if (process.platform === "darwin") {
+    setDesktopUpdateState({
+      supported: false,
+      status: "manual",
+      message: "macOS updates: reinstall via talkpilot.pro/mac-install.html",
+      version: pkg.version || "",
+      availableVersion: "",
     });
     return;
   }
@@ -231,6 +264,14 @@ function configureManualUpdater() {
     });
   });
   autoUpdater.on("error", (err) => {
+    if (isBenignDesktopUpdateMiss(err)) {
+      setDesktopUpdateState({
+        status: "latest",
+        message: "No update feed for this platform",
+        availableVersion: "",
+      });
+      return;
+    }
     setDesktopUpdateState({
       status: "error",
       message: String(err && err.message ? err.message : err),
