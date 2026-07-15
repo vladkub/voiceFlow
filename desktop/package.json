@@ -1,6 +1,6 @@
 {
   "name": "voiceflow-desktop",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "VoiceFlow desktop wrapper",
   "main": "main.js",
   "author": "VoiceFlow",
@@ -11,7 +11,7 @@
     "predist:portable": "node scripts/generate-icons.mjs",
     "predist:installer": "node scripts/generate-icons.mjs",
     "predist:dir": "node scripts/generate-icons.mjs",
-    "predist:mac": "node scripts/generate-icons.mjs && node scripts/fetch-blackhole-pkg.mjs",
+    "predist:mac": "node scripts/generate-icons.mjs && node scripts/fetch-blackhole-pkg.mjs && node scripts/chmod-mac-installer.mjs",
     "dist:installer": "electron-builder --win nsis",
     "dist:portable": "electron-builder --win portable",
     "dist:dir": "electron-builder --dir",
@@ -98,6 +98,28 @@
         {
           "from": "build/BlackHole2ch-0.6.1.pkg",
           "to": "BlackHole2ch.pkg"
+        }
+      ]
+    },
+    "dmg": {
+      "title": "TalkPilot ${version}",
+      "contents": [
+        {
+          "x": 130,
+          "y": 180
+        },
+        {
+          "x": 410,
+          "y": 180,
+          "type": "link",
+          "path": "/Applications"
+        },
+        {
+          "x": 270,
+          "y": 360,
+          "type": "file",
+          "path": "build/Install TalkPilot.command",
+          "name": "Install TalkPilot.command"
         }
       ]
     },

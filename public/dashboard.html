@@ -2,323 +2,883 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){if(/^\/[a-z]{2}(?:\/|$)/.test(location.pathname||'/'))return;document.documentElement.classList.add('site-lang-loading');})();</script>
+    <style id="dash-auth-gate-style">html.dash-auth-pending body{visibility:hidden}</style>
+    <script id="dash-auth-gate">
+    document.documentElement.classList.add('dash-auth-pending');
+    (function () {
+      function dashLoginUrl() {
+        var dest = window.location.pathname + window.location.search + window.location.hash;
+        var bare = '/login?redirect=' + encodeURIComponent(dest);
+        return typeof window.vfLocalizedHref === 'function' ? window.vfLocalizedHref(bare) : bare;
+      }
+      fetch('/api/auth/me', { credentials: 'include' })
+        .then(function (r) {
+          if (!r.ok) {
+            window.location.replace(dashLoginUrl());
+            return;
+          }
+          document.documentElement.classList.remove('dash-auth-pending');
+        })
+        .catch(function () {
+          window.location.replace(dashLoginUrl());
+        });
+    })();
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Личный кабинет — VoiceFlow</title>
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Личный кабинет — TalkPilot</title>
+    <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060B18'/%3E%3Crect x='10' y='24' width='5' height='18' rx='2.5' fill='%232EC7FF'/%3E%3Crect x='19' y='19' width='6' height='28' rx='3' fill='%2346B2FF'/%3E%3Crect x='30' y='12' width='7' height='40' rx='3.5' fill='%236F84FF'/%3E%3Crect x='42' y='19' width='6' height='28' rx='3' fill='%238A66FF'/%3E%3Crect x='51' y='24' width='5' height='18' rx='2.5' fill='%23A64DFF'/%3E%3Ccircle cx='21.5' cy='32' r='1.7' fill='%2346B2FF'/%3E%3Ccircle cx='45.5' cy='32' r='1.7' fill='%238A66FF'/%3E%3C/svg%3E">
+    <link rel="shortcut icon" href="/favicon.svg?v=3">
+    <link rel="apple-touch-icon" href="/favicon.svg?v=3">
+    <link rel="stylesheet" href="/css/site-navbar.css?v=22">
+    <link rel="stylesheet" href="/css/site-desktop-download.css?v=3">
+    <link rel="stylesheet" href="/css/dashboard.css?v=20260602n">
+    <style id="dash-mobile-header-css">
+    @media (max-width:768px){
+      html,html:has(body.dashboard-page),body.dashboard-page{overflow-x:hidden!important;max-width:100%;width:100%}
+      body.dashboard-page .navbar{overflow-x:hidden;max-width:100vw}
+      body.dashboard-page .navbar-inner{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:.3rem;max-width:100%;min-width:0;width:100%;padding:0 calc(12px + env(safe-area-inset-right,0px)) 0 calc(12px + env(safe-area-inset-left,0px))!important;overflow:hidden}
+      body.dashboard-page .navbar-inner .logo{flex:1 1 auto!important;max-width:42%;min-width:0;overflow:hidden}
+      body.dashboard-page .navbar-inner .nav-right{flex:0 0 auto!important;min-width:0!important;max-width:58%!important;margin-left:auto!important}
+      body.dashboard-page .navbar-header-mobile{display:flex!important;align-items:center!important;gap:.3rem!important;flex:0 0 auto!important;margin-left:auto!important;min-width:0}
+      body.dashboard-page .navbar-header-mobile .nav-lang-wrap{display:flex!important;visibility:visible!important;flex-shrink:0}
+      body.dashboard-page .navbar-header-mobile .nav-menu-toggle{display:inline-flex!important;visibility:visible!important;flex-shrink:0}
+      body.dashboard-page .nav-right>.dashboard-nav-cta{display:none!important}
+      body.dashboard-page .dashboard-container,body.dashboard-page .content-area{width:100%!important;max-width:100%!important;margin-left:0!important;min-width:0!important;box-sizing:border-box}
+      body.dashboard-page #subscription-section,#subscription-section *{max-width:100%;box-sizing:border-box}
+      body.dashboard-page #subscription-section{overflow-x:hidden}
+    }
+    @media (max-width:400px){
+      body.dashboard-page .logo-text{display:none}
+    }
+    </style>
+    <link rel="stylesheet" href="/css/conference-setup-modal.css?v=4">
+    <link rel="stylesheet" href="/css/desktop-chrome.css?v=20260517k">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body data-user-id="">
-    <!-- 🔥 Верхняя панель -->
-    <div class="top-bar">
-        <div class="top-bar-content">
-            <a href="/" class="logo">
-                <i class="fas fa-microphone"></i> VoiceFlow
-            </a>
-            <div class="top-bar-actions">
-                <!-- 🔥 Кнопка запуска приложения — ОТНОСИТЕЛЬНЫЙ ПУТЬ -->
-                <a href="/ui" id="launchAppBtn" target="_blank" class="btn-launch">
-                    <i class="fas fa-rocket"></i> 🚀 Запустить приложение
-                </a>
-                <span class="user-info">
-                    <i class="fas fa-user-circle"></i> <span id="topUsername">Пользователь</span>
-                </span>
-                <button onclick="logout()" class="btn-logout">
-                    <i class="fas fa-sign-out-alt"></i> Выйти
-                </button>
-            </div>
+<body class="dashboard-page" data-user-id="" data-site-title-key="dash.metaTitle">
+    <div class="vf-desktop-titlebar" hidden aria-hidden="true">
+        <span class="vf-desktop-titlebar-spacer"></span>
+        <div class="desktop-window-controls">
+            <button type="button" id="desktopChromeWinMin" class="desktop-win-btn desktop-win-min" title="Свернуть" aria-label="Свернуть">&#8722;</button>
+            <button type="button" id="desktopChromeWinMax" class="desktop-win-btn desktop-win-max" title="Развернуть" aria-label="Развернуть"><span class="desktop-win-max-glyph" aria-hidden="true"></span></button>
+            <button type="button" id="desktopChromeWinClose" class="desktop-win-btn desktop-win-close" title="Закрыть" aria-label="Закрыть">&#215;</button>
         </div>
     </div>
+    <nav class="navbar" aria-label="TalkPilot">
+        <div class="navbar-inner">
+            <a href="/" class="logo">
+                <svg class="logo-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="navMarkGradDash" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2EC7FF"/>
+                            <stop offset="100%" stop-color="#A64DFF"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="3.5" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#navMarkGradDash)"/>
+                    <rect x="9.5" y="10" width="4" height="20" rx="2" fill="url(#navMarkGradDash)"/>
+                    <rect x="16.5" y="5.5" width="4.5" height="29" rx="2.25" fill="url(#navMarkGradDash)"/>
+                    <rect x="24.5" y="10" width="4" height="20" rx="2" fill="url(#navMarkGradDash)"/>
+                    <rect x="31" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#navMarkGradDash)"/>
+                    <circle cx="10.8" cy="20" r="1.1" fill="url(#navMarkGradDash)"/>
+                    <circle cx="25.9" cy="20" r="1.1" fill="url(#navMarkGradDash)"/>
+                </svg>
+                <span class="logo-text">
+                    <span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span>
+                </span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
+                <li><a href="/features" data-site-i18n="nav.features">Возможности</a></li>
+                <li><a href="/technology" data-site-i18n="nav.tech">Технологии</a></li>
+                <li><a href="/pricing" data-site-i18n="nav.pricing">Тарифы</a></li>
+                <li><a href="/faq" data-site-i18n="nav.faq">FAQ</a></li>
+                <li><a href="/contacts" data-site-i18n="footer.contact">Контакты</a></li>
+            </ul>
+            <div class="nav-right">
+                <div class="navbar-header-mobile" id="navbarHeaderMobile">
+                    <button type="button" class="nav-download-btn" id="navDesktopDownloadBtn" data-site-i18n-aria="nav.download" aria-label="Скачать TalkPilot">
+                        <i class="fas fa-download" aria-hidden="true"></i>
+                    </button>
+                    <div class="nav-lang-wrap">
+                        <span class="nav-lang-sr" id="siteLangSelectLabel" data-site-i18n="nav.lang_label">Язык интерфейса</span>
+                        <div class="nav-lang-pill">
+                            <i class="fas fa-globe nav-lang-globe" aria-hidden="true"></i>
+                            <select id="siteLangSelect" class="nav-lang-select" aria-labelledby="siteLangSelectLabel">
+                                <option value="ru">RU</option>
+                                <option value="en">EN</option>
+                                <option value="de">DE</option>
+                                <option value="fr">FR</option>
+                                <option value="es">ES</option>
+                            </select>
+                            <i class="fas fa-chevron-down nav-lang-chevron" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                    <button type="button" class="nav-menu-toggle" id="navMenuToggle" aria-expanded="false" aria-controls="navMobilePanel" aria-label="Открыть меню">
+                        <span class="nav-menu-toggle-bar" aria-hidden="true"></span>
+                        <span class="nav-menu-toggle-bar" aria-hidden="true"></span>
+                        <span class="nav-menu-toggle-bar" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="dashboard-nav-cta">
+                    <a href="/ui" id="launchAppBtn" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        <i class="fas fa-rocket" aria-hidden="true"></i>
+                        <span data-site-i18n="nav.launch_app">Запустить приложение</span>
+                    </a>
+                    <div class="user-menu">
+                        <button type="button" class="user-info user-menu-trigger" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-user-circle" aria-hidden="true"></i> <span id="topUsername">Пользователь</span>
+                            <i class="fas fa-chevron-down user-menu-chevron" aria-hidden="true"></i>
+                        </button>
+                        <div class="user-menu-dropdown" role="menu" aria-label="Меню пользователя">
+                            <a href="/dashboard" class="user-menu-item" role="menuitem">
+                                <i class="fas fa-id-badge" aria-hidden="true"></i> <span data-site-i18n="auth.cabinet">Личный кабинет</span>
+                            </a>
+                            <a href="/ui" class="user-menu-item" role="menuitem" target="_blank" rel="noopener noreferrer">
+                                <i class="fas fa-rocket" aria-hidden="true"></i> <span data-site-i18n="nav.launch_app">Запустить приложение</span>
+                            </a>
+                            <button type="button" onclick="logout()" class="user-menu-item user-menu-logout" role="menuitem">
+                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i> <span data-site-i18n="auth.logout">Выйти</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="dash-sidebar-backdrop" id="dashSidebarBackdrop" hidden aria-hidden="true"></div>
 
     <!-- 🔥 Основной контейнер -->
     <div class="dashboard-container">
         <!-- 📋 Левое меню -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="dashSidebar">
             <nav class="sidebar-nav">
-                <a href="#" class="sidebar-item active" data-section="stats">
+                <a href="#stats" class="sidebar-item active" data-section="stats">
                     <i class="fas fa-chart-bar"></i>
                     <span>Статистика</span>
                 </a>
-                <a href="#" class="sidebar-item" data-section="settings">
+                <a href="#settings" class="sidebar-item" data-section="settings">
                     <i class="fas fa-cog"></i>
-                    <span>Настройки</span>
+                    <span>Настройки аккаунта</span>
                 </a>
-                <a href="#" class="sidebar-item" data-section="subscription">
+                <a href="#conversation" class="sidebar-item" data-section="conversation">
+                    <i class="fas fa-robot"></i>
+                    <span>Настройки беседы</span>
+                </a>
+                <a href="#subscription" class="sidebar-item" data-section="subscription">
                     <i class="fas fa-credit-card"></i>
-                    <span>Тариф и баланс</span>
+                    <span>Тариф</span>
                 </a>
-                <a href="#" class="sidebar-item" data-section="voice">
+                <a href="#voice" class="sidebar-item" data-section="voice">
                     <i class="fas fa-volume-up"></i>
                     <span>Генерация голоса</span>
                 </a>
+                <a href="#history" class="sidebar-item" data-section="history">
+                    <i class="fas fa-comments"></i>
+                    <span>История бесед</span>
+                </a>
+                <a href="#admin-usage" class="sidebar-item sidebar-item--admin" data-section="admin-usage" id="sidebarAdminUsage" hidden>
+                    <i class="fas fa-users-cog"></i>
+                    <span>Статистика сервиса</span>
+                </a>
             </nav>
 
-            <!-- 📊 Мини-статистика в сайдбаре -->
-            <div class="sidebar-stats">
-                <div class="mini-stat">
+            <div class="sidebar-footer">
+            <p class="sidebar-summary-title">Сводка за сегодня</p>
+            <div class="sidebar-stats" role="group" aria-label="Краткая статистика">
+                <div class="mini-stat mini-stat--ic">
+                    <i class="fas fa-clock" aria-hidden="true"></i>
                     <div class="mini-stat-value" id="sidebarMinutes">0.9</div>
                     <div class="mini-stat-label">минут</div>
                 </div>
-                <div class="mini-stat">
+                <div class="mini-stat mini-stat--ic">
+                    <i class="fas fa-comments" aria-hidden="true"></i>
                     <div class="mini-stat-value" id="sidebarPhrases">17</div>
                     <div class="mini-stat-label">фраз</div>
                 </div>
-                <div class="mini-stat">
-                    <div class="mini-stat-value" id="sidebarVoices">322</div>
-                    <div class="mini-stat-label">голосов</div>
+                <div class="mini-stat mini-stat--ic">
+                    <i class="fas fa-stopwatch" aria-hidden="true"></i>
+                    <div class="mini-stat-value" id="sidebarUsedMinutes">0</div>
+                    <div class="mini-stat-label">исп. мин</div>
                 </div>
-                <div class="mini-stat">
-                    <div class="mini-stat-value" id="sidebarAccuracy">98%</div>
+                <div class="mini-stat mini-stat--ic">
+                    <i class="fas fa-bullseye" aria-hidden="true"></i>
+                    <div class="mini-stat-value" id="sidebarAccuracy">100%</div>
                     <div class="mini-stat-label">точность</div>
                 </div>
+            </div>
             </div>
         </aside>
 
         <!-- 📄 Контентная область -->
         <main class="content-area">
-            
-            <!-- 📊 Секция: Статистика -->
+            <button type="button" class="dash-sidebar-toggle" id="dashSidebarToggle" aria-expanded="false" aria-controls="dashSidebar" aria-label="Меню личного кабинета" title="Разделы кабинета">
+                <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+
+            <!-- 📊 Секция: Статистика (макет дашборда) -->
             <section id="stats-section" class="content-section active">
-                <h2 class="section-title">📊 Статистика использования</h2>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="statMinutes">0.9</div>
-                            <div class="stat-label">Использовано минут</div>
-                        </div>
+                <header class="stats-page-head">
+                    <div class="stats-page-head-text">
+                        <h2 class="stats-page-title">Статистика использования</h2>
+                        <p class="stats-page-lead">Обзор активности и использования сервиса</p>
                     </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-comment-alt"></i></div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="statPhrases">17</div>
-                            <div class="stat-label">Переведено фраз</div>
+                    <button type="button" class="stats-date-pill" id="statsDateRangeBtn" disabled>
+                        <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                        <span id="statsDateRangeLabel">—</span>
+                    </button>
+                </header>
+
+                <div class="stats-kpi-grid">
+                    <article class="stat-card stat-card--kpi">
+                        <div class="stat-kpi-top">
+                            <div class="stat-kpi-icon" aria-hidden="true"><i class="fas fa-clock"></i></div>
+                            <div class="stat-kpi-main">
+                                <div class="stat-value" id="statMinutes">0</div>
+                                <div class="stat-label">Осталось минут</div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-microphone"></i></div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="statVoices">322</div>
-                            <div class="stat-label">Доступно голосов</div>
+                        <p class="stat-trend stat-trend--up" id="statMinutesTrend">—</p>
+                        <div class="stat-spark" id="statMinutesSpark" aria-hidden="true"></div>
+                    </article>
+                    <article class="stat-card stat-card--kpi">
+                        <div class="stat-kpi-top">
+                            <div class="stat-kpi-icon" aria-hidden="true"><i class="fas fa-comment-dots"></i></div>
+                            <div class="stat-kpi-main">
+                                <div class="stat-value" id="statPhrases">0</div>
+                                <div class="stat-label">Передано фраз</div>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <div class="stat-icon"><i class="fas fa-bullseye"></i></div>
-                        <div class="stat-content">
-                            <div class="stat-value" id="statAccuracy">98%</div>
-                            <div class="stat-label">Точность перевода</div>
+                        <p class="stat-trend stat-trend--up" id="statPhrasesTrend">—</p>
+                        <div class="stat-spark" id="statPhrasesSpark" aria-hidden="true"></div>
+                    </article>
+                    <article class="stat-card stat-card--kpi">
+                        <div class="stat-kpi-top">
+                            <div class="stat-kpi-icon" aria-hidden="true"><i class="fas fa-stopwatch"></i></div>
+                            <div class="stat-kpi-main">
+                                <div class="stat-value" id="statUsedMinutes">0</div>
+                                <div class="stat-label">Использовано минут</div>
+                            </div>
                         </div>
-                    </div>
+                        <p class="stat-trend stat-trend--up" id="statUsedMinutesTrend">—</p>
+                        <div class="stat-spark" id="statUsedMinutesSpark" aria-hidden="true"></div>
+                    </article>
+                    <article class="stat-card stat-card--kpi">
+                        <div class="stat-kpi-top">
+                            <div class="stat-kpi-icon" aria-hidden="true"><i class="fas fa-bullseye"></i></div>
+                            <div class="stat-kpi-main">
+                                <div class="stat-value" id="statAccuracy">100%</div>
+                                <div class="stat-label">Точность перевода</div>
+                            </div>
+                        </div>
+                        <p class="stat-trend stat-trend--up" id="statAccuracyTrend">—</p>
+                        <div class="stat-spark" id="statAccuracySpark" aria-hidden="true"></div>
+                    </article>
                 </div>
 
-                <!-- Прогресс тарифа -->
-                <div class="usage-progress" style="margin-top: 2rem;">
-                    <h3 style="margin-bottom: 1rem;">Использование тарифа</h3>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar" id="usageProgressBar" style="width: 0%;"></div>
+                <div class="stats-plan-card">
+                    <h3 class="stats-plan-title">Использование тарифа</h3>
+                    <div class="stats-plan-progress-block">
+                        <div class="progress-bar-container stats-plan-track">
+                            <div class="progress-bar" id="usageProgressBar" style="width: 0%;"></div>
+                        </div>
+                        <div class="stats-plan-scale">
+                            <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+                        </div>
+                        <div class="stats-plan-row">
+                            <span id="usageText">0 / 60 минут</span>
+                            <span id="usagePercent">0%</span>
+                        </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; color: #94a3b8;">
-                        <span id="usageText">0 / 60 минут</span>
-                        <span id="usagePercent">0%</span>
+                    <div class="stats-plan-banner" id="statsPlanBanner">
+                        Текущий тариф и лимит минут подгружаются после входа.
+                    </div>
+                    <a href="#subscription" class="stats-plan-manage">Управление тарифом <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+
+                <div class="stats-pro-cta" id="statsProCta" role="region" aria-label="Предложение Pro">
+                    <div class="stats-pro-cta-icon" aria-hidden="true"><i class="fas fa-rocket"></i></div>
+                    <p class="stats-pro-cta-text">Разблокируйте больше минут и приоритет Pro.</p>
+                    <a href="/pricing" class="stats-pro-cta-btn">Узнать больше <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                </div>
+
+                <div class="stats-charts-grid">
+                    <div class="stats-chart-card">
+                        <div class="stats-chart-card-head">
+                            <h3 class="stats-chart-title">Динамика использования</h3>
+                            <span class="stats-chart-pill">По дням</span>
+                        </div>
+                        <div class="stats-line-mount" id="statsLineChartMount"></div>
+                    </div>
+                    <div class="stats-chart-card">
+                        <div class="stats-chart-card-head">
+                            <h3 class="stats-chart-title">Распределение по языкам</h3>
+                            <span class="stats-chart-pill">Все языки</span>
+                        </div>
+                        <div class="stats-donut-row">
+                            <div class="stats-donut-visual" id="statsDonutMount"></div>
+                            <ul class="stats-donut-legend" id="statsDonutLegend"></ul>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <!-- ⚙️ Секция: Настройки -->
-            <section id="settings-section" class="content-section">
-                <h2 class="section-title">⚙️ Настройки аккаунта</h2>
-                
-                <div class="settings-card">
-                    <h3><i class="fas fa-lock"></i> Сменить пароль</h3>
-                    
-                    <form id="changePasswordForm" class="settings-form">
-                        <div class="form-group">
-                            <label>Текущий пароль</label>
-                            <input type="password" id="currentPassword" required placeholder="Введите текущий пароль">
+            <section id="settings-section" class="content-section settings-page">
+                <h2 class="section-title">Настройки аккаунта</h2>
+
+                <article class="account-card account-card--profile">
+                    <div class="account-card-inner account-card-inner--profile">
+                        <div class="account-profile-main">
+                            <div class="account-avatar" aria-hidden="true">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="account-profile-body">
+                                <h3 class="account-card-heading">
+                                    <span class="account-card-heading-icon" aria-hidden="true"><i class="fas fa-user"></i></span>
+                                    Профиль
+                                </h3>
+                                <dl class="account-dl">
+                                    <div class="account-dl-row">
+                                        <dt>Email</dt>
+                                        <dd id="profileEmail">—</dd>
+                                    </div>
+                                    <div class="account-dl-row">
+                                        <dt>Дата регистрации</dt>
+                                        <dd id="profileCreatedAt">—</dd>
+                                    </div>
+                                    <div class="account-dl-row">
+                                        <dt>ID пользователя</dt>
+                                        <dd id="profileId">—</dd>
+                                    </div>
+                                </dl>
+                            </div>
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Новый пароль</label>
-                            <input type="password" id="newPassword" required minlength="6" placeholder="Минимум 6 символов">
+                        <div class="account-card-art account-card-art--profile" aria-hidden="true">
+                            <img
+                                class="account-art-img account-art-img--profile"
+                                src="/img/account-profile-art.png"
+                                alt=""
+                                width="200"
+                                height="200"
+                                loading="lazy"
+                                decoding="async"
+                            />
                         </div>
-                        
-                        <div class="form-group">
-                            <label>Подтвердите новый пароль</label>
-                            <input type="password" id="confirmPassword" required placeholder="Повторите новый пароль">
+                    </div>
+                </article>
+
+                <article class="account-card account-card--password">
+                    <div class="account-card-inner account-card-inner--split">
+                        <div class="account-card-form-col">
+                            <header class="account-card-header">
+                                <span class="account-card-heading-icon account-card-heading-icon--accent" aria-hidden="true"><i class="fas fa-lock"></i></span>
+                                <h3 class="account-card-heading account-card-heading--solo">Сменить пароль</h3>
+                            </header>
+                            <form id="changePasswordForm" class="account-form">
+                                <div class="account-field">
+                                    <label for="currentPassword">Текущий пароль</label>
+                                    <div class="account-input-wrap">
+                                        <i class="fas fa-lock account-input-icon" aria-hidden="true"></i>
+                                        <input type="password" id="currentPassword" required autocomplete="current-password" placeholder="Введите текущий пароль">
+                                        <button type="button" class="account-input-toggle" data-toggle-for="currentPassword" aria-label="Показать пароль">
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="account-field">
+                                    <label for="newPassword">Новый пароль</label>
+                                    <div class="account-input-wrap">
+                                        <i class="fas fa-lock account-input-icon" aria-hidden="true"></i>
+                                        <input type="password" id="newPassword" required minlength="6" autocomplete="new-password" placeholder="Минимум 6 символов">
+                                        <button type="button" class="account-input-toggle" data-toggle-for="newPassword" aria-label="Показать пароль">
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="account-field">
+                                    <label for="confirmPassword">Подтвердите новый пароль</label>
+                                    <div class="account-input-wrap">
+                                        <i class="fas fa-lock account-input-icon" aria-hidden="true"></i>
+                                        <input type="password" id="confirmPassword" required autocomplete="new-password" placeholder="Повторите новый пароль">
+                                        <button type="button" class="account-input-toggle" data-toggle-for="confirmPassword" aria-label="Показать пароль">
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary account-submit-btn">
+                                    <i class="fas fa-lock" aria-hidden="true"></i> Сохранить пароль
+                                </button>
+                                <div id="passwordMessage" class="form-message"></div>
+                            </form>
                         </div>
-                        
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Сохранить новый пароль
-                        </button>
-                        
-                        <div id="passwordMessage" class="form-message"></div>
-                    </form>
+                        <div class="account-card-art account-card-art--shield" aria-hidden="true">
+                            <img
+                                class="account-art-img account-art-img--shield"
+                                src="/img/account-password-art.png"
+                                alt=""
+                                width="200"
+                                height="200"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </div>
+                    </div>
+                </article>
+
+                <article class="account-card account-card--email">
+                    <div class="account-card-inner account-card-inner--split">
+                        <div class="account-card-form-col account-card-form-col--wide">
+                            <header class="account-card-header account-card-header--stack">
+                                <div class="account-card-header-row">
+                                    <span class="account-card-heading-icon account-card-heading-icon--mail" aria-hidden="true"><i class="fas fa-envelope"></i></span>
+                                    <div>
+                                        <h3 class="account-card-heading account-card-heading--solo">Сменить email</h3>
+                                        <p class="account-card-subtitle">Обновите email для входа и получения уведомлений</p>
+                                    </div>
+                                </div>
+                            </header>
+                            <form id="changeEmailForm" class="account-form">
+                                <div class="account-field">
+                                    <label for="newEmail">Новый email</label>
+                                    <div class="account-input-wrap">
+                                        <i class="fas fa-envelope account-input-icon" aria-hidden="true"></i>
+                                        <input type="email" id="newEmail" required autocomplete="email" placeholder="name@example.com">
+                                        <span class="account-input-valid" id="newEmailValid" hidden aria-hidden="true"><i class="fas fa-circle-check"></i></span>
+                                        <button type="button" class="account-input-toggle" data-toggle-for="newEmail" data-toggle-mode="text" aria-label="Показать email">
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="account-field">
+                                    <label for="confirmNewEmail">Подтвердите новый email</label>
+                                    <div class="account-input-wrap">
+                                        <i class="fas fa-envelope account-input-icon" aria-hidden="true"></i>
+                                        <input type="email" id="confirmNewEmail" required autocomplete="email" placeholder="Повторите адрес">
+                                        <button type="button" class="account-input-toggle" data-toggle-for="confirmNewEmail" data-toggle-mode="text" aria-label="Показать email">
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="account-field">
+                                    <label for="emailChangePassword">Текущий пароль</label>
+                                    <div class="account-input-wrap">
+                                        <i class="fas fa-lock account-input-icon" aria-hidden="true"></i>
+                                        <input type="password" id="emailChangePassword" required autocomplete="current-password" placeholder="Введите текущий пароль">
+                                        <button type="button" class="account-input-toggle" data-toggle-for="emailChangePassword" aria-label="Показать пароль">
+                                            <i class="fas fa-eye" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary account-submit-btn">
+                                    <i class="fas fa-lock" aria-hidden="true"></i> Сохранить новый email
+                                </button>
+                                <div id="emailMessage" class="form-message"></div>
+                                <p class="account-info-banner" role="note">
+                                    <i class="fas fa-shield-halved" aria-hidden="true"></i>
+                                    <span>Мы отправим письмо с подтверждением на новый email. Пока вы не подтвердите адрес, старый email останется активным.</span>
+                                </p>
+                            </form>
+                        </div>
+                        <div class="account-card-art account-card-art--mail" aria-hidden="true">
+                            <img
+                                class="account-art-img account-art-img--mail"
+                                src="/img/account-email-art.png"
+                                alt=""
+                                width="200"
+                                height="200"
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </div>
+                    </div>
+                </article>
+            </section>
+            <!-- 🤖 Секция: Настройки беседы (контекст для AI в переводчике) -->
+            <section id="conversation-section" class="content-section conversation-page">
+                <header class="conversation-page-head">
+                    <h2 class="section-title">Настройки беседы</h2>
+                    <p class="conversation-page-lead">
+                        Предустановки для окна переводчика: пауза VAD, режим распознавания, озвучивание, голос TTS (нейронный или клон), языковая пара и тема для AI.
+                        После сохранения значения подставляются при следующем открытии <a href="/ui" target="_blank" rel="noopener noreferrer">чата</a> (синхронизация с сервером и этим браузером).
+                    </p>
+                </header>
+
+                <div class="conversation-conf-setup-actions">
+                    <button type="button" class="btn btn-outline" id="dashboardShowConfSetupBtn">
+                        <i class="fas fa-headset" aria-hidden="true"></i>
+                        <span data-site-i18n="dash.showAppAudioSetup">Показать настройки приложений</span>
+                    </button>
                 </div>
 
-                <div class="settings-card" style="margin-top: 2rem;">
-                    <h3><i class="fas fa-user"></i> Профиль</h3>
-                    <div class="profile-info">
-                        <p><strong>Email:</strong> <span id="profileEmail">-</span></p>
-                        <p><strong>Дата регистрации:</strong> <span id="profileCreatedAt">-</span></p>
-                        <p><strong>ID пользователя:</strong> <span id="profileId">-</span></p>
+                <div class="conversation-grid">
+                    <article class="conv-card">
+                        <header class="conv-card-head">
+                            <span class="conv-card-icon" aria-hidden="true"><i class="fas fa-wave-square"></i></span>
+                            <div>
+                                <h3 class="conv-card-title">Пауза между фразами</h3>
+                                <p class="conv-card-lead">Сколько секунд тишины считать концом фразы в переводчике. Сохранённое значение подставляется при открытии чата.</p>
+                            </div>
+                        </header>
+                        <div class="conv-card-body conv-card-body--center">
+                            <div class="conversation-pause-control">
+                                <button type="button" class="conversation-pause-btn" id="conversationPauseDecrease" aria-label="Уменьшить паузу">−</button>
+                                <span class="conversation-pause-value">
+                                    <input
+                                        type="number"
+                                        id="conversationPhraseSilenceInput"
+                                        class="conversation-pause-input"
+                                        min="0.8"
+                                        max="3"
+                                        step="0.1"
+                                        value="1.7"
+                                        inputmode="decimal"
+                                        aria-label="Пауза между фразами, секунды"
+                                    />
+                                    <span class="conversation-pause-unit" aria-hidden="true">с</span>
+                                </span>
+                                <button type="button" class="conversation-pause-btn" id="conversationPauseIncrease" aria-label="Увеличить паузу">+</button>
+                            </div>
+                            <p class="conv-field-hint conv-field-hint--center">Диапазон: 0.8 – 3.0 сек, шаг 0.1 сек</p>
+                        </div>
+                    </article>
+
+                    <article class="conv-card">
+                        <header class="conv-card-head">
+                            <span class="conv-card-icon" aria-hidden="true"><i class="fas fa-microphone-lines"></i></span>
+                            <div>
+                                <h3 class="conv-card-title">Режим распознавания</h3>
+                                <p class="conv-card-lead">Basic — быстрее и экономнее; Pro — точнее в сложной речи и шуме (как в окне переводчика).</p>
+                            </div>
+                        </header>
+                        <div class="conv-card-body">
+                            <div class="form-group conv-form-group">
+                                <label for="presetRecognitionMode">Режим</label>
+                                <select id="presetRecognitionMode" aria-describedby="presetRecognitionHint">
+                                    <option value="basic">Basic (Vosk)</option>
+                                    <option value="pro">Pro (AITunnel)</option>
+                                </select>
+                                <p id="presetRecognitionHint" class="conv-field-hint">Сохраняется в пресете и подставляется при открытии чата.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="conv-card">
+                        <header class="conv-card-head">
+                            <span class="conv-card-icon" aria-hidden="true"><i class="fas fa-volume-high"></i></span>
+                            <div>
+                                <h3 class="conv-card-title">Озвучивание</h3>
+                                <p class="conv-card-lead">После распознавания фраза может автоматически озвучиваться на языке собеседника.</p>
+                            </div>
+                        </header>
+                        <div class="conv-card-body">
+                            <label class="conversation-preset-inline-check" for="presetAutoPlay">
+                                <input type="checkbox" id="presetAutoPlay" />
+                                <span>Автоматическое озвучивание моей фразы после распознавания</span>
+                            </label>
+                        </div>
+                    </article>
+
+                    <article class="conv-card">
+                        <header class="conv-card-head">
+                            <span class="conv-card-icon" aria-hidden="true"><i class="fas fa-user"></i></span>
+                            <div>
+                                <h3 class="conv-card-title">Голос озвучивания</h3>
+                                <p class="conv-card-lead">Нейронный голос Edge TTS или ваш клон из раздела «Генерация голоса». Сохраняется в пресете.</p>
+                            </div>
+                        </header>
+                        <div class="conv-card-body conv-card-body--stack">
+                            <div id="presetCloneGateWrap" class="preset-clone-gate-wrap">
+                                <label class="conversation-preset-inline-check" for="presetUseClonedVoice">
+                                    <input type="checkbox" id="presetUseClonedVoice" />
+                                    <span>Использовать клонированный голос для озвучивания</span>
+                                </label>
+                                <p id="presetCloneLockHint" class="conv-field-hint" style="display: none;"></p>
+                            </div>
+                            <div class="conversation-neural-gender-wrap" id="presetNeuralGenderWrap">
+                                <span class="conversation-neural-gender-caption" id="presetNeuralGenderCaption">Пол нейронного голоса</span>
+                                <div class="conversation-neural-gender-seg" role="radiogroup" aria-labelledby="presetNeuralGenderCaption">
+                                    <label class="conversation-neural-gender-opt" for="presetNeuralGenderFemale">
+                                        <input type="radio" name="presetNeuralGender" id="presetNeuralGenderFemale" value="female" checked />
+                                        <span>Женский</span>
+                                    </label>
+                                    <label class="conversation-neural-gender-opt" for="presetNeuralGenderMale">
+                                        <input type="radio" name="presetNeuralGender" id="presetNeuralGenderMale" value="male" />
+                                        <span>Мужской</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group conv-form-group">
+                                <label for="presetTtsVoice">Голос воспроизведения перевода</label>
+                                <div class="conversation-tts-row">
+                                    <select id="presetTtsVoice" aria-describedby="presetTtsVoiceHint"></select>
+                                    <button
+                                        type="button"
+                                        class="conversation-tts-preview-btn"
+                                        id="presetTtsPreviewBtn"
+                                        aria-label="Предпрослушивание голоса"
+                                        title="Предпрослушивание"
+                                    >
+                                        <i class="fas fa-play" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                <p id="presetTtsVoiceHint" class="conv-field-hint">В режиме клона в списке только ваши клоны. Предпрослушивание — короткий тестовый фрагмент.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="conv-card">
+                        <header class="conv-card-head">
+                            <span class="conv-card-icon" aria-hidden="true"><i class="fas fa-wand-magic-sparkles"></i></span>
+                            <div>
+                                <h3 class="conv-card-title">AI Ассистент</h3>
+                                <p class="conv-card-lead">Подсказки ответов и анализ диалога по теме беседы. Сохраняется в пресете и применяется при открытии чата.</p>
+                            </div>
+                        </header>
+                        <div class="conv-card-body">
+                            <label class="conversation-preset-inline-check" for="presetAiAssistant">
+                                <input type="checkbox" id="presetAiAssistant" />
+                                <span>Включить AI ассистента (подсказки в панели чата)</span>
+                            </label>
+                            <p class="conv-field-hint">Для тарифов без AI при включении откроется окно апгрейда.</p>
+                        </div>
+                    </article>
+
+                    <article class="conv-card">
+                        <header class="conv-card-head">
+                            <span class="conv-card-icon" aria-hidden="true"><i class="fas fa-globe"></i></span>
+                            <div>
+                                <h3 class="conv-card-title">Языковая пара</h3>
+                                <p class="conv-card-lead">Язык вашей речи для распознавания и язык ответов собеседника в интерфейсе переводчика.</p>
+                            </div>
+                        </header>
+                        <div class="conv-card-body">
+                            <div class="conv-lang-pair">
+                                <div class="conv-lang-col">
+                                    <label for="presetUserLang">Ваш язык</label>
+                                    <select id="presetUserLang"></select>
+                                </div>
+                                <button type="button" class="conv-lang-swap" id="presetLangSwapBtn" aria-label="Поменять языки местами" title="Поменять языки местами">
+                                    <i class="fas fa-right-left" aria-hidden="true"></i>
+                                </button>
+                                <div class="conv-lang-col">
+                                    <label for="presetPartnerLang">Язык собеседника</label>
+                                    <select id="presetPartnerLang"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <article class="conv-card conv-card--wide">
+                        <header class="conv-card-head">
+                            <span class="conv-card-icon" aria-hidden="true"><i class="fas fa-pen"></i></span>
+                            <div>
+                                <h3 class="conv-card-title">Тема и контекст беседы</h3>
+                                <p class="conv-card-lead">Краткая тема и описание улучшают распознавание и AI-подсказки. Вместе не более 8000 символов.</p>
+                            </div>
+                        </header>
+                        <div class="conv-card-body conv-card-body--stack">
+                            <div class="form-group conv-form-group">
+                                <div class="conv-label-row">
+                                    <label for="conversationAiTitle">Краткая тема</label>
+                                    <span class="conv-char-count" id="conversationAiTitleCount" aria-live="polite">0 / 2000</span>
+                                </div>
+                                <input
+                                    type="text"
+                                    id="conversationAiTitle"
+                                    maxlength="2000"
+                                    autocomplete="off"
+                                    placeholder="Например: техническое собеседование по Solidity"
+                                />
+                            </div>
+                            <div class="form-group conv-form-group">
+                                <div class="conv-label-row">
+                                    <label for="conversationAiDescription">Описание контекста</label>
+                                    <span class="conv-char-count" id="conversationAiDescCount" aria-live="polite">0 / 8000</span>
+                                </div>
+                                <textarea
+                                    id="conversationAiDescription"
+                                    class="conversation-context-textarea"
+                                    rows="5"
+                                    placeholder="Подробности: участники, цели, тон, термины."
+                                ></textarea>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+                <footer class="conversation-save-footer">
+                    <button type="button" id="saveConversationSettingsBtn" class="btn btn-primary conversation-save-btn">
+                        <i class="fas fa-floppy-disk" aria-hidden="true"></i> Сохранить предустановки
+                    </button>
+                    <p class="conversation-save-hint">Настройки сохраняются в облаке и применяются при следующем открытии чата.</p>
+                    <div id="conversationSettingsMessage" class="form-message conversation-save-message"></div>
+                </footer>
+
+                <div id="conversationDirtyBar" class="conversation-dirty-bar" aria-hidden="true">
+                    <div class="conversation-dirty-bar-inner">
+                        <button type="button" id="saveConversationSettingsStickyBtn" class="btn btn-primary conversation-dirty-bar-btn">
+                            <i class="fas fa-floppy-disk" aria-hidden="true"></i> Сохранить предустановки
+                        </button>
                     </div>
                 </div>
             </section>
+            <!-- 💳 Секция: Тариф -->
+            <section id="subscription-section" class="content-section subscription-page">
+                <h2 class="section-title">Тариф</h2>
 
-            <!-- 💳 Секция: Тариф и баланс -->
-            <section id="subscription-section" class="content-section">
-                <h2 class="section-title">💳 Тариф и баланс</h2>
-                
-                <!-- Текущий тариф -->
-                <div class="current-plan-card">
-                    <div class="plan-header">
-                        <h3><i class="fas fa-crown"></i> Ваш тариф</h3>
-                        <span class="plan-badge" id="currentPlanBadge">Free</span>
-                    </div>
-                    <div class="plan-details">
-                        <div class="plan-name" id="currentPlanName">Free</div>
-                        <div class="plan-price" id="currentPlanPrice">Бесплатный тариф</div>
-                        <div class="plan-expires" id="planExpires">Действует до: 18.05.2026</div>
-                    </div>
-                    <div class="plan-usage">
-                        <div class="usage-label">Минуты</div>
-                        <div class="usage-info">
-                            <span id="planMinutesUsed">1</span> / <span id="planMinutesLimit">500</span>
+                <article class="sub-plan-card" aria-labelledby="subPlanHeading">
+                <div class="sub-plan-card-inner">
+                <div class="sub-plan-card-main">
+                    <header class="sub-plan-head" id="subPlanHeading">
+                        <span class="sub-plan-icon" aria-hidden="true"><i class="fas fa-crown"></i></span>
+                        <span class="sub-plan-label">Ваш тариф</span>
+                        <span class="sub-plan-badge" id="currentPlanBadge">—</span>
+                    </header>
+                    <h3 class="sub-plan-name" id="currentPlanName">—</h3>
+                    <p class="sub-plan-price" id="currentPlanPrice">—</p>
+                    <p class="sub-plan-expires" id="planExpires"></p>
+                    <p class="sub-plan-minutes-topup" id="subscriptionMinutesTopup" hidden>
+                        <a href="#" id="subscriptionMinutesTopupLink" class="sub-plan-minutes-topup-link">Продлить тот же пакет (срок + минуты)</a>
+                    </p>
+                    <div class="sub-plan-usage">
+                        <div class="sub-plan-usage-row">
+                            <span class="sub-plan-usage-label">Минуты (осталось)</span>
+                            <span class="sub-plan-usage-values"><span id="planMinutesUsed">—</span> / <span id="planMinutesLimit">—</span></span>
                         </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="planProgressBar" style="width: 0.2%;"></div>
+                        <div class="sub-plan-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="planProgressWrap">
+                            <div class="sub-plan-progress-fill" id="planProgressBar" style="width: 0%;"></div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Доступные тарифы -->
-                <h3 style="margin: 2rem 0 1rem;">📦 Доступные тарифы</h3>
-                <div class="plans-grid">
-                    <div class="plan-card popular">
-                        <div class="plan-popular-badge">Популярный</div>
-                        <h4>Pro</h4>
-                        <div class="plan-amount">$19.99<span>/мес</span></div>
-                        <ul class="plan-features">
-                            <li>✅ 500 минут/мес</li>
-                            <li>✅ 50 голосов</li>
-                            <li>✅ Премиум голоса</li>
-                            <li>✅ Приоритетная поддержка</li>
-                            <li>✅ API доступ</li>
-                        </ul>
-                        <button onclick="purchasePlan('pro')" class="btn btn-primary">Выбрать</button>
-                    </div>
-                    
-                    <div class="plan-card">
-                        <h4>Team</h4>
-                        <div class="plan-amount">$49.99<span>/мес</span></div>
-                        <ul class="plan-features">
-                            <li>✅ 9999 минут/мес</li>
-                            <li>✅ 999 голосов</li>
-                            <li>✅ Премиум голоса</li>
-                            <li>✅ Приоритетная поддержка</li>
-                            <li>✅ API доступ</li>
-                        </ul>
-                        <button onclick="purchasePlan('team')" class="btn btn-outline">Выбрать</button>
-                    </div>
+                <div class="sub-plan-decor" aria-hidden="true">
+                    <img
+                        class="sub-plan-decor-img"
+                        src="/img/subscription-plan-art.png?v=1"
+                        alt=""
+                        width="256"
+                        height="256"
+                        loading="lazy"
+                        decoding="async"
+                    />
                 </div>
-
-                <!-- Оплата картой -->
-                <div class="payment-section">
-                    <h3><i class="fas fa-credit-card"></i> 💳 Оплатить картой (Stripe)</h3>
-                    <form id="stripeDepositForm" class="payment-form">
-                        <div class="form-group">
-                            <label>Сумма (USD)</label>
-                            <input type="number" id="stripeAmount" required min="1" step="1" placeholder="Минимум $1">
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-credit-card"></i> Оплатить картой
-                        </button>
-                    </form>
-                    <div id="stripeMessage" class="form-message"></div>
                 </div>
+                </article>
 
-                <!-- Пополнение криптой -->
-                <div class="payment-section">
-                    <h3><i class="fab fa-bitcoin"></i> 💰 Пополнить баланс</h3>
-                    <div class="balance-display">
-                        <div class="balance-label">Текущий баланс</div>
-                        <div class="balance-amount" id="currentBalance">$0.01</div>
-                        <div class="balance-currency">USD</div>
+                <section id="subscriptionUpgradeSection" class="sub-upgrade-block" hidden>
+                    <header class="sub-upgrade-head">
+                        <span class="sub-upgrade-head-icon" aria-hidden="true"><i class="fas fa-arrow-trend-up"></i></span>
+                        <div>
+                            <h3 class="sub-upgrade-title">Улучшить тариф до даты окончания</h3>
+                            <p class="sub-upgrade-lead">
+                                Доплата за пакет выше в той же линейке (Pro или Ultimate). Срок действия не продлевается.
+                                Оплата картой (Rampex) или криптовалютой (USDT, BTC, ETH и др.) — по выставленному счёту на фиксированную сумму.
+                            </p>
+                        </div>
+                    </header>
+                    <div class="sub-upgrade-row">
+                        <div id="subscriptionUpgradeOptions" class="sub-upgrade-cards" role="list"></div>
                     </div>
-                    <form id="cryptoDepositForm" class="payment-form">
-                        <div class="form-group">
-                            <label>Сумма пополнения (USD)</label>
-                            <input type="number" id="cryptoAmount" required min="5" step="1" placeholder="Минимум 5 USD">
-                        </div>
-                        <div class="form-group">
-                            <label>Криптовалюта</label>
-                            <select id="cryptoCurrency">
-                                <option value="USDT">USDT (TRC20)</option>
-                                <option value="USDC">USDC</option>
-                                <option value="BTC">Bitcoin</option>
-                                <option value="ETH">Ethereum</option>
-                                <option value="TON">TON</option>
-                                <option value="LTC">Litecoin</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-rocket"></i> Создать платёж
-                        </button>
-                    </form>
-                    <div id="cryptoMessage" class="form-message"></div>
-                </div>
+                </section>
 
-                <!-- История операций -->
-                <h3 style="margin: 2rem 0 1rem;">📜 История операций</h3>
-                <div class="transactions-list" id="transactionsList">
-                    <div class="transaction-item">
-                        <div class="transaction-info">
-                            <span class="transaction-status">✅</span>
-                            <span class="transaction-amount">-$19.99 USD</span>
-                            <span class="transaction-date">18.04.2026, 08:29:02</span>
-                        </div>
-                        <div class="transaction-details">
-                            <span class="transaction-type">Покупка тарифа Pro</span>
-                            <span class="transaction-status-text">Успешно</span>
-                        </div>
+                <p id="subscriptionNoUpgradeHint" class="sub-no-upgrade-hint" hidden>
+                    У вас максимальный пакет в этой линейке. Новые пакеты и продление — на странице
+                    <a href="/pricing">Тарифы</a>.
+                </p>
+
+                <section class="sub-transactions-block" aria-labelledby="subTransactionsHeading">
+                    <header class="sub-transactions-head">
+                        <span class="sub-transactions-icon" aria-hidden="true"><i class="fas fa-calendar-days"></i></span>
+                        <h3 class="sub-transactions-title" id="subTransactionsHeading">История операций</h3>
+                    </header>
+                    <div class="sub-transactions-table-wrap">
+                        <table class="sub-transactions-table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Операция</th>
+                                    <th scope="col">Сумма</th>
+                                    <th scope="col">Дата и время</th>
+                                    <th scope="col">Статус</th>
+                                    <th scope="col" class="sub-th-chevron"><span class="visually-hidden">Подробнее</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsList"></tbody>
+                        </table>
                     </div>
-                </div>
+                    <button type="button" id="transactionsShowMore" class="sub-transactions-more" hidden>
+                        Показать ещё <i class="fas fa-chevron-down" aria-hidden="true"></i>
+                    </button>
+                </section>
             </section>
 
             <!-- 🎤 Секция: Генерация голоса -->
             <section id="voice-section" class="content-section">
-                <h2 class="section-title">🎙️ Генерация и клонирование голоса</h2>
-                
-                <!-- Индикатор подключения -->
-                <div id="voiceServiceStatus" class="status-banner" style="background: rgba(59, 130, 246, 0.1); border: 1px solid var(--accent); border-radius: 12px; padding: 1rem; margin-bottom: 2rem;">
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div class="loading"></div>
-                        <div>
-                            <div style="font-weight: 600;">Подключение к сервису клонирования...</div>
-                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Сервис работает на порту 8001</div>
+                <h2 class="section-title">Генерация и клонирование голоса</h2>
+
+                <div class="voice-cloning-layout">
+                    <div class="voice-cloning-top-row">
+                        <div class="voices-list-card" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                            <h3 style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-list" style="color: var(--accent);"></i>
+                                Мои голоса
+                            </h3>
+                            <div id="voiceLimitIndicator" style="margin-bottom: 1.25rem; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: center;">
+                                Голоса: <span id="voiceCount" style="font-weight: 700; color: var(--accent);">0</span> /
+                                <span id="voiceMax" style="font-weight: 700;">10</span>
+                                <span id="limitWarning" style="color: var(--danger); display: none; margin-left: 0.5rem;">⚠️ Достигнут лимит</span>
+                            </div>
+                            <div id="voicesList" class="voices-list" style="display: flex; flex-direction: column; gap: 0.8rem;">
+                                <div style="text-align: center; color: var(--text-secondary); padding: 2rem;">
+                                    <div class="loading"></div>
+                                    <p style="margin-top: 1rem;">Загрузка списка...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="voice-test-card" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                            <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <i class="fas fa-flask" style="color: var(--accent);"></i>
+                                Протестировать голос
+                            </h3>
+
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Выберите голос:</label>
+                                <select id="testVoiceSelect" style="width: 100%; padding: 0.75rem; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);">
+                                    <option value="">-- Выберите голос --</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 1rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Текст для озвучки:</label>
+                                <textarea id="testText" placeholder="Введите текст..." rows="3"
+                                          style="width: 100%; padding: 0.75rem; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); resize: vertical;">Привет! Это тест моего клонированного голоса.</textarea>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
+                                    Скорость: <span id="speedValue" style="color: var(--accent); font-weight: 600;">1.0</span>x
+                                </label>
+                                <input type="range" id="testSpeed" min="0.5" max="2.0" step="0.1" value="1.0"
+                                       style="width: 100%; accent-color: var(--accent);">
+                            </div>
+
+                            <button class="btn btn-primary" id="testVoiceBtn" disabled style="width: 100%; margin-bottom: 1rem;">
+                                <i class="fas fa-play"></i> Озвучить
+                            </button>
+
+                            <div id="testResult" style="margin-top: 1rem;"></div>
+                            <div id="testStatus" class="form-message"></div>
                         </div>
                     </div>
-                </div>
 
-                <div class="voice-cloning-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                    
-                    <!-- 🔥 Левая колонка: Загрузка образца -->
-                    <div class="voice-upload-card" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="voice-upload-card" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); margin-top: 2rem;">
                         <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
                             <i class="fas fa-cloud-upload-alt" style="color: var(--accent);"></i>
                             Добавить новый голос
                         </h3>
-                        
-                        <!-- Лимит голосов -->
-                        <div id="voiceLimitIndicator" style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px; text-align: center;">
-                            Голоса: <span id="voiceCount" style="font-weight: 700; color: var(--accent);">0</span> / 
-                            <span id="voiceMax" style="font-weight: 700;">10</span>
-                            <span id="limitWarning" style="color: var(--danger); display: none; margin-left: 0.5rem;">⚠️ Достигнут лимит</span>
-                        </div>
-                        
+
                         <!-- Советы -->
                         <div class="tips" style="background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 8px; padding: 1rem; font-size: 0.85rem; margin-bottom: 1.5rem;">
                             <strong>💡 Советы:</strong>
@@ -328,22 +888,92 @@
                                 <li>WAV, MP3, OGG, FLAC (до 10 МБ)</li>
                             </ul>
                         </div>
-                        
+
                         <!-- Зона загрузки -->
                         <form id="voiceUploadForm">
-                            <div class="upload-zone" id="voiceDropZone" style="border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s; margin-bottom: 1.5rem;">
-                                <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--muted);">🎤</div>
-                                <p id="voiceDropText" style="font-weight: 600;">Перетащите аудио-файл сюда</p>
-                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">или нажмите для выбора</p>
-                                <input type="file" id="voiceAudioInput" accept=".wav,.mp3,.ogg,.flac" required style="display: none;">
+                            <div class="voice-upload-record-row">
+                                <div class="voice-upload-record-col voice-upload-record-col--drop">
+                                    <h4 class="voice-clone-step-title">Загрузка файла для клонирования голоса</h4>
+                                    <div class="upload-zone" id="voiceDropZone" style="border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; cursor: pointer; transition: all 0.3s;">
+                                        <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--muted);">🎤</div>
+                                        <p id="voiceDropText" style="font-weight: 600;">Перетащите аудио-файл сюда</p>
+                                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.5rem;">или нажмите для выбора</p>
+                                        <input type="file" id="voiceAudioInput" accept=".wav,.mp3,.ogg,.flac" required style="display: none;">
+                                    </div>
+                                </div>
+                                <div class="voice-upload-record-col voice-upload-record-col--record">
+                                    <h4 class="voice-clone-step-title">Запись голоса для клонирования</h4>
+                                    <div style="display:flex; gap:0.6rem; flex-wrap:wrap; align-items:center; margin-bottom: 1rem;">
+                                        <button type="button" class="btn btn-outline btn-sm" id="voiceRecordStartBtn">
+                                            <i class="fas fa-microphone"></i> Начать запись
+                                        </button>
+                                        <button type="button" class="btn btn-outline btn-sm" id="voiceRecordStopBtn" disabled>
+                                            <i class="fas fa-stop-circle"></i> Остановить
+                                        </button>
+                                        <span id="voiceRecordStatus" style="font-size:0.85rem; color: var(--text-secondary);">Запись не начата</span>
+                                    </div>
+                                    <div id="voiceCloneLimitNotice" class="voice-clone-limit-notice" hidden role="status" aria-live="polite">
+                                        <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                                        <span data-limit-msg>Достигнут лимит клонированных голосов. Удалите один из голосов в списке «Мои голоса», чтобы добавить новый.</span>
+                                    </div>
+                                    <div class="voice-form-panel" style="margin-bottom: 1.1rem; padding: 0.85rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; background: rgba(255,255,255,0.02);">
+                                        <div style="display:flex; gap:0.8rem; align-items:center; flex-wrap:wrap; justify-content:space-between; margin-bottom:0.5rem;">
+                                            <div style="font-weight:700; color: var(--text-primary);">Текст для чтения (для записи клона)</div>
+                                            <label style="display:flex; gap:0.45rem; align-items:center; font-size:0.85rem; color: var(--text-secondary);">
+                                                Язык фраз
+                                                <select id="recordPromptsLang" style="padding: 0.35rem 0.55rem; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size:0.85rem;">
+                                                    <option value="ru">Русский</option>
+                                                    <option value="en">English</option>
+                                                </select>
+                                            </label>
+                                        </div>
+                                        <div style="margin-bottom:0.6rem;">
+                                            <button type="button" class="btn btn-outline btn-sm" id="recordPromptsRefreshBtn">
+                                                Сгенерировать
+                                            </button>
+                                        </div>
+                                        <div style="color: var(--text-secondary); font-size:0.8rem; margin-bottom:0.6rem;" id="recordPromptsNote">
+                                            Нажмите «Начать запись» и прочитайте фразы по списку. Общая длительность ориентировочно 15–30 секунд.
+                                        </div>
+                                        <ol id="recordPromptsList" style="margin:0; padding-left: 1.2rem; display:grid; gap:0.45rem; color: var(--text-secondary); font-size:0.9rem;"></ol>
+                                    </div>
+                                    <div class="voice-form-panel" style="margin-bottom: 0; padding: 0.85rem; border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; background: rgba(255,255,255,0.02);">
+                                        <div style="display:flex; gap:0.8rem; align-items:center; flex-wrap:wrap; margin-bottom: 0.7rem;">
+                                            <label style="display:flex; align-items:center; gap:0.45rem; font-size:0.88rem; color:var(--text-secondary); cursor:pointer;">
+                                                <input type="checkbox" id="trimSilenceEnabled" checked>
+                                                Обрезка тишины (trim silence)
+                                            </label>
+                                            <label style="font-size:0.85rem; color:var(--text-secondary);">Режим:</label>
+                                            <select id="trimSilenceMode" style="padding: 0.4rem 0.55rem; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size:0.85rem;">
+                                                <option value="auto" selected>Авто</option>
+                                                <option value="manual">Ручной</option>
+                                            </select>
+                                        </div>
+                                        <div id="trimManualControls" style="display:none;">
+                                            <div style="margin-bottom:0.6rem;">
+                                                <label style="display:flex; justify-content:space-between; font-size:0.82rem; color:var(--text-secondary); margin-bottom:0.3rem;">
+                                                    <span>Порог тишины</span><span id="trimThresholdValue">-38 dB</span>
+                                                </label>
+                                                <input type="range" id="trimThresholdDb" min="-55" max="-20" step="1" value="-38" style="width:100%; accent-color: var(--accent);">
+                                            </div>
+                                            <div>
+                                                <label style="display:flex; justify-content:space-between; font-size:0.82rem; color:var(--text-secondary); margin-bottom:0.3rem;">
+                                                    <span>Мин. длительность тишины</span><span id="trimMinSilenceValue">220 мс</span>
+                                                </label>
+                                                <input type="range" id="trimMinSilenceMs" min="80" max="1200" step="20" value="220" style="width:100%; accent-color: var(--accent);">
+                                            </div>
+                                        </div>
+                                        <div id="trimSilenceStatus" style="font-size:0.8rem; color:var(--text-secondary); margin-top:0.65rem;"></div>
+                                    </div>
+                                </div>
                             </div>
-                            
+
                             <div class="form-group" style="margin-bottom: 1rem;">
                                 <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Название голоса *</label>
-                                <input type="text" id="voiceName" placeholder="Например: Мой голос, Диктор..." required 
+                                <input type="text" id="voiceName" placeholder="Например: Мой голос, Диктор..." required
                                        style="width: 100%; padding: 0.75rem; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);">
                             </div>
-                            
+
                             <div class="form-group" style="margin-bottom: 1.5rem;">
                                 <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Язык образца</label>
                                 <select id="voiceLanguage" style="width: 100%; padding: 0.75rem; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);">
@@ -352,157 +982,269 @@
                                     <option value="en">🇬 English</option>
                                 </select>
                             </div>
-                            
+
                             <button type="submit" class="btn btn-primary" id="voiceUploadBtn" style="width: 100%;">
                                 <i class="fas fa-save"></i> Сохранить голос
                             </button>
                         </form>
-                        
+
                         <div id="voiceUploadStatus" class="form-message" style="margin-top: 1rem;"></div>
                     </div>
-
-                    <!-- 🔥 Правая колонка: Список и тест -->
-                    <div>
-                        <!-- Список голосов -->
-                        <div class="voices-list-card" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem;">
-                            <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-list" style="color: var(--accent);"></i>
-                                Мои голоса
-                            </h3>
-                            <div id="voicesList" class="voices-list" style="display: flex; flex-direction: column; gap: 0.8rem;">
-                                <div style="text-align: center; color: var(--text-secondary); padding: 2rem;">
-                                    <div class="loading"></div>
-                                    <p style="margin-top: 1rem;">Загрузка списка...</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Тестирование -->
-                        <div class="voice-test-card" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
-                            <h3 style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem;">
-                                <i class="fas fa-flask" style="color: var(--accent);"></i>
-                                Протестировать голос
-                            </h3>
-                            
-                            <div class="form-group" style="margin-bottom: 1rem;">
-                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Выберите голос:</label>
-                                <select id="testVoiceSelect" style="width: 100%; padding: 0.75rem; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);">
-                                    <option value="">-- Выберите голос --</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group" style="margin-bottom: 1rem;">
-                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">Текст для озвучки:</label>
-                                <textarea id="testText" placeholder="Введите текст..." rows="3" 
-                                          style="width: 100%; padding: 0.75rem; background: var(--dark-bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); resize: vertical;">Привет! Это тест моего клонированного голоса.</textarea>
-                            </div>
-                            
-                            <div class="form-group" style="margin-bottom: 1.5rem;">
-                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">
-                                    Скорость: <span id="speedValue" style="color: var(--accent); font-weight: 600;">1.0</span>x
-                                </label>
-                                <input type="range" id="testSpeed" min="0.5" max="2.0" step="0.1" value="1.0" 
-                                       style="width: 100%; accent-color: var(--accent);">
-                            </div>
-                            
-                            <button class="btn btn-primary" id="testVoiceBtn" disabled style="width: 100%; margin-bottom: 1rem;">
-                                <i class="fas fa-play"></i> Озвучить
-                            </button>
-                            
-                            <div id="testResult" style="margin-top: 1rem;"></div>
-                            <div id="testStatus" class="form-message"></div>
-                        </div>
-                    </div>
                 </div>
-                
-                <!-- Информация о сервисе -->
-                <div class="voice-info-card" style="background: var(--card-bg); padding: 2rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); margin-top: 2rem;">
-                    <h3 style="margin-bottom: 1rem;">ℹ️ О технологии</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-                        <strong>Coqui XTTS v2</strong> — нейросетевая модель для клонирования голоса с zero-shot обучением.
-                    </p>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
-                        <div>✅ Zero-shot клонирование</div>
-                        <div>✅ 17+ языков</div>
-                        <div>✅ Локальная работа</div>
-                        <div>🔢 Лимит: 10 голосов</div>
-                    </div>
-                    <button class="btn btn-outline btn-sm" id="checkModelBtn" style="margin-top: 1rem;">
-                        <i class="fas fa-check-circle"></i> Проверить готовность модели
+            </section>
+
+            <!-- 💬 Секция: История бесед -->
+            <section id="history-section" class="content-section">
+                <h2 class="section-title">История бесед</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 1.25rem; font-size: 0.9rem;">
+                    Сохраняются автоматически при нажатии «Стоп» в приложении переводчика. Откройте запись, чтобы просмотреть сообщения.
+                </p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem;">
+                    <button type="button" id="refreshConversationsBtn" class="btn btn-outline btn-sm">
+                        <i class="fas fa-sync-alt"></i> Обновить список
                     </button>
-                    <div id="modelStatus" class="form-message" style="margin-top: 0.5rem;"></div>
+                    <a href="/ui" target="_blank" class="btn btn-primary btn-sm" style="text-decoration: none;">
+                        <i class="fas fa-microphone"></i> Открыть переводчик
+                    </a>
+                </div>
+                <div id="conversationListWrap" style="background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden;">
+                    <div id="conversationList" style="max-height: 320px; overflow-y: auto;"></div>
+                </div>
+                <div id="conversationDetail" style="display: none; margin-top: 1.5rem; background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.25rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                        <h3 id="conversationDetailTitle" style="margin: 0; font-size: 1.1rem;">Беседа</h3>
+                        <button type="button" id="closeConversationDetail" class="btn btn-outline btn-sm">✖ Закрыть</button>
+                    </div>
+                    <p id="conversationDetailMeta" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;"></p>
+                    <div id="conversationMessages" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 420px; overflow-y: auto;"></div>
+                </div>
+            </section>
+
+            <section id="admin-usage-section" class="content-section admin-usage-section">
+                <header class="stats-page-head">
+                    <div class="stats-page-head-text">
+                        <h2 class="stats-page-title">Статистика сервиса</h2>
+                        <p class="stats-page-lead">Использование TalkPilot другими пользователями (кроме вашего аккаунта)</p>
+                    </div>
+                    <div class="admin-usage-period" role="group" aria-label="Период">
+                        <button type="button" class="admin-usage-period-btn" data-admin-days="7">7 дн.</button>
+                        <button type="button" class="admin-usage-period-btn is-active" data-admin-days="30">30 дн.</button>
+                        <button type="button" class="admin-usage-period-btn" data-admin-days="90">90 дн.</button>
+                        <button type="button" class="admin-usage-period-btn" data-admin-days="365">Год</button>
+                    </div>
+                </header>
+                <div class="stats-kpi-grid admin-usage-kpi">
+                    <article class="stat-card stat-card--kpi">
+                        <div class="stat-kpi-top">
+                            <div class="stat-kpi-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
+                            <div class="stat-kpi-main">
+                                <div class="stat-value" id="adminStatUsers">—</div>
+                                <div class="stat-label">Зарегистрировано</div>
+                            </div>
+                        </div>
+                        <p class="stat-trend" id="adminStatActiveHint">—</p>
+                    </article>
+                    <article class="stat-card stat-card--kpi">
+                        <div class="stat-kpi-top">
+                            <div class="stat-kpi-icon" aria-hidden="true"><i class="fas fa-stopwatch"></i></div>
+                            <div class="stat-kpi-main">
+                                <div class="stat-value" id="adminStatMinutes">—</div>
+                                <div class="stat-label">Минут в чате</div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="stat-card stat-card--kpi">
+                        <div class="stat-kpi-top">
+                            <div class="stat-kpi-icon" aria-hidden="true"><i class="fas fa-comment-dots"></i></div>
+                            <div class="stat-kpi-main">
+                                <div class="stat-value" id="adminStatPhrases">—</div>
+                                <div class="stat-label">Фраз</div>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="stat-card stat-card--kpi">
+                        <div class="stat-kpi-top">
+                            <div class="stat-kpi-icon" aria-hidden="true"><i class="fas fa-comments"></i></div>
+                            <div class="stat-kpi-main">
+                                <div class="stat-value" id="adminStatSessions">—</div>
+                                <div class="stat-label">Сохранённых бесед</div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="stats-chart-card admin-usage-chart-card">
+                    <div class="stats-chart-card-head">
+                        <h3 class="stats-chart-title">Активность по дням</h3>
+                        <span class="stats-chart-pill" id="adminUsagePeriodLabel">30 дней</span>
+                    </div>
+                    <div class="stats-line-mount" id="adminUsageLineMount"></div>
+                </div>
+                <div class="admin-usage-table-wrap">
+                    <div class="admin-usage-table-head">
+                        <h3 class="stats-chart-title">По пользователям</h3>
+                        <button type="button" class="btn btn-outline btn-sm" id="adminUsageRefreshBtn">
+                            <i class="fas fa-sync-alt" aria-hidden="true"></i> Обновить
+                        </button>
+                    </div>
+                    <p class="admin-usage-table-hint" id="adminUsageTableHint">Загрузка…</p>
+                    <div class="admin-usage-table-scroll">
+                        <table class="admin-usage-table" id="adminUsageTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Пользователь</th>
+                                    <th>Тариф</th>
+                                    <th>Минуты</th>
+                                    <th>Фразы</th>
+                                    <th>Дней</th>
+                                    <th>Бесед</th>
+                                    <th>Последняя активность</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminUsageTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
             </section>
 
         </main>
     </div>
 
-    <!-- 🟣 Модальное окно оплаты (Stripe) -->
-    <div id="stripePaymentModal" class="modal">
-        <div class="modal-content">
-            <button onclick="closeStripeModal()" class="modal-close">✖</button>
-            <h3>💳 Оплата картой</h3>
-            <div class="modal-body">
-                <div class="modal-amount">
-                    <span>Сумма:</span>
-                    <strong id="stripeModalAmount">0 USD</strong>
+    <!-- Мастер настройки звука для Zoom / Teams (тот же, что в /ui при «Начать») -->
+    <div id="conferenceSetupModal" class="ai-topic-modal" aria-hidden="true">
+        <div class="ai-topic-modal-backdrop" id="conferenceSetupBackdrop"></div>
+        <div class="ai-topic-modal-dialog conf-setup-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="conferenceSetupHeading">
+            <div class="conf-setup-modal-head">
+                <div class="conf-setup-modal-head-text">
+                    <h2 id="conferenceSetupHeading" data-i18n="confSetupModalTitle">Звук для видеоконференции</h2>
+                    <p class="ai-topic-hint" id="conferenceSetupHint">Проверьте виртуальный аудиокабель перед конференцией.</p>
                 </div>
-                <input type="hidden" id="stripe-client-secret">
-                <div class="form-group">
-                    <label>Имя держателя карты</label>
-                    <input type="text" id="stripe-card-holder" placeholder="John Doe">
-                </div>
-                <div id="stripe-card-element" class="card-element"></div>
-                <button id="stripe-submit-btn" onclick="confirmStripePayment()" class="btn btn-primary">
-                    💳 Оплатить
-                </button>
-                <div id="stripe-message" class="form-message"></div>
+                <button type="button" class="conf-setup-modal-close" id="conferenceSetupClose" aria-label="Закрыть">&times;</button>
             </div>
-        </div>
-    </div>
-
-    <!-- 🟣 Модальное окно крипто-платежа -->
-    <div id="cryptoPaymentModal" class="modal">
-        <div class="modal-content">
-            <button onclick="closeCryptoModal()" class="modal-close">✖</button>
-            <h3>💰 Оплата криптовалютой</h3>
-            <div class="modal-body">
-                <div class="crypto-amount">
-                    <span>Сумма к оплате:</span>
-                    <strong id="cryptoPaymentAmount">0 USDT</strong>
-                </div>
-                <div class="crypto-address">
-                    <span>Адрес кошелька:</span>
-                    <div class="address-box">
-                        <code id="cryptoPaymentAddress">-</code>
-                        <button onclick="copyCryptoAddress()" class="btn-copy">📋</button>
+            <div class="conf-setup-modal-body">
+                <section id="conferenceSetupCable" class="conf-setup-panel conf-setup-cable-panel">
+                    <p class="conf-setup-cable-lead" data-i18n="confSetupCableLead">Проверьте: установлен ли у вас виртуальный аудиокабель для передачи перевода собеседнику.</p>
+                    <p class="conf-setup-cable-os" id="conferenceSetupCableOsHint"></p>
+                    <ul class="conf-setup-cable-list">
+                        <li id="conferenceSetupCableWinLine">Windows — VB-Audio Virtual Cable</li>
+                        <li id="conferenceSetupCableMacLine">macOS — BlackHole (бесплатно) или Loopback</li>
+                    </ul>
+                    <div class="conf-setup-downloads">
+                        <a id="conferenceSetupDownloadWin" class="conf-setup-download-link" href="https://vb-audio.com/Cable/" target="_blank" rel="noopener noreferrer" data-i18n="confSetupDownloadWin">Скачать VB-Cable для Windows</a>
+                        <a id="conferenceSetupDownloadMac" class="conf-setup-download-link" href="https://existential.audio/blackhole/" target="_blank" rel="noopener noreferrer" data-i18n="confSetupDownloadMac">Скачать BlackHole для macOS</a>
                     </div>
+                    <p class="conf-setup-cable-note" data-i18n="confSetupCableNote">После установки при необходимости перезагрузите компьютер, затем нажмите «Далее».</p>
+                    <p id="conferenceSetupCableStatus" class="conf-setup-cable-status" hidden></p>
+                </section>
+                <section id="conferenceSetupApps" class="conf-setup-panel" hidden>
+                    <p class="conf-setup-apps-lead" data-i18n="confSetupAppsLead">Выберите программу, с помощью которой будет проходить конференция:</p>
+                    <div id="conferenceSetupGrid" class="conf-setup-apps" role="list"></div>
+                </section>
+                <section id="conferenceSetupCarousel" class="conf-setup-panel conf-setup-carousel" hidden>
+                    <div class="conf-setup-step-visual">
+                        <img id="conferenceSetupStepImg" alt="" width="640" height="360" decoding="async" />
+                    </div>
+                    <div class="conf-setup-step-copy">
+                        <h3 id="conferenceSetupStepTitle"></h3>
+                        <p id="conferenceSetupStepText"></p>
+                    </div>
+                    <div class="conf-setup-dots-wrap">
+                        <div class="conf-setup-dots" id="conferenceSetupDots" role="tablist" aria-label="Шаги"></div>
+                    </div>
+                </section>
+            </div>
+            <div class="conf-setup-modal-foot">
+                <div class="conf-setup-foot-left">
+                    <button type="button" class="conf-setup-btn conf-setup-btn--ghost" id="conferenceSetupBack" hidden data-i18n="confSetupBack">← К программам</button>
                 </div>
-                <div class="crypto-wait">
-                    <i class="fas fa-hourglass-half"></i>
-                    <span>Ожидание платежа...<br>Не закрывайте окно до подтверждения</span>
+                <div class="conf-setup-foot-right">
+                    <button type="button" class="conf-setup-btn conf-setup-btn--ghost" id="conferenceSetupDismiss" data-i18n="confSetupClose">Закрыть</button>
+                    <button type="button" class="conf-setup-btn conf-setup-btn--ghost" id="conferenceSetupPrev" hidden data-i18n="confSetupPrev">Назад</button>
+                    <button type="button" class="conf-setup-btn conf-setup-btn--primary" id="conferenceSetupNext" hidden data-i18n="confSetupNext">Далее</button>
+                    <button type="button" class="conf-setup-btn conf-setup-btn--primary" id="conferenceSetupStart" hidden data-i18n="confSetupStart">Запустить перевод</button>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- 🔥 Скрипты -->
-    <script src="/js/auth-check.js"></script>
-    <script src="/js/dashboard.js"></script>
-    <script src="/js/stripe-ui.js?v=4"></script>
-    <script src="/js/payment-ui.js"></script>
+    <script src="/js/conversation-lang-options.js?v=2"></script>
+    <script src="/js/site-locale-urls.js?v=1"></script>
+    <script src="/js/site-lang-detect.js?v=2"></script>
+    <script src="/js/site-lang-extra.js?v=1"></script>
+    <script src="/js/site-lang-more.js?v=1"></script>
+    <script src="/js/site-lang-pages.js?v=2"></script>
+    <script src="/js/site-lang.js?v=35"></script>
+    <script src="/js/site-mobile-nav.js?v=11"></script>
+    <script src="/js/site-desktop-download.js?v=5"></script>
+    <script src="/js/dashboard-mobile-nav.js?v=4"></script>
+    <script src="/js/auth-check.js?v=16"></script>
+    <script src="/js/nav-active.js?v=4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/i18next@23.7.13/i18next.min.js"></script>
+    <script src="/ui/translations.js"></script>
+    <script src="/ui/conference-setup.js?v=4"></script>
+    <script>
+    (function () {
+      function getDashConfSetupUserId() {
+        try {
+          var b = document.body && document.body.getAttribute('data-user-id');
+          if (b && String(b).trim()) return String(b).trim();
+        } catch (e1) { /* ignore */ }
+        try {
+          var s = localStorage.getItem('voiceTranslator_userId');
+          if (s && !String(s).startsWith('anonymous_')) return String(s).trim();
+        } catch (e2) { /* ignore */ }
+        return '';
+      }
+      function openDashboardConfSetup() {
+        if (typeof ConferenceSetupGuide === 'undefined') {
+          console.warn('ConferenceSetupGuide is not loaded (check /ui/conference-setup.js and /ui/translations.js).');
+          return;
+        }
+        var uid = getDashConfSetupUserId();
+        /* forceShow: из кабинета всегда показываем мастер, даже если в чате нажали «Больше не показывать» */
+        ConferenceSetupGuide.open(
+          function () {},
+          uid ? { userId: uid, forceShow: true } : { forceShow: true }
+        );
+      }
+      function wireDashboardConfSetupBtn() {
+        var btn = document.getElementById('dashboardShowConfSetupBtn');
+        if (btn && !btn.dataset.confSetupWired) {
+          btn.dataset.confSetupWired = '1';
+          btn.addEventListener('click', openDashboardConfSetup);
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', wireDashboardConfSetupBtn);
+      } else {
+        wireDashboardConfSetupBtn();
+      }
+    })();
+    </script>
+    <script src="/js/card-payment-bootstrap.js?v=1"></script>
+    <script src="/js/dashboard-conversation-settings.js?v=20260528a"></script>
+    <script src="/js/dashboard.js?v=20260602c"></script>
+    <script src="/js/dashboard-subscription.js?v=20260528c"></script>
+    <script src="/js/dashboard-stats-charts.js?v=20260602a"></script>
     <script src="/js/subscription-ui.js"></script>
     
     <!-- 🔥 Скрипт клонирования голоса (должен быть ПОСЛЕ других скриптов) -->
     <script>
     /**
      * 🎙️ Voice Cloning Integration for Dashboard
-     * Интеграция с сервисом клонирования на порту 8001
+     * Клонирование: на проде — тот же хост (/api/clone), локально — :8001
      */
     (function() {
         'use strict';
         
-        const CLONING_API_BASE = 'http://localhost:8001/api/clone';
+        const CLONING_API_BASE = (function () {
+            var h = window.location.hostname;
+            if (h === 'localhost' || h === '127.0.0.1') {
+                return 'http://localhost:8001/api/clone';
+            }
+            return window.location.origin + '/api/clone';
+        })();
         
         // 🔥 Функция для получения user_id (приоритет: data-атрибут > localStorage > генерация)
         function getUserId() {
@@ -527,8 +1269,26 @@
           return newId;
         }
         
-        const USER_ID = getUserId();
-        console.log('🎙️ Voice cloning user_id:', USER_ID);
+        /** Актуальный user_id (не константа при старте — иначе anonymous до загрузки профиля). */
+        function currentUserId() {
+            return getUserId();
+        }
+
+        function cloneApiHeaders(extra) {
+            const h = Object.assign({}, extra || {});
+            h['X-User-ID'] = currentUserId();
+            return h;
+        }
+
+        /** Запросы к web_server (:8000): авторизация через cookie, без конфликтующего X-User-ID. */
+        function webApiFetch(url, options) {
+            const opts = Object.assign({ credentials: 'same-origin' }, options || {});
+            const hdrs = Object.assign({}, (options && options.headers) || {});
+            delete hdrs['X-User-ID'];
+            delete hdrs['x-user-id'];
+            opts.headers = hdrs;
+            return fetch(url, opts);
+        }
         
         // Элементы
         let voicesList = null;
@@ -539,7 +1299,29 @@
         let testBtn = null;
         let testResult = null;
         let testStatus = null;
-        let serviceStatus = null;
+        const testAudioCache = new Map();
+        const testAudioByVoiceCache = new Map();
+        const voiceHasTestAudio = new Map();
+        let recordStartBtn = null;
+        let recordStopBtn = null;
+        let recordStatusEl = null;
+        let recordPromptsLangSelect = null;
+        let recordPromptsRefreshBtn = null;
+        let recordPromptsListEl = null;
+        let recordPromptsNoteEl = null;
+        let lastLoadedVoices = [];
+        let trimEnabledCb = null;
+        let trimModeSelect = null;
+        let trimManualControls = null;
+        let trimThresholdDbRange = null;
+        let trimMinSilenceRange = null;
+        let trimThresholdValue = null;
+        let trimMinSilenceValue = null;
+        let trimStatusEl = null;
+        let recorder = null;
+        let recorderStream = null;
+        let recorderChunks = [];
+        let recorderMime = '';
         
         // Инициализация
         function init() {
@@ -553,72 +1335,62 @@
             testBtn = document.getElementById('testVoiceBtn');
             testResult = document.getElementById('testResult');
             testStatus = document.getElementById('testStatus');
-            serviceStatus = document.getElementById('voiceServiceStatus');
+            recordStartBtn = document.getElementById('voiceRecordStartBtn');
+            recordStopBtn = document.getElementById('voiceRecordStopBtn');
+            recordStatusEl = document.getElementById('voiceRecordStatus');
+            recordPromptsLangSelect = document.getElementById('recordPromptsLang');
+            recordPromptsRefreshBtn = document.getElementById('recordPromptsRefreshBtn');
+            recordPromptsListEl = document.getElementById('recordPromptsList');
+            recordPromptsNoteEl = document.getElementById('recordPromptsNote');
+            trimEnabledCb = document.getElementById('trimSilenceEnabled');
+            trimModeSelect = document.getElementById('trimSilenceMode');
+            trimManualControls = document.getElementById('trimManualControls');
+            trimThresholdDbRange = document.getElementById('trimThresholdDb');
+            trimMinSilenceRange = document.getElementById('trimMinSilenceMs');
+            trimThresholdValue = document.getElementById('trimThresholdValue');
+            trimMinSilenceValue = document.getElementById('trimMinSilenceValue');
+            trimStatusEl = document.getElementById('trimSilenceStatus');
             
             if (!voicesList || !uploadForm) {
                 console.error('❌ Voice cloning elements not found in dashboard');
                 return;
             }
             
-            // Проверка доступности сервиса
-            checkServiceAvailability();
-            
-            // Загрузка голосов
-            loadVoices();
-            
-            // Настройка событий
             setupEventListeners();
-            
+            window.loadClonedVoices = loadVoices;
+
+            setupUserIdReady(() => {
+                console.log('🎙️ Voice cloning user_id:', currentUserId());
+                loadVoices();
+            });
+
             console.log('✅ Voice cloning module initialized in dashboard');
         }
-        
-        // Проверка доступности сервиса
-        async function checkServiceAvailability() {
-            try {
-                const resp = await fetch(`${CLONING_API_BASE}/test`, { 
-                    method: 'GET',
-                    headers: { 'Accept': 'application/json', 'X-User-ID': USER_ID }
-                });
-                
-                if (resp.ok) {
-                    const data = await resp.json();
-                    if (serviceStatus) {
-                        serviceStatus.innerHTML = `
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.5rem;"></i>
-                                <div>
-                                    <div style="font-weight: 600; color: var(--success);">✅ Сервис клонирования подключен</div>
-                                    <div style="color: var(--text-secondary); font-size: 0.9rem;">${data.message || 'Готов к работе'}</div>
-                                </div>
-                            </div>
-                        `;
-                        serviceStatus.style.background = 'rgba(34, 197, 94, 0.1)';
-                        serviceStatus.style.borderColor = 'var(--success)';
-                    }
-                } else {
-                    throw new Error('Service unavailable');
-                }
-            } catch (err) {
-                console.error('❌ Voice cloning service not available:', err);
-                if (serviceStatus) {
-                    serviceStatus.innerHTML = `
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <i class="fas fa-exclamation-triangle" style="color: var(--warning); font-size: 1.5rem;"></i>
-                            <div>
-                                <div style="font-weight: 600; color: var(--warning);">⚠️ Сервис клонирования недоступен</div>
-                                <div style="color: var(--text-secondary); font-size: 0.9rem;">
-                                    Запустите сервер на порту 8001: <code>python -m backend.run_cloner</code>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    serviceStatus.style.background = 'rgba(245, 158, 11, 0.1)';
-                    serviceStatus.style.borderColor = 'var(--warning)';
-                }
+
+        function setupUserIdReady(onReady) {
+            const run = () => {
+                if (typeof onReady === 'function') onReady();
+            };
+            if (document.body.dataset.userId) {
+                run();
+                return;
             }
+            const obs = new MutationObserver(() => {
+                if (document.body.dataset.userId) {
+                    obs.disconnect();
+                    run();
+                }
+            });
+            obs.observe(document.body, { attributes: true, attributeFilter: ['data-user-id'] });
+            window.addEventListener('voiceflow-user-ready', run, { once: true });
+            setTimeout(() => {
+                if (!document.body.dataset.userId) {
+                    console.warn('🎙️ user_id из профиля не получен — список голосов с текущим id');
+                    run();
+                }
+            }, 4000);
         }
         
-        // Настройка событий
         function setupEventListeners() {
             // Drag & Drop
             if (dropZone && audioInput) {
@@ -632,7 +1404,7 @@
                 ['dragenter', 'dragover'].forEach(eventName => {
                     dropZone.addEventListener(eventName, () => {
                         dropZone.style.borderColor = 'var(--accent)';
-                        dropZone.style.background = 'rgba(0, 201, 255, 0.05)';
+                        dropZone.style.background = 'rgba(37, 99, 235, 0.06)';
                     });
                 });
                 
@@ -685,12 +1457,47 @@
             if (testBtn) {
                 testBtn.addEventListener('click', testClonedVoice);
             }
-            
-            // Проверка модели
-            const checkModelBtn = document.getElementById('checkModelBtn');
-            if (checkModelBtn) {
-                checkModelBtn.addEventListener('click', checkModelStatus);
+
+            // Запись с микрофона
+            if (recordStartBtn && recordStopBtn) {
+                recordStartBtn.addEventListener('click', startMicRecord);
+                recordStopBtn.addEventListener('click', stopMicRecord);
             }
+
+            // Фразы для чтения при записи клона
+            if (recordPromptsLangSelect) {
+                recordPromptsLangSelect.addEventListener('change', () => {
+                    // Перерисовываем фразы сразу, если пользователь выбрал язык
+                    if (recordPromptsListEl) {
+                        const lang = recordPromptsLangSelect.value;
+                        renderRecordPrompts(generateRecordPrompts(lang));
+                    }
+                });
+            }
+            if (recordPromptsRefreshBtn) {
+                recordPromptsRefreshBtn.addEventListener('click', () => {
+                    const lang = recordPromptsLangSelect?.value || 'ru';
+                    renderRecordPrompts(generateRecordPrompts(lang));
+                });
+            }
+
+            if (trimModeSelect) {
+                trimModeSelect.addEventListener('change', updateTrimControlsUi);
+            }
+            if (trimEnabledCb) {
+                trimEnabledCb.addEventListener('change', updateTrimControlsUi);
+            }
+            if (trimThresholdDbRange && trimThresholdValue) {
+                trimThresholdDbRange.addEventListener('input', () => {
+                    trimThresholdValue.textContent = `${trimThresholdDbRange.value} dB`;
+                });
+            }
+            if (trimMinSilenceRange && trimMinSilenceValue) {
+                trimMinSilenceRange.addEventListener('input', () => {
+                    trimMinSilenceValue.textContent = `${trimMinSilenceRange.value} мс`;
+                });
+            }
+            updateTrimControlsUi();
         }
         
         function updateFileName(name) {
@@ -706,9 +1513,313 @@
             element.className = `form-message ${type}`;
             element.style.display = 'block';
         }
+
+        function setRecordStatus(text, isRecording) {
+            if (!recordStatusEl) return;
+            recordStatusEl.textContent = text || '';
+            recordStatusEl.style.color = isRecording ? 'var(--warning)' : 'var(--text-secondary)';
+        }
+
+        function pickRecordMimeType() {
+            if (typeof MediaRecorder === 'undefined' || typeof MediaRecorder.isTypeSupported !== 'function') return '';
+            if (MediaRecorder.isTypeSupported('audio/ogg;codecs=opus')) return 'audio/ogg;codecs=opus';
+            if (MediaRecorder.isTypeSupported('audio/ogg')) return 'audio/ogg';
+            if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) return 'audio/webm;codecs=opus';
+            if (MediaRecorder.isTypeSupported('audio/webm')) return 'audio/webm';
+            return '';
+        }
+
+        function resetRecordButtons() {
+            if (recordStartBtn) recordStartBtn.disabled = false;
+            if (recordStopBtn) recordStopBtn.disabled = true;
+        }
+
+        async function startMicRecord() {
+            const canRecord = typeof window.MediaRecorder !== 'undefined' && !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+            if (!canRecord) {
+                setRecordStatus('Запись недоступна в этом браузере', false);
+                return;
+            }
+            // Генерируем список фраз для чтения перед началом записи (с перемешиванием)
+            if (recordPromptsLangSelect && recordPromptsListEl) {
+                const lang = recordPromptsLangSelect.value || 'ru';
+                renderRecordPrompts(generateRecordPrompts(lang));
+            }
+            try {
+                recorderStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                recorderChunks = [];
+                recorderMime = pickRecordMimeType();
+                if (!recorderMime) {
+                    try {
+                        recorderStream?.getTracks?.().forEach((t) => t.stop());
+                    } catch (e) {}
+                    recorderStream = null;
+                    setRecordStatus('Браузер не поддерживает запись (OGG/WEBM). Используйте загрузку WAV/MP3/OGG/FLAC.', false);
+                    resetRecordButtons();
+                    return;
+                }
+                recorder = new MediaRecorder(recorderStream, { mimeType: recorderMime });
+
+                recorder.ondataavailable = (ev) => {
+                    if (ev.data && ev.data.size > 0) recorderChunks.push(ev.data);
+                };
+                recorder.onstop = () => {
+                    try {
+                        recorderStream?.getTracks?.().forEach((t) => t.stop());
+                    } catch (e) {}
+                    recorderStream = null;
+                    if (!recorderChunks.length) {
+                        setRecordStatus('Пустая запись, попробуйте снова', false);
+                        resetRecordButtons();
+                        return;
+                    }
+                    const mime = recorderMime || recorderChunks[0].type || 'audio/webm';
+                    const ext = mime.includes('ogg') ? 'ogg' : 'webm';
+                    const file = new File([new Blob(recorderChunks, { type: mime })], `voice_sample_recorded.${ext}`, { type: mime });
+                    if (audioInput) {
+                        const dt = new DataTransfer();
+                        dt.items.add(file);
+                        audioInput.files = dt.files;
+                    }
+                    updateFileName(file.name);
+                    setRecordStatus(`Запись готова: ${file.name}`, false);
+                    resetRecordButtons();
+                };
+
+                recorder.start();
+                if (recordStartBtn) recordStartBtn.disabled = true;
+                if (recordStopBtn) recordStopBtn.disabled = false;
+                setRecordStatus('Идет запись с микрофона...', true);
+            } catch (err) {
+                setRecordStatus('Нет доступа к микрофону', false);
+                resetRecordButtons();
+            }
+        }
+
+        function stopMicRecord() {
+            if (recorder && recorder.state === 'recording') {
+                recorder.stop();
+            } else {
+                resetRecordButtons();
+            }
+        }
         
         function hideStatus(element) {
             if (element) element.style.display = 'none';
+        }
+
+        function updateTrimControlsUi() {
+            if (!trimManualControls) return;
+            const enabled = !!trimEnabledCb?.checked;
+            const manual = enabled && trimModeSelect?.value === 'manual';
+            trimManualControls.style.display = manual ? '' : 'none';
+            if (trimStatusEl && !enabled) {
+                trimStatusEl.textContent = 'Обрезка тишины выключена.';
+            } else if (trimStatusEl && enabled && !manual) {
+                trimStatusEl.textContent = 'Авто-режим: удаляет тишину в начале/конце и длинные паузы внутри.';
+            }
+        }
+
+        function shuffleArray(arr) {
+            const a = Array.isArray(arr) ? arr.slice() : [];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function getMostFrequentCloneLanguage(voices) {
+            let ru = 0, en = 0;
+            (voices || []).forEach((v) => {
+                const lang = String(v?.language || '').toLowerCase();
+                if (lang === 'ru' || lang.includes('ru')) ru += 1;
+                else if (lang === 'en' || lang.includes('en')) en += 1;
+            });
+            if (ru === 0 && en === 0) return 'ru';
+            return ru >= en ? 'ru' : 'en';
+        }
+
+        function generateRecordPrompts(lang) {
+            const L = (lang === 'en') ? 'en' : 'ru';
+            const count = 10;
+            const ruPrompts = [
+                'Здравствуйте! Меня зовут Алексей. Рад вас слышать.',
+                'Скажите, пожалуйста, как прошёл ваш день?',
+                'Отлично! Тогда давайте обсудим детали.',
+                'Я понимаю. Давайте уточним ключевые моменты.',
+                'Вы готовы начать? Сейчас будет короткий диалог.',
+                'Прекрасно! Мой ответ — по делу и понятно.',
+                'Можно пример: вот так это звучит в реальной задаче.',
+                'Коротко: цель — качество, скорость и точность.',
+                'Спасибо! До встречи.',
+                'Супер! Продолжаем в том же темпе.',
+                'Вопрос: что для вас самое важное в результате?',
+                'Хорошо, согласен. Давайте двигаться дальше!',
+            ];
+            const enPrompts = [
+                'Hello! My name is Alex. Nice to meet you.',
+                'Can you tell me how your day went?',
+                'Great! Then let’s talk about the details.',
+                'I understand. Let’s clarify the key points.',
+                'Are you ready to begin? Here comes a short dialogue.',
+                'Perfect! My answer will be clear and to the point.',
+                'Let me give an example: this is how it sounds in practice.',
+                'Briefly: the goal is quality, speed, and accuracy.',
+                'Thank you! See you soon.',
+                'Awesome! Keep going at the same pace.',
+                'Question: what matters most to you in the result?',
+                'Okay, agreed. Let’s move forward!',
+            ];
+            const base = L === 'en' ? enPrompts : ruPrompts;
+            const shuffled = shuffleArray(base);
+            return shuffled.slice(0, Math.min(count, shuffled.length));
+        }
+
+        function renderRecordPrompts(prompts) {
+            if (!recordPromptsListEl) return;
+            const list = Array.isArray(prompts) ? prompts : [];
+            recordPromptsListEl.innerHTML = list
+                .map((p, idx) => `<li data-idx="${idx}">${String(p || '').replace(/</g, '&lt;').replace(/>/g, '&gt;')}</li>`)
+                .join('');
+            if (recordPromptsNoteEl) {
+                const totalChars = list.reduce((s, p) => s + String(p || '').length, 0);
+                recordPromptsNoteEl.textContent = `Нужно прочитать ${list.length} фраз. Примерно 15–30 секунд (ориентир). Общая длина: ~${totalChars} символов.`;
+            }
+        }
+
+        function ensureRecordPromptsGenerated() {
+            if (!recordPromptsLangSelect) return;
+            const lang = recordPromptsLangSelect.value || 'ru';
+            const currentCount = recordPromptsListEl?.children?.length || 0;
+            if (currentCount === 0) {
+                renderRecordPrompts(generateRecordPrompts(lang));
+            }
+        }
+
+        function encodeWavFromFloat32(samples, sampleRate) {
+            const wavHeaderSize = 44;
+            const bytesPerSample = 2;
+            const dataSize = samples.length * bytesPerSample;
+            const buffer = new ArrayBuffer(wavHeaderSize + dataSize);
+            const view = new DataView(buffer);
+            const writeString = (offset, str) => {
+                for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+            };
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + dataSize, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * bytesPerSample, true);
+            view.setUint16(32, bytesPerSample, true);
+            view.setUint16(34, 16, true);
+            writeString(36, 'data');
+            view.setUint32(40, dataSize, true);
+            let offset = 44;
+            for (let i = 0; i < samples.length; i++, offset += 2) {
+                const s = Math.max(-1, Math.min(1, samples[i]));
+                view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+            }
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        function trimSilenceSamples(input, sampleRate, thresholdDb, minSilenceMs, keepSilenceMs = 90) {
+            if (!input || !input.length) return input;
+            const frameSize = 1024;
+            const hop = 512;
+            const thresholdAmp = Math.pow(10, thresholdDb / 20);
+            const minSilenceSamples = Math.max(1, Math.round((minSilenceMs / 1000) * sampleRate));
+            const keepSilenceSamples = Math.max(0, Math.round((keepSilenceMs / 1000) * sampleRate));
+            const frames = [];
+            for (let pos = 0; pos < input.length; pos += hop) {
+                const end = Math.min(input.length, pos + frameSize);
+                let sum = 0;
+                for (let i = pos; i < end; i++) {
+                    const v = input[i];
+                    sum += v * v;
+                }
+                const rms = Math.sqrt(sum / Math.max(1, end - pos));
+                frames.push(rms >= thresholdAmp);
+            }
+            const expanded = frames.slice();
+            for (let i = 0; i < frames.length; i++) {
+                if (frames[i]) {
+                    if (i > 0) expanded[i - 1] = true;
+                    if (i < frames.length - 1) expanded[i + 1] = true;
+                }
+            }
+            const segments = [];
+            let inSpeech = false;
+            let segStart = 0;
+            for (let i = 0; i < expanded.length; i++) {
+                if (expanded[i] && !inSpeech) {
+                    inSpeech = true;
+                    segStart = i * hop;
+                } else if (!expanded[i] && inSpeech) {
+                    inSpeech = false;
+                    segments.push({ start: segStart, end: Math.min(input.length, i * hop + frameSize) });
+                }
+            }
+            if (inSpeech) segments.push({ start: segStart, end: input.length });
+            if (!segments.length) return input;
+
+            const merged = [segments[0]];
+            for (let i = 1; i < segments.length; i++) {
+                const prev = merged[merged.length - 1];
+                const cur = segments[i];
+                const gap = cur.start - prev.end;
+                if (gap < minSilenceSamples) {
+                    prev.end = cur.end;
+                } else {
+                    merged.push(cur);
+                }
+            }
+            const out = [];
+            for (let i = 0; i < merged.length; i++) {
+                const seg = merged[i];
+                for (let j = seg.start; j < seg.end; j++) out.push(input[j]);
+                if (i < merged.length - 1) {
+                    const gap = merged[i + 1].start - seg.end;
+                    const keep = Math.min(keepSilenceSamples, Math.max(0, gap));
+                    for (let k = 0; k < keep; k++) out.push(0);
+                }
+            }
+            return new Float32Array(out);
+        }
+
+        async function prepareVoiceSampleForUpload(file) {
+            if (!file || !trimEnabledCb?.checked) return file;
+            const mode = trimModeSelect?.value || 'auto';
+            const thresholdDb = mode === 'manual' ? Number(trimThresholdDbRange?.value || -38) : -38;
+            const minSilenceMs = mode === 'manual' ? Number(trimMinSilenceRange?.value || 220) : 220;
+            if (trimStatusEl) trimStatusEl.textContent = 'Обработка тишины...';
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const arr = await file.arrayBuffer();
+                const decoded = await audioCtx.decodeAudioData(arr.slice(0));
+                const channels = decoded.numberOfChannels;
+                const len = decoded.length;
+                const mono = new Float32Array(len);
+                for (let c = 0; c < channels; c++) {
+                    const d = decoded.getChannelData(c);
+                    for (let i = 0; i < len; i++) mono[i] += d[i] / channels;
+                }
+                const trimmed = trimSilenceSamples(mono, decoded.sampleRate, thresholdDb, minSilenceMs);
+                const saved = Math.max(0, mono.length - trimmed.length);
+                const savedSec = (saved / decoded.sampleRate).toFixed(2);
+                const blob = encodeWavFromFloat32(trimmed, decoded.sampleRate);
+                const out = new File([blob], (file.name || 'voice_sample').replace(/\.[a-z0-9]+$/i, '') + '_trimmed.wav', { type: 'audio/wav' });
+                if (trimStatusEl) trimStatusEl.textContent = `Обрезка применена: удалено ~${savedSec} сек тишины.`;
+                try { await audioCtx.close(); } catch (e) {}
+                return out;
+            } catch (e) {
+                if (trimStatusEl) trimStatusEl.textContent = 'Не удалось применить trim silence, отправляем оригинал.';
+                return file;
+            }
         }
         
         // Обновление индикатора лимита
@@ -718,22 +1829,32 @@
             const warningEl = document.getElementById('limitWarning');
             const uploadBtn = document.getElementById('voiceUploadBtn');
             const uploadFormEl = document.getElementById('voiceUploadForm');
-            
+            const limitNoticeEl = document.getElementById('voiceCloneLimitNotice');
+            const limitMsgEl = limitNoticeEl && limitNoticeEl.querySelector('[data-limit-msg]');
+            const recordStartBtn = document.getElementById('voiceRecordStartBtn');
+            const atLimit = Number(current) >= Number(max);
+
             if (countEl) countEl.textContent = current;
             if (maxEl) maxEl.textContent = max;
-            
-            if (warningEl && uploadBtn && uploadFormEl) {
-                if (current >= max) {
-                    warningEl.style.display = 'inline';
-                    uploadBtn.disabled = true;
-                    uploadFormEl.style.opacity = '0.5';
-                    uploadFormEl.style.pointerEvents = 'none';
-                } else {
-                    warningEl.style.display = 'none';
-                    uploadBtn.disabled = false;
-                    uploadFormEl.style.opacity = '1';
-                    uploadFormEl.style.pointerEvents = 'auto';
-                }
+
+            if (limitNoticeEl) {
+                limitNoticeEl.hidden = !atLimit;
+            }
+            if (limitMsgEl) {
+                limitMsgEl.textContent = `Достигнут лимит клонированных голосов (${current} из ${max}). Удалите один из голосов в списке «Мои голоса», чтобы добавить новый.`;
+            }
+
+            if (warningEl) {
+                warningEl.style.display = atLimit ? 'inline' : 'none';
+            }
+            if (uploadBtn) {
+                uploadBtn.disabled = atLimit;
+            }
+            if (recordStartBtn) {
+                recordStartBtn.disabled = atLimit;
+            }
+            if (uploadFormEl) {
+                uploadFormEl.classList.toggle('voice-upload-form--limit-reached', atLimit);
             }
         }
         
@@ -743,12 +1864,24 @@
             
             try {
                 const resp = await fetch(`${CLONING_API_BASE}/voices`, {
-                    headers: { 'Accept': 'application/json', 'X-User-ID': USER_ID }
+                    headers: cloneApiHeaders({ Accept: 'application/json' }),
                 });
                 
                 if (!resp.ok) throw new Error('Failed to load voices');
                 
                 const data = await resp.json();
+                lastLoadedVoices = data.voices || [];
+                voiceHasTestAudio.clear();
+                (data.voices || []).forEach(v => {
+                    const id = String(v.id);
+                    const hasCached = testAudioByVoiceCache.has(getModeCacheKey(id));
+                    voiceHasTestAudio.set(id, !!v.has_test_audio || hasCached);
+                });
+                if (recordPromptsLangSelect) {
+                    const lang = getMostFrequentCloneLanguage(lastLoadedVoices);
+                    recordPromptsLangSelect.value = lang;
+                    renderRecordPrompts(generateRecordPrompts(lang));
+                }
                 renderVoicesList(data.voices);
                 populateTestSelect(data.voices);
                 updateVoiceLimitIndicator(data.limit?.current || 0, data.limit?.max || 10);
@@ -779,7 +1912,9 @@
                 return;
             }
             
-            voicesList.innerHTML = voices.map(voice => `
+            voicesList.innerHTML = voices.map(voice => {
+                const hasTest = voiceHasReadyTest(voice.id);
+                return `
                 <div class="voice-item" data-id="${voice.id}" 
                      style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: var(--dark-bg); border-radius: 8px; border: 1px solid var(--border);">
                     <div class="voice-info" style="flex: 1;">
@@ -793,8 +1928,8 @@
                         </div>
                     </div>
                     <div class="voice-actions" style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-sm" onclick="window.testVoiceFromList('${voice.id}', '${escapeHtml(voice.name)}')" 
-                                style="padding: 0.4rem 0.8rem;">
+                        <button type="button" class="btn btn-sm voice-list-test-btn${hasTest ? ' voice-list-test-btn--ready' : ''}" data-voice-id="${voice.id}" onclick="window.testVoiceFromList('${voice.id}', '${escapeHtml(voice.name)}')" 
+                                style="padding: 0.4rem 0.8rem;" title="${hasTest ? 'Готовый тест — воспроизвести сразу' : 'Сначала нажмите «Озвучить» в блоке справа'}">
                             🔊 Тест
                         </button>
                         <button class="btn btn-sm btn-red" onclick="window.deleteVoice('${voice.id}', '${escapeHtml(voice.name)}')" 
@@ -803,7 +1938,8 @@
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
         
         function populateTestSelect(voices) {
@@ -821,6 +1957,124 @@
             if (testBtn) {
                 testBtn.disabled = !voiceId;
             }
+        }
+
+        function getModeCacheKey(voiceId) {
+            return `${String(voiceId || '').trim()}__modal`;
+        }
+
+        function getTestCacheKey(voiceId, text, speed) {
+            return `${String(voiceId || '').trim()}__${String(text || '').trim()}__${Number(speed || 1).toFixed(2)}__modal`;
+        }
+
+        function revokeTestCacheEntry(entry) {
+            if (entry && entry.url && String(entry.url).startsWith('blob:')) {
+                try { URL.revokeObjectURL(entry.url); } catch (e) { /* ignore */ }
+            }
+        }
+
+        function voiceHasReadyTest(voiceId) {
+            const vid = String(voiceId || '').trim();
+            if (!vid) return false;
+            if (voiceHasTestAudio.get(vid) || testAudioByVoiceCache.has(getModeCacheKey(vid))) return true;
+            const row = lastLoadedVoices.find((x) => String(x.id) === vid);
+            return !!(row && row.has_test_audio);
+        }
+
+        async function loadPersistedVoiceTest(voiceId, voiceName) {
+            const vid = String(voiceId || '').trim();
+            if (!vid) return false;
+            try {
+                const metaResp = await webApiFetch(`/api/voice-clone-test/${encodeURIComponent(vid)}/meta`, {
+                    headers: { Accept: 'application/json' },
+                });
+                if (!metaResp.ok) return false;
+                const meta = await metaResp.json();
+                const select = document.getElementById('testVoiceSelect');
+                const textarea = document.getElementById('testText');
+                const speedEl = document.getElementById('testSpeed');
+                const speedValueEl = document.getElementById('speedValue');
+                if (select) select.value = vid;
+                if (textarea && meta.text) textarea.value = meta.text;
+                else if (textarea && voiceName) {
+                    textarea.value = `Привет! Это тест голоса "${voiceName}".`;
+                }
+                if (speedEl && meta.speed != null) {
+                    speedEl.value = meta.speed;
+                    if (speedValueEl) speedValueEl.textContent = Number(meta.speed).toFixed(1);
+                }
+                updateTestButton();
+                const audioResp = await webApiFetch(`/api/voice-clone-test/${encodeURIComponent(vid)}`, {
+                    headers: { Accept: 'audio/wav' },
+                });
+                if (!audioResp.ok) return false;
+                const blob = await audioResp.blob();
+                const url = URL.createObjectURL(blob);
+                const dur = audioResp.headers.get('X-Cloning-Duration')
+                    || (meta.generation_sec != null ? String(meta.generation_sec) : null)
+                    || (meta.duration != null ? String(meta.duration) : '?');
+                saveVoiceTestCache(vid, url, dur, meta.text || textarea?.value || '', meta.speed ?? 1);
+                hideStatus(testStatus);
+                renderTestAudioResult(url, vid);
+                showStatus(testStatus, `✅ Готовый тест (генерация заняла ${dur} сек)`, 'success');
+                document.querySelector('.voice-test-card')?.scrollIntoView({ behavior: 'smooth' });
+                const player = testResult?.querySelector('audio');
+                if (player) player.play().catch(() => {});
+                return true;
+            } catch (e) {
+                console.warn('loadPersistedVoiceTest:', e);
+                return false;
+            }
+        }
+
+        function saveVoiceTestCache(voiceId, url, duration, text, speed) {
+            const vid = String(voiceId || '').trim();
+            if (!vid || !url) return;
+            const modeKey = getModeCacheKey(vid);
+            const prev = testAudioByVoiceCache.get(modeKey);
+            if (prev && prev.url !== url) revokeTestCacheEntry(prev);
+            const cacheEntry = { url, duration: duration || '?', text, speed };
+            testAudioCache.set(getTestCacheKey(vid, text, speed), cacheEntry);
+            testAudioByVoiceCache.set(modeKey, cacheEntry);
+            voiceHasTestAudio.set(vid, true);
+            refreshVoiceListTestButtons();
+        }
+
+        function clearVoiceTestCache(voiceId) {
+            const vid = String(voiceId || '').trim();
+            if (!vid) return;
+            revokeTestCacheEntry(testAudioByVoiceCache.get(getModeCacheKey(vid)));
+            testAudioByVoiceCache.delete(getModeCacheKey(vid));
+            voiceHasTestAudio.delete(vid);
+            for (const key of [...testAudioCache.keys()]) {
+                if (key.startsWith(`${vid}__`)) {
+                    revokeTestCacheEntry(testAudioCache.get(key));
+                    testAudioCache.delete(key);
+                }
+            }
+        }
+
+        function refreshVoiceListTestButtons() {
+            if (lastLoadedVoices && lastLoadedVoices.length) {
+                renderVoicesList(lastLoadedVoices);
+            }
+        }
+
+        function renderTestAudioResult(url, voiceId) {
+            if (!testResult) return;
+            testResult.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem; padding: 1rem; background: rgba(34, 197, 94, 0.1); border-radius: 8px;">
+                    <button class="btn btn-sm" onclick="this.nextElementSibling.play(); this.textContent='▶️ Играет';" 
+                            style="background: var(--success);">
+                        ▶️ Воспроизвести
+                    </button>
+                    <audio src="${url}" style="flex: 1;" controls autoplay></audio>
+                    <a href="${url}" download="cloned_${voiceId}.wav" class="btn btn-sm" 
+                       style="background: var(--accent);">
+                        ⬇️ Скачать
+                    </a>
+                </div>
+            `;
         }
         
         // Загрузка образца голоса
@@ -850,23 +2104,25 @@
                 
                 hideStatus(uploadStatus);
                 
-                console.log('📤 Отправка:', { filename: file.name, size: file.size, name, language, user_id: USER_ID });
+                console.log('📤 Отправка:', { filename: file.name, size: file.size, name, language, user_id: currentUserId() });
                 
+                const preparedFile = await prepareVoiceSampleForUpload(file);
                 const formData = new FormData();
-                formData.append('file', file);
+                formData.append('file', preparedFile);
                 formData.append('name', name);
                 formData.append('language', language || 'auto');
                 
                 const resp = await fetch(`${CLONING_API_BASE}/upload-sample`, {
                     method: 'POST',
-                    headers: { 'X-User-ID': USER_ID },
+                    headers: cloneApiHeaders(),
                     body: formData
                 });
                 
                 const result = await resp.json().catch(() => ({ detail: 'Unknown error', message: 'Server error' }));
                 
                 if (resp.ok) {
-                    showStatus(uploadStatus, `✅ ${result.message}`, 'success');
+                    const successText = String(result.message || 'Голос сохранён').replace(/^✅\s*/u, '');
+                    showStatus(uploadStatus, `✅ ${successText}`, 'success');
                     
                     if (result.limit) {
                         updateVoiceLimitIndicator(result.limit.current, result.limit.max);
@@ -912,7 +2168,7 @@
             }
         }
         
-        // Тестирование голоса
+        // Тестирование голоса (всегда через Modal /api/tts-cloned)
         async function testClonedVoice() {
             const voiceId = document.getElementById('testVoiceSelect')?.value;
             const text = document.getElementById('testText')?.value.trim();
@@ -933,43 +2189,39 @@
                 
                 hideStatus(testStatus);
                 if (testResult) testResult.innerHTML = '';
+                const cacheKey = getTestCacheKey(voiceId, text, speed);
+                const cachedAudio = testAudioCache.get(cacheKey);
+                if (cachedAudio) {
+                    renderTestAudioResult(cachedAudio.url, voiceId);
+                    saveVoiceTestCache(voiceId, cachedAudio.url, cachedAudio.duration, text, speed);
+                    showStatus(testStatus, `✅ Сгенерировано за ${cachedAudio.duration || '?'} сек • из кэша`, 'success');
+                    return;
+                }
                 
-                const resp = await fetch(`${CLONING_API_BASE}/generate`, {
+                const resp = await webApiFetch('/api/tts-cloned', {
                     method: 'POST',
-                    headers: { 
+                    headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'audio/wav',
-                        'X-User-ID': USER_ID
+                        Accept: 'audio/wav',
                     },
                     body: JSON.stringify({
-                        voice_id: voiceId,
+                        voice: `cloned:${voiceId}`,
                         text: text,
-                        speed: speed
+                        speed: speed,
+                        play_locally: false,
+                        clone_via_modal: true
                     })
                 });
                 
                 if (resp.ok) {
                     const blob = await resp.blob();
                     const url = URL.createObjectURL(blob);
-                    
-                    if (testResult) {
-                        testResult.innerHTML = `
-                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem; padding: 1rem; background: rgba(34, 197, 94, 0.1); border-radius: 8px;">
-                                <button class="btn btn-sm" onclick="this.nextElementSibling.play(); this.textContent='▶️ Играет';" 
-                                        style="background: var(--success);">
-                                    ▶️ Воспроизвести
-                                </button>
-                                <audio src="${url}" style="flex: 1;" controls autoplay></audio>
-                                <a href="${url}" download="cloned_${voiceId}.wav" class="btn btn-sm" 
-                                   style="background: var(--accent);">
-                                    ⬇️ Скачать
-                                </a>
-                            </div>
-                        `;
-                    }
-                    
                     const duration = resp.headers.get('X-Cloning-Duration');
-                    showStatus(testStatus, `✅ Сгенерировано (${duration || '?'} сек)`, 'success');
+                    const row = lastLoadedVoices.find((x) => String(x.id) === String(voiceId));
+                    if (row) row.has_test_audio = true;
+                    saveVoiceTestCache(voiceId, url, duration, text, speed);
+                    renderTestAudioResult(url, voiceId);
+                    showStatus(testStatus, `✅ Сгенерировано за ${duration || '?'} сек`, 'success');
                     
                 } else {
                     const error = await resp.json().catch(() => ({}));
@@ -995,12 +2247,13 @@
             try {
                 const resp = await fetch(`${CLONING_API_BASE}/voices/${voiceId}`, {
                     method: 'DELETE',
-                    headers: { 'Accept': 'application/json', 'X-User-ID': USER_ID }
+                    headers: cloneApiHeaders({ Accept: 'application/json' }),
                 });
                 
                 if (resp.ok) {
                     const result = await resp.json();
                     alert(`✅ ${result.message}`);
+                    clearVoiceTestCache(voiceId);
                     if (result.limit) {
                         updateVoiceLimitIndicator(result.limit.current, result.limit.max);
                     }
@@ -1016,54 +2269,44 @@
         };
         
         // Тест из списка
-        window.testVoiceFromList = function(voiceId, voiceName) {
+        window.testVoiceFromList = async function(voiceId, voiceName) {
             const select = document.getElementById('testVoiceSelect');
             const textarea = document.getElementById('testText');
-            
+            const speedEl = document.getElementById('testSpeed');
+            const speedValueEl = document.getElementById('speedValue');
+
             if (select) select.value = voiceId;
-            if (textarea) textarea.value = `Привет! Это тест голоса "${voiceName}".`;
-            
             updateTestButton();
-            
-            // Прокрутка к секции теста
+
+            const cached = testAudioByVoiceCache.get(getModeCacheKey(voiceId));
+            if (cached) {
+                if (textarea && cached.text) textarea.value = cached.text;
+                if (speedEl && cached.speed != null) {
+                    speedEl.value = cached.speed;
+                    if (speedValueEl) speedValueEl.textContent = Number(cached.speed).toFixed(1);
+                }
+                hideStatus(testStatus);
+                renderTestAudioResult(cached.url, voiceId);
+                showStatus(testStatus, `✅ Готовый тест (генерация заняла ${cached.duration || '?'} сек)`, 'success');
+                document.querySelector('.voice-test-card')?.scrollIntoView({ behavior: 'smooth' });
+                const player = testResult?.querySelector('audio');
+                if (player) player.play().catch(() => {});
+                return;
+            }
+
+            if (voiceHasReadyTest(voiceId)) {
+                const ok = await loadPersistedVoiceTest(voiceId, voiceName);
+                if (ok) return;
+            }
+
+            if (textarea) {
+                textarea.value = `Привет! Это тест голоса "${voiceName}".`;
+            }
+
             document.querySelector('.voice-test-card')?.scrollIntoView({ behavior: 'smooth' });
             textarea?.focus();
+            showStatus(testStatus, 'Сначала нажмите «Озвучить» справа, чтобы подготовить тест для этого голоса', 'info');
         };
-        
-        // Проверка модели
-        async function checkModelStatus() {
-            const btn = document.getElementById('checkModelBtn');
-            const statusEl = document.getElementById('modelStatus');
-            
-            if (!btn || !statusEl) return;
-            
-            btn.disabled = true;
-            statusEl.style.display = 'block';
-            statusEl.className = 'form-message info';
-            statusEl.innerHTML = '<span class="loading"></span>Проверка модели...';
-            
-            try {
-                const resp = await fetch(`${CLONING_API_BASE}/test`, {
-                    headers: { 'Accept': 'application/json' }
-                });
-                const data = await resp.json();
-                
-                if (resp.ok) {
-                    statusEl.className = 'form-message success';
-                    statusEl.textContent = `✅ ${data.message}`;
-                } else {
-                    statusEl.className = 'form-message error';
-                    statusEl.textContent = `❌ ${data.detail || 'Модель недоступна'}`;
-                }
-                
-            } catch (err) {
-                statusEl.className = 'form-message error';
-                statusEl.textContent = `❌ Ошибка подключения: ${err.message}`;
-                
-            } finally {
-                btn.disabled = false;
-            }
-        }
         
         function escapeHtml(text) {
             if (!text) return '';
@@ -1117,5 +2360,84 @@
         observer.observe(document.body, { attributes: true, attributeFilter: ['data-user-id'] });
     })();
     </script>
+
+    <div id="stripePaymentModal" class="modal dash-stripe-modal" style="display:none;" aria-hidden="true">
+        <div class="modal-content dash-stripe-modal__panel">
+            <button type="button" class="modal-close dash-stripe-modal__close" onclick="closeStripeModal()" aria-label="Закрыть">&times;</button>
+            <h3 class="dash-stripe-modal__title">Оплата картой</h3>
+            <div class="modal-body dash-stripe-modal__body">
+                <div class="modal-amount dash-stripe-modal__amount">
+                    <span class="dash-stripe-modal__amount-label">Сумма:</span>
+                    <strong id="stripeModalAmount" class="dash-stripe-modal__amount-value">0 USD</strong>
+                </div>
+                <input type="hidden" id="stripe-client-secret" value="">
+                <div class="form-group dash-stripe-modal__field">
+                    <label for="stripe-card-holder">Имя на карте <span class="checkout-required">*</span></label>
+                    <input type="text" id="stripe-card-holder" autocomplete="cc-name" placeholder="IVAN IVANOV">
+                </div>
+                <div class="form-group stripe-card-field-wrap dash-stripe-modal__field">
+                    <label for="stripe-card-element">Данные карты</label>
+                    <div id="stripe-card-element" class="card-element dash-stripe-card-element"></div>
+                </div>
+                <div id="stripe-message" class="checkout-alert checkout-alert--error" role="alert" aria-live="polite"></div>
+                <button type="button" id="stripe-submit-btn" class="btn btn-primary dash-stripe-modal__submit">Оплатить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashUpgradeCryptoModal" class="modal dash-upgrade-crypto-modal" style="display:none;" aria-hidden="true">
+        <div class="modal-content">
+            <button type="button" class="modal-close" data-close-dash-crypto aria-label="Закрыть">&times;</button>
+            <h3>Оплата криптовалютой</h3>
+            <div class="modal-body">
+                <p style="color:#64748b;font-size:0.9rem;margin:0 0 1rem;">Сумма доплаты рассчитывается на сервере. После поступления средств тариф обновится автоматически.</p>
+                <div class="form-group">
+                    <label for="dashUpgradeCryptoCurrency">Криптовалюта</label>
+                    <select id="dashUpgradeCryptoCurrency"></select>
+                    <p class="checkout-crypto-network-hint" style="margin:0.4rem 0 0;font-size:0.8rem;color:#64748b;">USDT и USDC — сеть TRC20 (Tron).</p>
+                </div>
+                <button type="button" id="dashUpgradeCryptoSubmit" class="btn btn-primary" style="width:100%;">Создать счёт на оплату</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="cryptoPaymentModal" class="modal dash-crypto-pay-modal" style="display:none;" aria-hidden="true">
+        <div class="modal-content">
+            <button type="button" onclick="closeCryptoModal()" class="modal-close" aria-label="Закрыть">&times;</button>
+            <h3>Оплата криптовалютой</h3>
+            <div class="modal-body">
+                <div class="crypto-amount" style="margin-bottom:1rem;">
+                    <span>К оплате:</span>
+                    <strong id="cryptoPaymentAmount">0 USDT</strong>
+                </div>
+                <div class="crypto-address">
+                    <span>Адрес кошелька:</span>
+                    <div class="address-box" style="display:flex;gap:0.5rem;align-items:center;margin-top:0.5rem;">
+                        <code id="cryptoPaymentAddress" style="flex:1;word-break:break-all;">-</code>
+                        <button type="button" onclick="copyCryptoAddress()" class="btn btn-outline" style="flex-shrink:0;">Копировать</button>
+                    </div>
+                </div>
+                <p style="color:#64748b;font-size:0.88rem;margin-top:1rem;"><i class="fas fa-hourglass-half"></i> Ожидаем поступление на указанный адрес</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashVoiceCloneUpgradeModal" class="modal dash-voice-clone-upgrade-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dashVoiceCloneUpgradeTitle">
+        <div class="modal-content">
+            <button type="button" class="modal-close" id="dashVoiceCloneUpgradeModalX" aria-label="Закрыть">&times;</button>
+            <h2 id="dashVoiceCloneUpgradeTitle" style="margin: 0 2rem 0 0; font-size: 1.25rem;">Клонированная озвучка</h2>
+            <p class="modal-body" style="color: var(--text-secondary); margin-top: 1rem;">
+                Доступна на тарифах Ultimate, Team, Business и в пакетах Ultimate (час / 20 ч). Оформите подходящий тариф, чтобы использовать свой голос для озвучивания в переводчике.
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem;">
+                <a href="/pricing" class="btn btn-primary">Тарифы и цены</a>
+                <a href="/dashboard#subscription" class="btn btn-outline">Подписка в кабинете</a>
+                <button type="button" class="btn btn-outline" id="dashVoiceCloneUpgradeModalOk">Понятно</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/crypto-currency-options.js?v=1"></script>
+    <script src="/js/desktop-chrome.js?v=20260517k"></script>
 </body>
 </html>

@@ -1,0 +1,4 @@
+desktop/build/*.command text eol=lf
+public/downloads/*.command text eol=lf
+public/downloads/install-macos.sh text eol=lf
+desktop/build/blackhole-bootstrap.sh text eol=lf

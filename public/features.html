@@ -2,17 +2,17 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){if(/^\/[a-z]{2}(?:\/|$)/.test(location.pathname||'/'))return;document.documentElement.classList.add('site-lang-loading');})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Возможности — VoiceFlow</title>
+    <title>Возможности — TalkPilot</title>
     <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060B18'/%3E%3Crect x='10' y='24' width='5' height='18' rx='2.5' fill='%232EC7FF'/%3E%3Crect x='19' y='19' width='6' height='28' rx='3' fill='%2346B2FF'/%3E%3Crect x='30' y='12' width='7' height='40' rx='3.5' fill='%236F84FF'/%3E%3Crect x='42' y='19' width='6' height='28' rx='3' fill='%238A66FF'/%3E%3Crect x='51' y='24' width='5' height='18' rx='2.5' fill='%23A64DFF'/%3E%3Ccircle cx='21.5' cy='32' r='1.7' fill='%2346B2FF'/%3E%3Ccircle cx='45.5' cy='32' r='1.7' fill='%238A66FF'/%3E%3C/svg%3E">
     <link rel="shortcut icon" href="/favicon.svg?v=3">
     <link rel="apple-touch-icon" href="/favicon.svg?v=3">
-    <meta name="description" content="Распознавание Basic и Pro, нейроголоса Edge, клон голоса, ИИ-подсказки, демо-чат, автоперевод, личный кабинет и API — полный обзор VoiceFlow.">
+    <meta name="description" content="Распознавание Basic и Pro, нейроголоса Edge, клон голоса, ИИ-подсказки, демо-чат, автоперевод, личный кабинет и API — полный обзор TalkPilot.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/css/landing.css?v=26">
-    <link rel="stylesheet" href="/css/site-navbar.css?v=2">
+    <link rel="stylesheet" href="/css/landing.css?v=21">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="features-page" data-site-title-key="features.metaTitle" data-site-desc-key="features.metaDesc">
@@ -35,18 +35,21 @@
                     <circle cx="25.9" cy="20" r="1.1" fill="url(#navMarkGrad)"/>
                 </svg>
                 <span class="logo-text">
-                    <span class="logo-text-voice">Voice</span><span class="logo-text-flow">Flow</span>
+                    <span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span>
                 </span>
             </a>
             <ul class="nav-links">
                 <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
-                <li><a href="/features.html" data-site-i18n="nav.features">Возможности</a></li>
-                <li><a href="/technology.html" data-site-i18n="nav.tech">Технологии</a></li>
-                <li><a href="/pricing.html" data-site-i18n="nav.pricing">Тарифы</a></li>
-                <li><a href="/faq.html" data-site-i18n="nav.faq">FAQ</a></li>
-                <li><a href="/contacts.html" data-site-i18n="footer.contact">Контакты</a></li>
+                <li><a href="/features" data-site-i18n="nav.features">Возможности</a></li>
+                <li><a href="/technology" data-site-i18n="nav.tech">Технологии</a></li>
+                <li><a href="/pricing" data-site-i18n="nav.pricing">Тарифы</a></li>
+                <li><a href="/faq" data-site-i18n="nav.faq">FAQ</a></li>
+                <li><a href="/contacts" data-site-i18n="footer.contact">Контакты</a></li>
             </ul>
             <div class="nav-right">
+                <button type="button" class="nav-download-btn" id="navDesktopDownloadBtn" data-site-i18n-aria="nav.download" aria-label="Скачать TalkPilot">
+                    <i class="fas fa-download" aria-hidden="true"></i>
+                </button>
                 <div class="nav-lang-wrap">
                     <span class="nav-lang-sr" id="siteLangSelectLabel" data-site-i18n="nav.lang_label">Язык интерфейса</span>
                     <div class="nav-lang-pill">
@@ -62,10 +65,10 @@
                     </div>
                 </div>
                 <div class="nav-buttons" id="navButtons">
-                    <a href="/dashboard.html" class="btn btn-outline">
+                    <a href="/dashboard" class="btn btn-outline">
                         <span data-site-i18n="auth.login">Войти</span>
                     </a>
-                    <a href="/dashboard.html?register=1" class="btn btn-primary">
+                    <a href="/dashboard?register=1" class="btn btn-primary">
                         <span data-site-i18n="auth.register">Регистрация</span>
                     </a>
                 </div>
@@ -75,12 +78,17 @@
 
 
     <section class="page-header features-top">
-        <h1 class="features-top-title"><span data-site-i18n="nav.features">Возможности</span> <span class="features-top-accent">VoiceFlow</span></h1>
+        <div class="features-top__bg" aria-hidden="true">
+            <div class="features-top__waves">
+                <img src="/img/features-hero-waves.png?v=2" width="1920" height="640" alt="" loading="eager" decoding="async" fetchpriority="high">
+            </div>
+        </div>
+        <h1 class="features-top-title"><span data-site-i18n="nav.features">Возможности</span> <span class="features-top-accent">TalkPilot</span></h1>
         <p class="features-top-sub" data-site-i18n="features.header.sub">Всё, что нужно для естественного и точного голосового перевода</p>
     </section>
 
     <section class="section" id="overview">
-        <h2 class="section-title" data-site-i18n="features.why.title">Почему VoiceFlow?</h2>
+        <h2 class="section-title" data-site-i18n="features.why.title">Почему TalkPilot?</h2>
         <p class="section-subtitle" data-site-i18n="features.why.sub">Мы объединили передовые технологии для создания удобного голосового переводчика</p>
 
         <div class="features-grid">
@@ -494,20 +502,7 @@
             <div class="features-cta-shell">
                 <div class="features-cta-copy">
                     <span class="features-cta-icon" aria-hidden="true">
-                        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <defs>
-                                <linearGradient id="ctaRocketCore" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
-                                    <stop offset="0" stop-color="#4FD7FF"/>
-                                    <stop offset="1" stop-color="#416CFF"/>
-                                </linearGradient>
-                            </defs>
-                            <circle cx="32" cy="32" r="30" fill="url(#ctaRocketCore)" fill-opacity="0.28"/>
-                            <circle cx="32" cy="32" r="22" stroke="#65D9FF" stroke-opacity="0.55" stroke-width="1.6"/>
-                            <path d="M35 17.8C39.1 20 42.6 23.8 44.7 28.2C46.8 32.5 47.5 37.4 46.7 42L39 37.9L35 30.2C32.3 31.1 29.6 32.6 27.4 34.8C25.1 37.1 23.5 39.9 22.7 42.9L16 39.3C16.8 35.1 18.9 31.2 22 28.1C25.6 24.5 30 21 35 17.8Z" fill="#F8FCFF"/>
-                            <circle cx="36.8" cy="30.7" r="2.5" fill="#B9CCFF"/>
-                            <path d="M22.5 43.1L18.6 48.7C18.1 49.4 18.8 50.3 19.6 50.2L26.2 48.9L22.5 43.1Z" fill="#F8FCFF"/>
-                            <path d="M30.8 47.5L31.9 54C32 54.8 33 55.4 33.7 54.9L39.2 51.1L30.8 47.5Z" fill="#F8FCFF"/>
-                        </svg>
+                        <img src="/img/cta-rocket.png?v=3" width="160" height="160" alt="" loading="lazy" decoding="async">
                     </span>
                     <div>
                         <h2 data-site-i18n="features.cta.title">Попробуйте сами</h2>
@@ -515,8 +510,10 @@
                     </div>
                 </div>
                 <div class="features-cta-actions">
-                    <a href="/dashboard.html?register=1" class="btn btn-primary"><i class="fas fa-rocket"></i> <span data-site-i18n="features.cta.btn">Начать бесплатно</span></a>
-                    <a href="/trial-setup.html" class="btn btn-outline"><i class="fas fa-play-circle"></i> <span data-site-i18n="features.cta.demo">Демо-настройка без регистрации</span></a>
+                    <a href="/trial-setup" class="btn btn-primary features-cta-primary-btn">
+                        <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
+                        <span data-site-i18n="trial.hero.title">Попробовать бесплатно</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -525,41 +522,66 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4><span data-site-i18n="footer.brand">VoiceFlow</span></h4>
+                <a href="/" class="logo footer-logo" aria-label="TalkPilot">
+                    <svg class="logo-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="footerMarkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#2EC7FF"/>
+                                <stop offset="100%" stop-color="#A64DFF"/>
+                            </linearGradient>
+                        </defs>
+                        <rect x="3.5" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#footerMarkGrad)"/>
+                        <rect x="9.5" y="10" width="4" height="20" rx="2" fill="url(#footerMarkGrad)"/>
+                        <rect x="16.5" y="5.5" width="4.5" height="29" rx="2.25" fill="url(#footerMarkGrad)"/>
+                        <rect x="24.5" y="10" width="4" height="20" rx="2" fill="url(#footerMarkGrad)"/>
+                        <rect x="31" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#footerMarkGrad)"/>
+                        <circle cx="10.8" cy="20" r="1.1" fill="url(#footerMarkGrad)"/>
+                        <circle cx="25.9" cy="20" r="1.1" fill="url(#footerMarkGrad)"/>
+                    </svg>
+                    <span class="logo-text">
+                        <span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span>
+                    </span>
+                </a>
                 <p style="color: var(--text-secondary);" data-site-i18n="footer.tagline">Голосовой переводчик нового поколения на базе искусственного интеллекта.</p>
             </div>
             <div class="footer-section">
                 <h4 data-site-i18n="footer.product">Продукт</h4>
                 <ul>
                     <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
-                    <li><a href="/features.html" data-site-i18n="nav.features">Возможности</a></li>
-                    <li><a href="/technology.html" data-site-i18n="nav.tech">Технологии</a></li>
-                    <li><a href="/pricing.html" data-site-i18n="nav.pricing">Тарифы</a></li>
+                    <li><a href="/features" data-site-i18n="nav.features">Возможности</a></li>
+                    <li><a href="/technology" data-site-i18n="nav.tech">Технологии</a></li>
+                    <li><a href="/pricing" data-site-i18n="nav.pricing">Тарифы</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4 data-site-i18n="footer.support">Поддержка</h4>
                 <ul>
-                    <li><a href="/faq.html" data-site-i18n="nav.faq">FAQ</a></li>
-                    <li><a href="/contacts.html" data-site-i18n="footer.contact">Контакты</a></li>
-                    <li><a href="mailto:support@voiceflow.com">support@voiceflow.com</a></li>
+                    <li><a href="/faq" data-site-i18n="nav.faq">FAQ</a></li>
+                    <li><a href="/contacts" data-site-i18n="footer.contact">Контакты</a></li>
+                    <li><a href="mailto:support@talkpilot.pro">support@talkpilot.pro</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4 data-site-i18n="footer.company">Компания</h4>
                 <ul>
-                    <li><a href="/dashboard.html" data-site-i18n="auth.cabinet">Личный кабинет</a></li>
-                    <li><a href="/trial-setup.html">Демо-настройка</a></li>
-                    <li><a href="/trial-chat.html">Демо-чат</a></li>
+                    <li><a href="/dashboard" data-site-i18n="auth.cabinet">Личный кабинет</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p data-site-i18n="footer.copy">&copy; 2026 VoiceFlow. Все права защищены.</p>
+            <p data-site-i18n="footer.copy">&copy; 2026 TalkPilot. Все права защищены.</p>
         </div>
     </footer>
-    <script src="/js/site-lang.js?v=2"></script>
-    <script src="/js/auth-check.js?v=5"></script>
-    <script src="/js/nav-active.js"></script>
+    <script src="/js/conversation-lang-options.js?v=2"></script>
+    <script src="/js/site-locale-urls.js?v=1"></script>
+    <script src="/js/site-lang-detect.js?v=2"></script>
+    <script src="/js/site-lang-extra.js?v=1"></script>
+    <script src="/js/site-lang-more.js?v=1"></script>
+    <script src="/js/site-lang-pages.js?v=2"></script>
+    <script src="/js/site-lang.js?v=33"></script>
+    <script src="/js/site-mobile-nav.js?v=6"></script>
+    <script src="/js/site-desktop-download.js?v=5"></script>
+    <script src="/js/auth-check.js?v=11"></script>
+    <script src="/js/nav-active.js?v=4"></script>
 </body>
 </html>

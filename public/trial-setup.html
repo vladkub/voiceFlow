@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+    <script>(function(){if(/^\/[a-z]{2}(?:\/|$)/.test(location.pathname||'/'))return;document.documentElement.classList.add('site-lang-loading');})();</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Демо TalkPilot — выбор темы</title>
+  <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060B18'/%3E%3Crect x='10' y='24' width='5' height='18' rx='2.5' fill='%232EC7FF'/%3E%3Crect x='19' y='19' width='6' height='28' rx='3' fill='%2346B2FF'/%3E%3Crect x='30' y='12' width='7' height='40' rx='3.5' fill='%236F84FF'/%3E%3Crect x='42' y='19' width='6' height='28' rx='3' fill='%238A66FF'/%3E%3Crect x='51' y='24' width='5' height='18' rx='2.5' fill='%23A64DFF'/%3E%3Ccircle cx='21.5' cy='32' r='1.7' fill='%2346B2FF'/%3E%3Ccircle cx='45.5' cy='32' r='1.7' fill='%238A66FF'/%3E%3C/svg%3E">
+  <link rel="shortcut icon" href="/favicon.svg?v=3">
+  <link rel="apple-touch-icon" href="/favicon.svg?v=3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/design-tokens.css" />
+  <link rel="stylesheet" href="/css/landing.css?v=20" />
+  <link rel="stylesheet" href="/css/trial-setup-page.css?v=33" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="trial-setup-page" data-site-title-key="trial.metaTitle">
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="/" class="logo">
+        <svg class="logo-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="navMarkGradTrial" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#2EC7FF"/>
+              <stop offset="100%" stop-color="#A64DFF"/>
+            </linearGradient>
+          </defs>
+          <rect x="3.5" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#navMarkGradTrial)"/>
+          <rect x="9.5" y="10" width="4" height="20" rx="2" fill="url(#navMarkGradTrial)"/>
+          <rect x="16.5" y="5.5" width="4.5" height="29" rx="2.25" fill="url(#navMarkGradTrial)"/>
+          <rect x="24.5" y="10" width="4" height="20" rx="2" fill="url(#navMarkGradTrial)"/>
+          <rect x="31" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#navMarkGradTrial)"/>
+          <circle cx="10.8" cy="20" r="1.1" fill="url(#navMarkGradTrial)"/>
+          <circle cx="25.9" cy="20" r="1.1" fill="url(#navMarkGradTrial)"/>
+        </svg>
+        <span class="logo-text">
+          <span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span>
+        </span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
+        <li><a href="/features" data-site-i18n="nav.features">Возможности</a></li>
+        <li><a href="/technology" data-site-i18n="nav.tech">Технологии</a></li>
+        <li><a href="/pricing" data-site-i18n="nav.pricing">Тарифы</a></li>
+        <li><a href="/faq" data-site-i18n="nav.faq">FAQ</a></li>
+        <li><a href="/contacts" data-site-i18n="contacts.title">Контакты</a></li>
+      </ul>
+      <div class="nav-right">
+        <button type="button" class="nav-download-btn" id="navDesktopDownloadBtn" data-site-i18n-aria="nav.download" aria-label="Скачать TalkPilot">
+          <i class="fas fa-download" aria-hidden="true"></i>
+        </button>
+        <div class="nav-lang-wrap">
+          <span class="nav-lang-sr" id="siteLangSelectLabel" data-site-i18n="nav.lang_aria">Язык интерфейса</span>
+          <div class="nav-lang-pill">
+            <i class="fas fa-globe nav-lang-globe" aria-hidden="true"></i>
+            <select id="siteLangSelect" class="nav-lang-select" aria-labelledby="siteLangSelectLabel">
+              <option value="ru">RU</option>
+              <option value="en">EN</option>
+              <option value="de">DE</option>
+              <option value="fr">FR</option>
+              <option value="es">ES</option>
+            </select>
+            <i class="fas fa-chevron-down nav-lang-chevron" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="nav-buttons" id="navButtons">
+          <a href="/login?redirect=%2Fdashboard" class="btn btn-outline"><span data-site-i18n="auth.login">Войти</span></a>
+          <a href="/login?register=1&amp;redirect=%2Fdashboard" class="btn btn-primary"><span data-site-i18n="auth.register">Регистрация</span></a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="trial-setup-main">
+    <div class="trial-setup-intro" id="trialSetupIntro">
+      <div class="trial-training-toolbar" id="trialTrainingToolbar">
+        <button type="button" id="trainingBtn" class="training-btn" aria-describedby="trainingEntryHintText">
+          <i class="fas fa-graduation-cap" aria-hidden="true"></i> <span data-site-i18n="trial.training.open">Обучение</span>
+        </button>
+        <button type="button" id="closeTrainingBtn" class="training-btn training-btn-close" hidden>
+          <i class="fas fa-times" aria-hidden="true"></i> <span data-site-i18n="trial.training.close">Закрыть</span>
+        </button>
+      </div>
+      <div id="trainingEntryHint" class="training-entry-hint" hidden role="status">
+        <button type="button" id="trainingEntryHintClose" class="training-entry-hint-close" aria-label="Закрыть подсказку" data-site-i18n-aria="trial.training.close_hint">×</button>
+        <p id="trainingEntryHintText" data-site-i18n="trial.training.hint">Нажмите «Обучение», чтобы запустить пошаговый тур по функциям этой страницы.</p>
+      </div>
+    </div>
+    <header class="trial-hero">
+      <div class="trial-hero-text">
+        <h1 data-site-i18n="trial.hero.title">Попробовать бесплатно</h1>
+        <p class="trial-hero-sub" data-site-i18n="trial.hero.sub">Выберите тему тестового диалога и настройки — они подставятся в полное приложение после демо.</p>
+      </div>
+      <div class="trial-hero-art" aria-hidden="true">
+        <img src="/img/trial-setup-hero.png?v=3" width="220" height="220" alt="" loading="eager" decoding="async">
+      </div>
+    </header>
+
+    <section id="topicGuideTarget" class="trial-section topic-guide-target guide-highlight-target" aria-labelledby="themeDialog">
+      <h2 class="trial-section-label" id="themeDialog" data-site-i18n="trial.section.dialog_topic">Тема диалога</h2>
+      <div class="trial-topic-grid" id="topicGrid"></div>
+    </section>
+
+    <section class="trial-section" aria-labelledby="setupPresetsTitle">
+      <h2 class="trial-section-label" id="setupPresetsTitle" data-site-i18n="trial.section.chat_presets">Предустановки чата</h2>
+      <div class="trial-presets-grid">
+        <article class="trial-preset-card guide-highlight-target" id="recModeGuideTarget">
+          <div class="trial-preset-icon" aria-hidden="true">
+            <svg class="trial-preset-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81V16.18C2 19.83 4.17 22 7.81 22H16.18C19.82 22 21.99 19.83 21.99 16.19V7.81C22 4.17 19.83 2 16.19 2ZM6.75 14.14C6.75 14.55 6.41 14.89 6 14.89C5.59 14.89 5.25 14.55 5.25 14.14V9.86C5.25 9.45 5.59 9.11 6 9.11C6.41 9.11 6.75 9.45 6.75 9.86V14.14ZM9.75 15.57C9.75 15.98 9.41 16.32 9 16.32C8.59 16.32 8.25 15.98 8.25 15.57V8.43C8.25 8.02 8.59 7.68 9 7.68C9.41 7.68 9.75 8.02 9.75 8.43V15.57ZM12.75 17C12.75 17.41 12.41 17.75 12 17.75C11.59 17.75 11.25 17.41 11.25 17V7C11.25 6.59 11.59 6.25 12 6.25C12.41 6.25 12.75 6.59 12.75 7V17ZM15.75 15.57C15.75 15.98 15.41 16.32 15 16.32C14.59 16.32 14.25 15.98 14.25 15.57V8.43C14.25 8.02 14.59 7.68 15 7.68C15.41 7.68 15.75 8.02 15.75 8.43V15.57ZM18.75 14.14C18.75 14.55 18.41 14.89 18 14.89C17.59 14.89 17.25 14.55 17.25 14.14V9.86C17.25 9.45 17.59 9.11 18 9.11C18.41 9.11 18.75 9.45 18.75 9.86V14.14Z"/>
+            </svg>
+          </div>
+          <div class="trial-preset-body">
+            <h3 class="trial-preset-title" data-site-i18n="trial.recognition.title">Режим распознавания</h3>
+            <span class="trial-preset-hint" data-site-i18n="trial.recognition.hint">От этого зависит качество распознавания речи и стоимость тарифа.</span>
+            <div class="trial-mode-tabs" id="tsRecMode">
+              <label class="trial-mode-tab"><input type="radio" name="tsRecMode" value="basic"> Basic</label>
+              <label class="trial-mode-tab"><input type="radio" name="tsRecMode" value="pro" checked> Pro</label>
+            </div>
+          </div>
+        </article>
+
+        <article class="trial-preset-card guide-highlight-target" id="autoPlayGuideTarget">
+          <div class="trial-preset-icon" aria-hidden="true"><i class="fas fa-volume-high"></i></div>
+          <div class="trial-preset-body">
+            <h3 class="trial-preset-title" data-site-i18n="trial.autoplay.title">Автовоспроизведение перевода</h3>
+            <span class="trial-preset-hint" data-site-i18n="trial.autoplay.hint">В чате ваши фразы будут автоматически озвучиваться.</span>
+            <label class="trial-check-row"><input type="checkbox" id="tsAutoPlay" checked /> <span data-site-i18n="trial.autoplay.label">Автовоспроизведение перевода</span></label>
+          </div>
+        </article>
+
+        <article class="trial-preset-card guide-highlight-target" id="languageGuideTarget">
+          <div class="trial-preset-icon" aria-hidden="true"><i class="fas fa-language"></i></div>
+          <div class="trial-preset-body">
+            <h3 class="trial-preset-title" data-site-i18n="trial.languages.title">Выбор языков собеседников</h3>
+            <div class="trial-lang-row">
+              <div class="trial-field">
+                <label for="tsUserLang" data-site-i18n="trial.languages.your_language">Ваш язык</label>
+                <select id="tsUserLang"></select>
+              </div>
+              <div class="trial-field">
+                <label for="tsPartnerLang" data-site-i18n="trial.languages.partner_language">Собеседник</label>
+                <select id="tsPartnerLang"></select>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="trial-preset-card guide-highlight-target" id="userVoiceGuideTarget">
+          <div class="trial-preset-icon" aria-hidden="true"><i class="fas fa-user"></i></div>
+          <div class="trial-preset-body">
+            <h3 class="trial-preset-title" data-site-i18n="trial.my_voice.title">Выбор моего голоса</h3>
+            <span class="trial-preset-hint" data-site-i18n="trial.my_voice.hint">Голос для озвучки ваших фраз на языке собеседника.</span>
+            <p id="tsUserVoiceCloneHint" class="trial-voice-clone-note" hidden data-site-i18n="trial.my_voice.disabled_by_clone">При включённом клоне используется ваш клонированный голос — выбор Edge-голоса ниже не нужен.</p>
+            <div id="tsUserVoiceControls" class="trial-user-voice-controls">
+            <div class="trial-voice-row">
+              <div class="trial-field">
+                <label for="tsUserVoice" data-site-i18n="trial.my_voice.label">Мой голос</label>
+                <select id="tsUserVoice"></select>
+              </div>
+              <button type="button" id="tsPreviewUserVoiceBtn" class="trial-btn-preview"><i class="fas fa-volume-up" aria-hidden="true"></i> <span data-site-i18n="trial.preview.button">Предпрослушать</span></button>
+            </div>
+            <span id="tsPreviewUserVoiceStatus" class="trial-status-text"></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="trial-preset-card guide-highlight-target" id="partnerVoiceGuideTarget">
+          <div class="trial-preset-icon" aria-hidden="true"><i class="fas fa-users"></i></div>
+          <div class="trial-preset-body">
+            <h3 class="trial-preset-title" data-site-i18n="trial.partner_voice.title">Выбор голоса собеседника</h3>
+            <div class="trial-voice-row">
+              <div class="trial-field">
+                <label for="tsPartnerVoice" data-site-i18n="trial.partner_voice.label">Голос собеседника</label>
+                <select id="tsPartnerVoice"></select>
+              </div>
+              <button type="button" id="tsPreviewVoiceBtn" class="trial-btn-preview"><i class="fas fa-volume-up" aria-hidden="true"></i> <span data-site-i18n="trial.preview.button">Предпрослушать</span></button>
+            </div>
+            <span id="tsPreviewVoiceStatus" class="trial-status-text"></span>
+            <p id="tsPartnerVoiceHint" class="trial-voice-lang-hint" role="status" hidden></p>
+          </div>
+        </article>
+
+        <article class="trial-preset-card trial-preset-card--wide guide-highlight-target" id="cloneVoiceGuideTarget">
+          <div class="trial-preset-icon" aria-hidden="true"><i class="fas fa-clone"></i></div>
+          <div class="trial-preset-body trial-clone-body">
+            <h3 class="trial-preset-title" data-site-i18n="trial.clone.title">Один клонированный голос (необязательно)</h3>
+            <label class="trial-clone-enable-row" for="tsUseClonedVoice">
+              <input type="checkbox" id="tsUseClonedVoice" />
+              <span data-site-i18n="trial.clone.use_checkbox">Использовать клонированный голос</span>
+            </label>
+            <div id="tsCloneContent" class="trial-clone-content is-locked" aria-disabled="true">
+            <div class="trial-clone-tips" role="note">
+              <strong data-site-i18n="trial.clone.tips.title">💡 Советы:</strong>
+              <ul>
+                <li data-site-i18n="trial.clone.tips.item1">6–30 секунд чёткой речи</li>
+                <li data-site-i18n="trial.clone.tips.item2">Без шума и музыки</li>
+                <li data-site-i18n="trial.clone.tips.item3">WAV, MP3, OGG, FLAC (до 10 МБ)</li>
+              </ul>
+            </div>
+            <div id="tsCloneExistingBlock" class="trial-clone-existing-block" hidden>
+              <fieldset class="trial-clone-mode-fieldset">
+                <legend class="trial-voice-clone-step-title" data-site-i18n="trial.clone.source.legend">Источник голоса для демо</legend>
+                <div class="trial-clone-mode-options" role="radiogroup" aria-label="Источник клонированного голоса" data-site-i18n-aria="trial.clone.source.aria">
+                  <label class="trial-clone-mode-option">
+                    <input type="radio" name="tsCloneMode" value="new" checked />
+                    <span data-site-i18n="trial.clone.source.new">Записать или загрузить новый</span>
+                  </label>
+                  <label class="trial-clone-mode-option">
+                    <input type="radio" name="tsCloneMode" value="existing" />
+                    <span data-site-i18n="trial.clone.source.existing">Выбрать из личного кабинета</span>
+                  </label>
+                </div>
+              </fieldset>
+              <div id="tsCloneExistingPicker" class="trial-clone-existing-picker" hidden>
+                <div class="trial-clone-existing-row">
+                  <div class="trial-field trial-field--grow">
+                    <label for="tsExistingCloneSelect" data-site-i18n="trial.clone.existing.label">Клонированный голос</label>
+                    <select id="tsExistingCloneSelect" aria-label="Выберите клонированный голос" data-site-i18n-aria="trial.clone.existing.aria"></select>
+                  </div>
+                  <button type="button" id="tsPreviewCloneBtn" class="trial-btn-preview">
+                    <i class="fas fa-volume-up" aria-hidden="true"></i> <span data-site-i18n="trial.preview.button">Предпрослушать</span>
+                  </button>
+                </div>
+                <span id="tsPreviewCloneStatus" class="trial-status-text"></span>
+                <p id="tsCloneExistingEmpty" class="trial-clone-existing-empty" hidden>
+                  <span data-site-i18n="trial.clone.existing.empty">В кабинете пока нет сохранённых клонов — запишите или загрузите новый голос ниже.</span>
+                </p>
+              </div>
+            </div>
+            <div class="trial-voice-upload-record-row" id="tsCloneNewVoicePanel">
+              <div class="trial-voice-upload-col trial-voice-upload-col--drop">
+                <h4 class="trial-voice-clone-step-title" data-site-i18n="trial.clone.upload.title">Загрузка файла для клонирования голоса</h4>
+                <div class="trial-upload-zone" id="tsCloneDropZone" tabindex="0" role="button" aria-label="Выбрать аудиофайл для клонирования" data-site-i18n-aria="trial.clone.upload.aria">
+                  <div class="trial-upload-zone-emoji" aria-hidden="true">🎤</div>
+                  <p class="trial-upload-zone-title" id="tsCloneDropText" data-site-i18n="trial.clone.drop_title">Перетащите аудио-файл сюда</p>
+                  <p class="trial-upload-zone-sub" data-site-i18n="trial.clone.drop_sub">или нажмите для выбора</p>
+                  <input type="file" id="tsCloneFile" accept=".wav,.mp3,.ogg,.flac,.webm,audio/*" hidden />
+                </div>
+              </div>
+              <div class="trial-voice-upload-col trial-voice-upload-col--record">
+                <h4 class="trial-voice-clone-step-title" data-site-i18n="trial.record.title">Запись голоса для клонирования</h4>
+                <div class="trial-clone-record-bar">
+                  <button type="button" id="tsRecordStartBtn" class="trial-clone-btn">
+                    <i class="fas fa-microphone" aria-hidden="true"></i> <span data-site-i18n="trial.record.start">Начать запись</span>
+                  </button>
+                  <button type="button" id="tsRecordStopBtn" class="trial-clone-btn" disabled>
+                    <i class="fas fa-stop-circle" aria-hidden="true"></i> <span data-site-i18n="trial.record.stop">Остановить</span>
+                  </button>
+                  <span id="tsRecordStatus" class="trial-clone-record-status" data-site-i18n="trial.record.not_started">Запись не начата</span>
+                </div>
+                <div class="trial-voice-form-panel trial-clone-prompts-panel">
+                  <div class="trial-clone-prompts-head">
+                    <span class="trial-clone-prompts-head-title" data-site-i18n="trial.record.prompts_title">Текст для чтения (для записи клона)</span>
+                    <label class="trial-clone-prompts-lang">
+                      <span data-site-i18n="trial.record.prompts_lang">Язык фраз</span>
+                      <select id="tsRecordPromptsLang" aria-label="Язык фраз для чтения" data-site-i18n-aria="trial.record.prompts_lang_aria"></select>
+                    </label>
+                  </div>
+                  <button type="button" id="tsRecordPromptsBtn" class="trial-clone-btn trial-clone-btn--generate">
+                    <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i> <span data-site-i18n="trial.record.generate">Сгенерировать текст</span>
+                  </button>
+                  <p id="tsRecordPromptsNote" class="trial-clone-prompts-note">
+                    <span data-site-i18n="trial.record.note_default">Нажмите «Сгенерировать текст», затем «Начать запись» и прочитайте фразы по списку (15–30 секунд).</span>
+                  </p>
+                  <ol id="tsRecordPromptsList" class="trial-clone-prompts-list"></ol>
+                </div>
+              </div>
+            </div>
+            <div class="trial-field trial-clone-name-field">
+              <label for="tsCloneName" data-site-i18n="trial.clone.name.label">Название голоса</label>
+              <input type="text" id="tsCloneName" placeholder="Например: Мой голос, Диктор…" data-site-i18n-placeholder="trial.clone.name.placeholder" maxlength="80" />
+            </div>
+            <input type="hidden" id="tsCloneVoiceId" value="" />
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="trial-section guide-highlight-target" id="aiTopicGuideTarget" aria-labelledby="setupAiTopicTitle">
+      <h2 class="trial-section-label" id="setupAiTopicTitle" data-site-i18n="trial.ai.section_title">Тема и контекст беседы (AI)</h2>
+      <div class="trial-ai-panel">
+        <article class="trial-preset-card">
+          <div class="trial-preset-icon" aria-hidden="true"><i class="fas fa-lightbulb"></i></div>
+          <div class="trial-preset-body">
+            <h3 class="trial-preset-title" data-site-i18n="trial.ai.topic_title">Тема беседы</h3>
+            <div class="trial-field">
+              <input type="text" id="tsAiTopicTitle" placeholder="Например: собеседование на позицию backend-разработчика" data-site-i18n-placeholder="trial.ai.topic_placeholder" maxlength="240" />
+            </div>
+          </div>
+        </article>
+        <article class="trial-preset-card">
+          <div class="trial-preset-icon" aria-hidden="true"><i class="fas fa-align-left"></i></div>
+          <div class="trial-preset-body">
+            <h3 class="trial-preset-title" data-site-i18n="trial.ai.context_title">Контекст беседы</h3>
+            <div class="trial-context-wrap">
+              <textarea id="tsAiTopicContext" rows="4" placeholder="Ключевые детали, термины, стиль общения, цели диалога..." data-site-i18n-placeholder="trial.ai.context_placeholder" maxlength="1200"></textarea>
+              <span class="trial-char-count" id="tsAiTopicCount">0/1200</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer class="trial-launch-bar guide-highlight-target" id="launchGuideTarget">
+      <button type="button" class="trial-launch-btn" id="trialLaunchBtn">
+        <i class="fas fa-rocket" aria-hidden="true"></i> <span data-site-i18n="trial.launch.button">Запустить приложение</span>
+      </button>
+    </footer>
+  </main>
+
+  <div id="topicGuideOverlay" class="topic-guide-overlay" hidden aria-hidden="true"></div>
+  <div id="topicGuideTooltip" class="topic-guide-tooltip" hidden role="dialog" aria-modal="true" aria-labelledby="topicGuideText">
+    <button type="button" id="topicGuideCloseBtn" class="topic-guide-tooltip-close" aria-label="Закрыть обучение" data-site-i18n-aria="trial.training.close">×</button>
+    <p id="topicGuideText" data-site-i18n="trial.guide.step_topic">Выберите тип тестовой беседы</p>
+    <div class="topic-guide-tooltip-actions">
+      <button type="button" id="topicGuideDismissBtn" class="topic-guide-btn-secondary" data-site-i18n="trial.training.close">Закрыть обучение</button>
+      <button type="button" id="topicGuideNextBtn" class="topic-guide-btn-primary" data-site-i18n="trial.guide.next">Далее</button>
+    </div>
+  </div>
+
+  <script src="/js/conversation-lang-options.js?v=3"></script>
+  <script src="/js/site-locale-urls.js?v=1"></script>
+    <script src="/js/site-lang-detect.js?v=2"></script>
+  <script src="/js/site-lang-extra.js?v=1"></script>
+    <script src="/js/site-lang-more.js?v=1"></script>
+  <script src="/js/site-lang-pages.js?v=2"></script>
+  <script src="/js/site-lang.js?v=33"></script>
+  <script src="/js/site-mobile-nav.js?v=8"></script>
+  <script src="/js/site-desktop-download.js?v=5"></script>
+  <script src="/js/auth-check.js?v=16"></script>
+  <script src="/js/nav-active.js?v=4"></script>
+  <script src="/js/record-clone-prompts.js?v=1"></script>
+  <script src="/js/trial-setup.js?v=47"></script>
+</body>
+</html>

@@ -2,14 +2,15 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){if(/^\/[a-z]{2}(?:\/|$)/.test(location.pathname||'/'))return;document.documentElement.classList.add('site-lang-loading');})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Контакты — VoiceFlow</title>
+    <title>Контакты — TalkPilot</title>
     <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060B18'/%3E%3Crect x='10' y='24' width='5' height='18' rx='2.5' fill='%232EC7FF'/%3E%3Crect x='19' y='19' width='6' height='28' rx='3' fill='%2346B2FF'/%3E%3Crect x='30' y='12' width='7' height='40' rx='3.5' fill='%236F84FF'/%3E%3Crect x='42' y='19' width='6' height='28' rx='3' fill='%238A66FF'/%3E%3Crect x='51' y='24' width='5' height='18' rx='2.5' fill='%23A64DFF'/%3E%3Ccircle cx='21.5' cy='32' r='1.7' fill='%2346B2FF'/%3E%3Ccircle cx='45.5' cy='32' r='1.7' fill='%238A66FF'/%3E%3C/svg%3E">
     <link rel="shortcut icon" href="/favicon.svg?v=3">
     <link rel="apple-touch-icon" href="/favicon.svg?v=3">
-    <meta name="description" content="Свяжитесь с командой VoiceFlow через форму обратной связи.">
-    <link rel="stylesheet" href="/css/landing.css?v=26">
-    <link rel="stylesheet" href="/css/site-navbar.css?v=2">
+    <meta name="description" content="Свяжитесь с командой TalkPilot через форму обратной связи.">
+    <link rel="stylesheet" href="/css/landing.css?v=17">
+    <link rel="stylesheet" href="/css/contact-form.css?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body.contacts-page {
@@ -67,10 +68,18 @@
             color: #e6eeff;
             background: rgba(255, 255, 255, 0.03);
         }
+        .contacts-hero-visual {
+            justify-self: end;
+            width: min(400px, 100%);
+        }
         .contacts-hero-visual img {
             width: 100%;
+            height: auto;
             display: block;
-            filter: drop-shadow(0 22px 40px rgba(40, 103, 255, 0.28));
+            object-fit: contain;
+            mix-blend-mode: screen;
+            filter: drop-shadow(0 18px 36px rgba(46, 199, 255, 0.35))
+                drop-shadow(0 8px 24px rgba(138, 91, 255, 0.28));
         }
         .contacts-hero-stats {
             max-width: 1200px;
@@ -196,64 +205,6 @@
             margin-top: 0.2rem;
             line-height: 1.35;
         }
-        .feedback-form {
-            display: grid;
-            gap: 0.55rem;
-        }
-        .feedback-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.55rem;
-        }
-        .feedback-form label {
-            color: #1a345f;
-            font-size: 1.02rem;
-            font-weight: 700;
-            display: block;
-            margin-bottom: 0.28rem;
-        }
-        .feedback-form input,
-        .feedback-form textarea {
-            width: 100%;
-            border: 1px solid #dce6f8;
-            border-radius: 9px;
-            padding: 0.5rem 0.68rem;
-            color: #0f172a;
-            font-size: 0.91rem;
-            font-family: inherit;
-            background: #fbfdff;
-        }
-        .feedback-form input:focus,
-        .feedback-form textarea:focus {
-            outline: none;
-            border-color: #6ea8ff;
-            box-shadow: 0 0 0 3px rgba(85, 145, 255, 0.16);
-        }
-        .feedback-form textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        .feedback-form .btn-primary {
-            width: 100%;
-            border-radius: 10px;
-            padding: 0.62rem 0.95rem;
-            font-size: 0.96rem;
-            font-weight: 700;
-        }
-        .feedback-note {
-            margin: 0;
-            color: #7690b8;
-            font-size: 0.82rem;
-            text-align: center;
-        }
-        .feedback-status {
-            min-height: 1rem;
-            font-size: 0.85rem;
-            color: #5f7298;
-            text-align: center;
-        }
-        .feedback-status.ok { color: #03925e; }
-        .feedback-status.err { color: #dc2626; }
         .quick-answers {
             margin-top: 0.85rem;
         }
@@ -359,7 +310,6 @@
             .contacts-hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .contact-wrap { grid-template-columns: 1fr; }
             .quick-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .feedback-grid { grid-template-columns: 1fr; }
         }
         @media (max-width: 680px) {
             .contacts-hero { padding: 4.6rem 1rem 1.2rem; }
@@ -374,7 +324,7 @@
         }
     </style>
 </head>
-<body class="contacts-page">
+<body class="contacts-page" data-site-title-key="contacts.metaTitle" data-site-desc-key="contacts.metaDesc">
     <nav class="navbar">
         <div class="navbar-inner">
             <a href="/" class="logo">
@@ -394,18 +344,21 @@
                     <circle cx="25.9" cy="20" r="1.1" fill="url(#navMarkGrad)"/>
                 </svg>
                 <span class="logo-text">
-                    <span class="logo-text-voice">Voice</span><span class="logo-text-flow">Flow</span>
+                    <span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span>
                 </span>
             </a>
             <ul class="nav-links">
                 <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
-                <li><a href="/features.html" data-site-i18n="nav.features">Возможности</a></li>
-                <li><a href="/technology.html" data-site-i18n="nav.tech">Технологии</a></li>
-                <li><a href="/pricing.html" data-site-i18n="nav.pricing">Тарифы</a></li>
-                <li><a href="/faq.html" data-site-i18n="nav.faq">FAQ</a></li>
-                <li><a href="/contacts.html" data-site-i18n="footer.contact">Контакты</a></li>
+                <li><a href="/features" data-site-i18n="nav.features">Возможности</a></li>
+                <li><a href="/technology" data-site-i18n="nav.tech">Технологии</a></li>
+                <li><a href="/pricing" data-site-i18n="nav.pricing">Тарифы</a></li>
+                <li><a href="/faq" data-site-i18n="nav.faq">FAQ</a></li>
+                <li><a href="/contacts" data-site-i18n="footer.contact">Контакты</a></li>
             </ul>
             <div class="nav-right">
+                <button type="button" class="nav-download-btn" id="navDesktopDownloadBtn" data-site-i18n-aria="nav.download" aria-label="Скачать TalkPilot">
+                    <i class="fas fa-download" aria-hidden="true"></i>
+                </button>
                 <div class="nav-lang-wrap">
                     <span class="nav-lang-sr" id="siteLangSelectLabel" data-site-i18n="nav.lang_label">Язык интерфейса</span>
                     <div class="nav-lang-pill">
@@ -421,10 +374,10 @@
                     </div>
                 </div>
                 <div class="nav-buttons" id="navButtons">
-                    <a href="/dashboard.html" class="btn btn-outline">
+                    <a href="/dashboard" class="btn btn-outline">
                         <span data-site-i18n="auth.login">Войти</span>
                     </a>
-                    <a href="/dashboard.html?register=1" class="btn btn-primary">
+                    <a href="/dashboard?register=1" class="btn btn-primary">
                         <span data-site-i18n="auth.register">Регистрация</span>
                     </a>
                 </div>
@@ -435,73 +388,73 @@
     <header class="contacts-hero">
         <div class="contacts-hero-inner">
             <div>
-                <h1>Свяжитесь <br><span class="accent">с командой VoiceFlow</span></h1>
-                <p>Есть вопрос, предложения или нужна помощь? Мы всегда на связи и готовы помочь вам в любое время.</p>
+                <h1 data-site-i18n-html="contacts.hero.title_html">Свяжитесь <br><span class="accent">с командой TalkPilot</span></h1>
+                <p data-site-i18n="contacts.hero.sub">Есть вопрос, предложения или нужна помощь? Мы всегда на связи и готовы помочь вам в любое время.</p>
                 <div class="contacts-hero-actions">
-                    <a href="#contactForm" class="btn btn-primary"><i class="fas fa-envelope"></i> Написать нам</a>
-                    <a href="/faq.html" class="btn btn-outline"><i class="fas fa-circle-question"></i> Частые вопросы</a>
+                    <a href="#contactForm" class="btn btn-primary"><i class="fas fa-envelope"></i> <span data-site-i18n="contacts.hero.cta1">Написать нам</span></a>
+                    <a href="/faq" class="btn btn-outline"><i class="fas fa-circle-question"></i> <span data-site-i18n="contacts.hero.cta2">Частые вопросы</span></a>
                 </div>
             </div>
             <div class="contacts-hero-visual" aria-hidden="true">
-                <img src="/img/contacts-hero-visual.png?v=1" alt="">
+                <img src="/img/contacts-hero-visual.png?v=2" width="640" height="640" alt="" loading="eager" decoding="async" fetchpriority="high">
             </div>
         </div>
         <div class="contacts-hero-stats">
-            <article class="contacts-stat"><i class="fas fa-headset"></i><div><strong>24/7</strong><small>Поддержка</small></div></article>
-            <article class="contacts-stat"><i class="fas fa-bolt"></i><div><strong>15 мин</strong><small>Среднее время ответа</small></div></article>
-            <article class="contacts-stat"><i class="fas fa-users"></i><div><strong>98%</strong><small>Довольных клиентов</small></div></article>
-            <article class="contacts-stat"><i class="fas fa-shield-halved"></i><div><strong>100%</strong><small>Безопасность данных</small></div></article>
+            <article class="contacts-stat"><i class="fas fa-headset"></i><div><strong data-site-i18n="contacts.stat.support_val">24/7</strong><small data-site-i18n="contacts.stat.support">Поддержка</small></div></article>
+            <article class="contacts-stat"><i class="fas fa-bolt"></i><div><strong data-site-i18n="contacts.stat.response_val">15 мин</strong><small data-site-i18n="contacts.stat.response">Среднее время ответа</small></div></article>
+            <article class="contacts-stat"><i class="fas fa-users"></i><div><strong data-site-i18n="contacts.stat.clients_val">100%</strong><small data-site-i18n="contacts.stat.clients">Довольных клиентов</small></div></article>
+            <article class="contacts-stat"><i class="fas fa-shield-halved"></i><div><strong data-site-i18n="contacts.stat.security_val">100%</strong><small data-site-i18n="contacts.stat.security">Безопасность данных</small></div></article>
         </div>
     </header>
 
     <main class="contacts-main">
-        <h2 class="contacts-main-title">Связаться с нами</h2>
+        <h2 class="contacts-main-title" data-site-i18n="contacts.main.title">Связаться с нами</h2>
         <section class="contact-wrap">
             <article class="contact-card">
-                <h3>Контактная информация</h3>
+                <h3 data-site-i18n="contacts.info.title">Контактная информация</h3>
                 <ul class="contact-list">
                     <li>
                         <i class="fas fa-envelope"></i>
-                        <div><strong>Email</strong><span>support@voiceflow.com<br>Ответим в ближайшее время</span></div>
+                        <div><strong data-site-i18n="contacts.info.email">Email</strong><span data-site-i18n-html="contacts.info.email_hint_html">support@talkpilot.pro<br>Ответим в ближайшее время</span></div>
                     </li>
                     <li>
                         <i class="fas fa-clock"></i>
-                        <div><strong>Время работы</strong><span>Ежедневно с 09:00 до 21:00 (UTC+3)<br>Онлайн поддержка</span></div>
+                        <div><strong data-site-i18n="contacts.info.hours">Время работы</strong><span data-site-i18n-html="contacts.info.hours_hint_html">Ежедневно с 09:00 до 21:00 (UTC+3)<br>Онлайн поддержка</span></div>
                     </li>
                     <li>
                         <i class="fas fa-globe"></i>
-                        <div><strong>Формат поддержки</strong><span>Онлайн поддержка<br>Веб и десктоп версии</span></div>
+                        <div><strong data-site-i18n="contacts.info.format">Формат поддержки</strong><span data-site-i18n-html="contacts.info.format_hint_html">Онлайн поддержка<br>Веб и десктоп версии</span></div>
                     </li>
                     <li>
                         <i class="fas fa-shield-halved"></i>
-                        <div><strong>Безопасность</strong><span>Все данные защищены<br>SSL шифрование и GDPR</span></div>
+                        <div><strong data-site-i18n="contacts.info.secure">Безопасность</strong><span data-site-i18n-html="contacts.info.secure_hint_html">Все данные защищены<br>SSL шифрование и GDPR</span></div>
                     </li>
                 </ul>
             </article>
 
             <article class="contact-card">
-                <h3>Форма обратной связи</h3>
+                <h3 data-site-i18n="contacts.form.title">Форма обратной связи</h3>
                 <form id="contactForm" class="feedback-form">
                     <div class="feedback-grid">
                         <div>
-                            <label for="contactName">Ваше имя</label>
-                            <input id="contactName" name="name" type="text" maxlength="120" placeholder="Введите ваше имя" required>
+                            <label for="contactName" data-site-i18n="contacts.form.name">Ваше имя</label>
+                            <input id="contactName" name="name" type="text" maxlength="120" data-site-i18n-placeholder="contacts.form.name_ph" placeholder="Введите ваше имя" required>
                         </div>
                         <div>
-                            <label for="contactEmail">Email</label>
-                            <input id="contactEmail" name="email" type="email" maxlength="180" placeholder="Введите email" required>
+                            <label for="contactEmail" data-site-i18n="contacts.form.email">Email</label>
+                            <input id="contactEmail" name="email" type="email" maxlength="180" data-site-i18n-placeholder="contacts.form.email_ph" placeholder="Введите email" required>
                         </div>
                     </div>
                     <div>
-                        <label for="contactSubject">Тема обращения</label>
-                        <input id="contactSubject" name="subject" type="text" maxlength="180" placeholder="Например: Вопрос по тарифу" required>
+                        <label for="contactSubject" data-site-i18n="contacts.form.subject">Тема обращения</label>
+                        <input id="contactSubject" name="subject" type="text" maxlength="180" data-site-i18n-placeholder="contacts.form.subject_ph" placeholder="Например: Вопрос по тарифу" required>
                     </div>
                     <div>
-                        <label for="contactMessage">Сообщение</label>
-                        <textarea id="contactMessage" name="message" maxlength="4000" placeholder="Подробно опишите ваш вопрос или предложение..." required></textarea>
+                        <label for="contactMessage" data-site-i18n="contacts.form.message">Сообщение</label>
+                        <textarea id="contactMessage" name="message" maxlength="4000" data-site-i18n-placeholder="contacts.form.message_ph" placeholder="Подробно опишите ваш вопрос или предложение..." required></textarea>
                     </div>
-                    <button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane"></i> Отправить сообщение</button>
-                    <p class="feedback-note"><i class="fas fa-shield-halved"></i> Нажимая кнопку, вы соглашаетесь с обработкой персональных данных</p>
+                    <button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane"></i> <span data-site-i18n="contacts.form.submit">Отправить сообщение</span></button>
+                    <p class="feedback-note"><i class="fas fa-shield-halved"></i> <span data-site-i18n="contacts.form.privacy">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных</span></p>
                     <div id="contactStatus" class="feedback-status" role="status" aria-live="polite"></div>
                 </form>
             </article>
@@ -512,94 +465,68 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h4>🎙️ <span data-site-i18n="footer.brand">VoiceFlow</span></h4>
+                <a href="/" class="logo footer-logo" aria-label="TalkPilot">
+                    <svg class="logo-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="footerMarkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#2EC7FF"/>
+                                <stop offset="100%" stop-color="#A64DFF"/>
+                            </linearGradient>
+                        </defs>
+                        <rect x="3.5" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#footerMarkGrad)"/>
+                        <rect x="9.5" y="10" width="4" height="20" rx="2" fill="url(#footerMarkGrad)"/>
+                        <rect x="16.5" y="5.5" width="4.5" height="29" rx="2.25" fill="url(#footerMarkGrad)"/>
+                        <rect x="24.5" y="10" width="4" height="20" rx="2" fill="url(#footerMarkGrad)"/>
+                        <rect x="31" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#footerMarkGrad)"/>
+                        <circle cx="10.8" cy="20" r="1.1" fill="url(#footerMarkGrad)"/>
+                        <circle cx="25.9" cy="20" r="1.1" fill="url(#footerMarkGrad)"/>
+                    </svg>
+                    <span class="logo-text">
+                        <span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span>
+                    </span>
+                </a>
                 <p style="color: var(--text-secondary);" data-site-i18n="footer.tagline">Голосовой переводчик нового поколения на базе искусственного интеллекта.</p>
             </div>
             <div class="footer-section">
                 <h4 data-site-i18n="footer.product">Продукт</h4>
                 <ul>
                     <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
-                    <li><a href="/features.html" data-site-i18n="nav.features">Возможности</a></li>
-                    <li><a href="/technology.html" data-site-i18n="nav.tech">Технологии</a></li>
-                    <li><a href="/pricing.html" data-site-i18n="nav.pricing">Тарифы</a></li>
+                    <li><a href="/features" data-site-i18n="nav.features">Возможности</a></li>
+                    <li><a href="/technology" data-site-i18n="nav.tech">Технологии</a></li>
+                    <li><a href="/pricing" data-site-i18n="nav.pricing">Тарифы</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4 data-site-i18n="footer.support">Поддержка</h4>
                 <ul>
-                    <li><a href="/faq.html" data-site-i18n="nav.faq">FAQ</a></li>
-                    <li><a href="/contacts.html" data-site-i18n="footer.contact">Контакты</a></li>
-                    <li><a href="mailto:support@voiceflow.com">support@voiceflow.com</a></li>
+                    <li><a href="/faq" data-site-i18n="nav.faq">FAQ</a></li>
+                    <li><a href="/contacts" data-site-i18n="footer.contact">Контакты</a></li>
+                    <li><a href="mailto:support@talkpilot.pro">support@talkpilot.pro</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h4 data-site-i18n="footer.company">Компания</h4>
                 <ul>
-                    <li><a href="/dashboard.html" data-site-i18n="auth.cabinet">Личный кабинет</a></li>
-                    <li><a href="/trial-setup.html">Демо-настройка</a></li>
-                    <li><a href="/trial-chat.html">Демо-чат</a></li>
+                    <li><a href="/dashboard" data-site-i18n="auth.cabinet">Личный кабинет</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p data-site-i18n="footer.copy">&copy; 2026 VoiceFlow. Все права защищены.</p>
+            <p data-site-i18n="footer.copy">&copy; 2026 TalkPilot. Все права защищены.</p>
         </div>
     </footer>
 
-    <script src="/js/site-lang.js?v=1"></script>
-    <script src="/js/auth-check.js?v=5"></script>
-    <script src="/js/nav-active.js?v=3"></script>
-    <script>
-    (function () {
-      'use strict';
-      const form = document.getElementById('contactForm');
-      const status = document.getElementById('contactStatus');
-      if (!form || !status) return;
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const fd = new FormData(form);
-        const payload = {
-          name: String(fd.get('name') || '').trim(),
-          email: String(fd.get('email') || '').trim(),
-          subject: String(fd.get('subject') || '').trim(),
-          message: String(fd.get('message') || '').trim(),
-        };
-        if (!payload.name || !payload.email || !payload.subject || !payload.message) {
-          status.className = 'feedback-status err';
-          status.textContent = 'Заполните все поля формы.';
-          return;
-        }
-
-        status.className = 'feedback-status';
-        status.textContent = 'Отправка...';
-
-        try {
-          const resp = await fetch('/api/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(payload),
-          });
-          if (resp.ok) {
-            form.reset();
-            status.className = 'feedback-status ok';
-            status.textContent = 'Спасибо! Сообщение отправлено.';
-            return;
-          }
-        } catch (err) {
-          /* fallback below */
-        }
-
-        const subject = encodeURIComponent('[VoiceFlow] ' + payload.subject);
-        const body = encodeURIComponent(
-          `Имя: ${payload.name}\nEmail: ${payload.email}\n\n${payload.message}`
-        );
-        window.location.href = `mailto:support@voiceflow.com?subject=${subject}&body=${body}`;
-        status.className = 'feedback-status ok';
-        status.textContent = 'Открыли почтовый клиент для отправки сообщения.';
-      });
-    })();
-    </script>
+    <script src="/js/conversation-lang-options.js?v=2"></script>
+    <script src="/js/site-locale-urls.js?v=1"></script>
+    <script src="/js/site-lang-detect.js?v=2"></script>
+    <script src="/js/site-lang-extra.js?v=1"></script>
+    <script src="/js/site-lang-more.js?v=1"></script>
+    <script src="/js/site-lang-pages.js?v=2"></script>
+    <script src="/js/site-lang.js?v=35"></script>
+    <script src="/js/site-mobile-nav.js?v=6"></script>
+    <script src="/js/site-desktop-download.js?v=5"></script>
+    <script src="/js/auth-check.js?v=11"></script>
+    <script src="/js/nav-active.js?v=4"></script>
+    <script src="/js/contact-form.js?v=1"></script>
 </body>
 </html>

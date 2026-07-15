@@ -2,174 +2,490 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){if(/^\/[a-z]{2}(?:\/|$)/.test(location.pathname||'/'))return;document.documentElement.classList.add('site-lang-loading');})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Технологии — VoiceFlow</title>
-    <!-- 🔥 Подключаем общий CSS -->
-    <link rel="stylesheet" href="/css/landing.css">
-    <link rel="stylesheet" href="/css/site-navbar.css?v=2">
+    <title>FAQ — TalkPilot</title>
+    <meta name="description" content="Ответы про голосовой перевод онлайн в реальном времени, Zoom, Teams, VB-Cable, тарифы и минуты, безопасность и GDPR, клон голоса и десктоп TalkPilot — частые вопросы и поддержка.">
+    <!-- VF_FAQ_SCHEMA -->
+    <link rel="icon" type="image/svg+xml" sizes="any" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23060B18'/%3E%3Crect x='10' y='24' width='5' height='18' rx='2.5' fill='%232EC7FF'/%3E%3Crect x='19' y='19' width='6' height='28' rx='3' fill='%2346B2FF'/%3E%3Crect x='30' y='12' width='7' height='40' rx='3.5' fill='%236F84FF'/%3E%3Crect x='42' y='19' width='6' height='28' rx='3' fill='%238A66FF'/%3E%3Crect x='51' y='24' width='5' height='18' rx='2.5' fill='%23A64DFF'/%3E%3Ccircle cx='21.5' cy='32' r='1.7' fill='%2346B2FF'/%3E%3Ccircle cx='45.5' cy='32' r='1.7' fill='%238A66FF'/%3E%3C/svg%3E">
+    <link rel="shortcut icon" href="/favicon.svg?v=3">
+    <link rel="apple-touch-icon" href="/favicon.svg?v=3">
+    <link rel="stylesheet" href="/css/landing.css?v=18">
+    <link rel="stylesheet" href="/css/contact-form.css?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-    <nav class="navbar navbar--legacy">
-    <a href="/" class="logo">
-        <i class="fas fa-microphone"></i> VoiceFlow
-    </a>
-    <ul class="nav-links">
-        <li><a href="/">Главная</a></li>
-        <li><a href="/index.html#features">Возможности</a></li>
-        <li><a href="/technology.html">Технологии</a></li>
-        <li><a href="/pricing.html">Тарифы</a></li>
-        <li><a href="/faq.html">FAQ</a></li>
-    </ul>
-    <div class="nav-buttons" id="navButtons">
-        <a href="/dashboard.html" class="btn btn-outline">
-            <i class="fas fa-sign-in-alt"></i> Войти
-        </a>
-        <a href="/dashboard.html?register=1" class="btn btn-primary">
-            <i class="fas fa-user-plus"></i> Регистрация
-        </a>
-    </div>
-</nav>
+<body class="faq-page" data-site-title-key="faq.metaTitle" data-site-desc-key="faq.metaDesc">
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="logo">
+                <svg class="logo-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <defs>
+                        <linearGradient id="navMarkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2EC7FF"/>
+                            <stop offset="100%" stop-color="#A64DFF"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="3.5" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#navMarkGrad)"/>
+                    <rect x="9.5" y="10" width="4" height="20" rx="2" fill="url(#navMarkGrad)"/>
+                    <rect x="16.5" y="5.5" width="4.5" height="29" rx="2.25" fill="url(#navMarkGrad)"/>
+                    <rect x="24.5" y="10" width="4" height="20" rx="2" fill="url(#navMarkGrad)"/>
+                    <rect x="31" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#navMarkGrad)"/>
+                    <circle cx="10.8" cy="20" r="1.1" fill="url(#navMarkGrad)"/>
+                    <circle cx="25.9" cy="20" r="1.1" fill="url(#navMarkGrad)"/>
+                </svg>
+                <span class="logo-text">
+                    <span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span>
+                </span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
+                <li><a href="/features" data-site-i18n="nav.features">Возможности</a></li>
+                <li><a href="/technology" data-site-i18n="nav.tech">Технологии</a></li>
+                <li><a href="/pricing" data-site-i18n="nav.pricing">Тарифы</a></li>
+                <li><a href="/faq" data-site-i18n="nav.faq">FAQ</a></li>
+                <li><a href="/contacts" data-site-i18n="footer.contact">Контакты</a></li>
+            </ul>
+            <div class="nav-right">
+                <button type="button" class="nav-download-btn" id="navDesktopDownloadBtn" data-site-i18n-aria="nav.download" aria-label="Скачать TalkPilot">
+                    <i class="fas fa-download" aria-hidden="true"></i>
+                </button>
+                <div class="nav-lang-wrap">
+                    <span class="nav-lang-sr" id="siteLangSelectLabel" data-site-i18n="nav.lang_label">Язык интерфейса</span>
+                    <div class="nav-lang-pill">
+                        <i class="fas fa-globe nav-lang-globe" aria-hidden="true"></i>
+                        <select id="siteLangSelect" class="nav-lang-select" aria-labelledby="siteLangSelectLabel">
+                            <option value="ru">RU</option>
+                            <option value="en">EN</option>
+                            <option value="de">DE</option>
+                            <option value="fr">FR</option>
+                            <option value="es">ES</option>
+                        </select>
+                        <i class="fas fa-chevron-down nav-lang-chevron" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="nav-buttons" id="navButtons">
+                    <a href="/dashboard" class="btn btn-outline">
+                        <span data-site-i18n="auth.login">Войти</span>
+                    </a>
+                    <a href="/dashboard?register=1" class="btn btn-primary">
+                        <span data-site-i18n="auth.register">Регистрация</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <header class="page-header">
-        <h1>❓ Часто задаваемые вопросы</h1>
-        <p>Найдите ответы на популярные вопросы о VoiceFlow</p>
+    <header class="faq-hero">
+        <div class="faq-hero-inner">
+            <div class="faq-hero-copy">
+                <h1>
+                    <span data-site-i18n="faq.header.title_prefix">Часто задаваемые</span>
+                    <span class="faq-title-accent" data-site-i18n="faq.header.title_accent">вопросы</span>
+                </h1>
+                <p data-site-i18n="faq.header.sub">Найдите ответы на популярные вопросы о TalkPilot</p>
+                <label class="faq-search" aria-label="Search in FAQ">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input type="text" id="faqSearchInput" data-site-i18n-placeholder="faq.search_ph" placeholder="Поиск по вопросам..." autocomplete="off">
+                </label>
+            </div>
+            <div class="faq-hero-visual" aria-hidden="true">
+                <img
+                    class="faq-hero-visual-img"
+                    src="/img/faq-hero-visual.png?v=1"
+                    width="640"
+                    height="640"
+                    alt=""
+                    loading="eager"
+                    decoding="async"
+                    fetchpriority="high"
+                >
+            </div>
+        </div>
     </header>
 
-    <section class="faq-section">
-        <!-- Общие вопросы -->
-        <div class="faq-category">
-            <h2> Общее</h2>
-            
-            <div class="faq-item">
-                <div class="faq-question">Что такое VoiceFlow?</div>
-                <div class="faq-answer">
-                    VoiceFlow — это голосовой переводчик нового поколения, который использует искусственный интеллект для мгновенного перевода речи в реальном времени. Поддерживает 50+ языков и 322+ голоса.
+    <main class="faq-main">
+        <section class="faq-board">
+            <article class="faq-group is-open" data-group="general">
+                <button class="faq-group-toggle" type="button">
+                    <span class="faq-group-icon faq-group-icon--general"><i class="fas fa-question-circle" aria-hidden="true"></i></span>
+                    <span class="faq-group-head">
+                        <strong data-site-i18n="faq.cat.general">Общие вопросы</strong>
+                        <small data-site-i18n="faq.cat.general_sub">Основная информация о TalkPilot</small>
+                    </span>
+                    <i class="fas fa-chevron-down faq-group-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="faq-group-body">
+                    <div class="faq-item is-open">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q1">Что такое TalkPilot?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a1">TalkPilot — это голосовой переводчик нового поколения, который использует искусственный интеллект для мгновенного перевода речи в реальном времени. Поддерживает 50+ языков и 322+ голоса.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q2">Как начать пользоваться?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a2">Просто зарегистрируйтесь на сайте — это бесплатно. После регистрации вы получите 60 минут перевода в месяц на бесплатном тарифе.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q3">Какие языки поддерживаются?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a3">Мы поддерживаем 50+ языков, включая английский, испанский, французский, немецкий, китайский, японский, русский и многие другие. Полный список доступен в личном кабинете.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q10">Чем веб-приложение отличается от десктопа?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a10">Веб-клиент работает в браузере без установки. Десктоп удобнее для длительных созвонов: можно использовать полупрозрачное окно и ИИ-подсказки по выделенной области экрана в Zoom, Teams и аналогах — если это включено в вашем тарифе.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q11">Что такое режим конференции и зачем нужен VB-Cable?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a11">В режиме конференции переведённая речь уходит на виртуальный аудиокабель (VB-Audio Cable в Windows, BlackHole или аналог в macOS). В Zoom или Teams выбираете микрофон «CABLE Output», и участники слышат перевод как обычный голос.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q12">Есть ли у TalkPilot ИИ-подсказки для ответов?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a12">На тарифах с ИИ чат может предлагать формулировки с учётом контекста. Тема разговора и описание в настройках также улучшают распознавание и качество подсказок.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q13">Можно ли пользоваться TalkPilot без интернета?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a13">Нет — распознавание, перевод и синтез речи требуют сеть. Часть обработки идёт на серверах TalkPilot или в облаке партнёров (например, в Pro-распознавании).</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q14">Нужен ли аккаунт для демо?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a14">Короткий сценарий демо на сайте можно начать из пошаговой настройки без полного аккаунта; для регулярной работы и сохранения пресетов лучше зарегистрироваться.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q37">Что такое голосовой переводчик онлайн в реальном времени?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a37">TalkPilot распознаёт речь, переводит и озвучивает результат — удобно для созвонов, переговоров и работы с иностранными партнёрами без отдельного переводчика рядом. Качество зависит от дикции, микрофона и выбранного режима распознавания.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q38">Чем TalkPilot отличается от Google Translate и переводчика в браузере?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a38">TalkPilot заточен под непрерывный голосовой диалог: микрофон, очередь реплик, выбор голоса TTS, режим конференции с виртуальным кабелем для Zoom/Teams и (на тарифах) ИИ-подсказки. Обычный мгновенный перевод текста в другом приложении не закрывает сценарий «говорю — слышат перевод в звонке».</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q39">Можно ли использовать TalkPilot как переводчик для Zoom, Teams и вебинаров?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a39">Да: типичная схема — виртуальный аудиокабель как микрофон в программе встречи плюс режим конференции в TalkPilot. Следуйте мастеру настройки в приложении и проверьте громкость в наушниках, чтобы избежать эха.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q40">Подходит ли TalkPilot для обучения иностранному языку?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a40">Сервис в первую очередь для живого общения и работы; можно тренировать произношение и слушать нейро-озвучку, но это не замена полноценному языковому курсу и грамматике.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q41">Насколько точен ИИ-перевод и какая бывает задержка?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a41">Точность растёт при чёткой речи, хорошем микрофоне и разумном темпе; задержка зависит от сети, длины фразы и режима Basic/Pro. Для критичных юридических или медицинских формулировок используйте проверку человеком.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q42">Есть ли бесплатный тариф голосового переводчика TalkPilot?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a42">После регистрации на бесплатном плане доступен лимит перевода в месяц — см. раздел «Тарифы» для актуальных минут и условий.</div>
+                    </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="faq-item">
-                <div class="faq-question">Как начать пользоваться?</div>
-                <div class="faq-answer">
-                    Просто зарегистрируйтесь на сайте — это бесплатно. После регистрации вы получите 60 минут перевода в месяц на бесплатном тарифе.
+            <article class="faq-group" data-group="billing">
+                <button class="faq-group-toggle" type="button">
+                    <span class="faq-group-icon faq-group-icon--billing"><i class="fas fa-wallet" aria-hidden="true"></i></span>
+                    <span class="faq-group-head">
+                        <strong data-site-i18n="faq.cat.pay">Тарифы и оплата</strong>
+                        <small data-site-i18n="faq.cat.pay_sub">Вопросы о подписках и оплате</small>
+                    </span>
+                    <i class="fas fa-chevron-down faq-group-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="faq-group-body">
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q4">Какие способы оплаты доступны?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a4">Мы принимаем оплату банковскими картами (Visa, Mastercard) через Stripe, а также криптовалюты (USDT, BTC, ETH) через NowPayments.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q5">Могу ли я отменить подписку?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a5">Да, вы можете отменить подписку в любой момент в личном кабинете. Доступ к функциям сохранится до конца оплаченного периода.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q6">Есть ли возврат средств?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a6">Возврат средств возможен в течение 14 дней после покупки, если вы не использовали более 10% лимита минут.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q15">Что значат пакеты «1 час» и «20 часов»?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a15">Это включённые минуты перевода за оплаченный период. Расход и остаток видны в личном кабинете.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q16">Что будет, если закончатся минуты?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a16">Запуск перевода блокируется до продления или покупки пакета. Сохранённая история чата остаётся доступной.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q17">Можно ли сменить тариф в середине периода?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a17">Смена тарифа доступна в кабинете; правила пропорционального перерасчёта зависят от способа оплаты и провайдера.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q18">Как оплатить криптовалютой?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a18">Через NowPayments доступны USDT, BTC, ETH и другие валюты. После подтверждения в блокчейне статус обновляется автоматически; если зависло — напишите в поддержку с хэшем транзакции.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q19">Можно ли получить счёт для компании?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a19">Для карт доступны стандартные чеки Stripe. Для B2B-счетов и реквизитов свяжитесь с поддержкой.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q20">Что делать, если оплата картой не проходит?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a20">Напишите в поддержку с email аккаунта, временем попытки и текстом ошибки (номера карты не присылайте полностью). Мы проверим статус у платёжного провайдера.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q43">Как считаются минуты голосового перевода на платных тарифах?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a43">Списание обычно привязано ко времени активной сессии перевода; детали отображаются в личном кабинете. При исчерпании лимита нужно продление или пакет.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q44">Поддерживает ли TalkPilot корпоративные и командные сценарии (B2B)?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a44">Для счетов, настроек под организацию и интеграций свяжитесь с поддержкой. API и расширенные планы описаны на странице «Тарифы» и в документации кабинета.</div>
+                    </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="faq-item">
-                <div class="faq-question">Какие языки поддерживаются?</div>
-                <div class="faq-answer">
-                    Мы поддерживаем 50+ языков, включая английский, испанский, французский, немецкий, китайский, японский, русский и многие другие. Полный список доступен в личном кабинете.
+            <article class="faq-group" data-group="tech">
+                <button class="faq-group-toggle" type="button">
+                    <span class="faq-group-icon faq-group-icon--tech"><i class="fas fa-cog" aria-hidden="true"></i></span>
+                    <span class="faq-group-head">
+                        <strong data-site-i18n="faq.cat.tech">Технические вопросы</strong>
+                        <small data-site-i18n="faq.cat.tech_sub">Технические требования и совместимость</small>
+                    </span>
+                    <i class="fas fa-chevron-down faq-group-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="faq-group-body">
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q7">Какие браузеры поддерживаются?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a7">TalkPilot работает во всех современных браузерах: Chrome, Firefox, Safari, Edge. Для лучшей производительности рекомендуем Chrome или Edge.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q8">Нужен ли микрофон?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a8">Да, для голосового ввода требуется микрофон. Также можно вводить текст вручную, если микрофон недоступен.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q9">Есть ли API для разработчиков?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a9">Да, API доступен на тарифах Pro и Team. Документация доступна в личном кабинете после активации подписки.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q21">Участники Zoom не слышат перевод — что проверить?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a21">Установите VB-Cable (или BlackHole на Mac), включите режим конференции в TalkPilot, в Zoom выберите микрофон CABLE Output и используйте наушники/колонки, чтобы слышать собеседника. При необходимости перезапустите аудиоустройства.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q22">Чем отличается Basic и Pro распознавание?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a22">Basic быстрее и экономичнее (Vosk). Pro точнее на сложной речи через облачные модели — доступность зависит от тарифа.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q23">Почему сервер пишет, что микрофон занят?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a23">Одновременно может работать только одна активная сессия захвата. Закройте другую вкладку переводчика или десктоп-клиент и повторите попытку.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q24">Как выбрать голос воспроизведения?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a24">В чате доступны нейронные голоса и при поддержке тарифа — клон голоса. Пресеты сохраняйте в кабинете: Настройки разговора.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q25">Работает ли TalkPilot с Teams и Google Meet?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a25">Да — та же схема с виртуальным кабелем в качестве микрофона. В приложении есть мастер настройки для популярных сервисов видеосвязи.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q26">Какие ОС поддерживает десктоп?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a26">Список поддерживаемых сборок зависит от релиза; актуальные установщики и требования — на странице загрузки и в документации.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q45">Что такое клон голоса и нейро-озвучка в TalkPilot?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a45">Нейро-озвучка — естественное произношение перевода; клон голоса (где доступен по тарифу) приближает тембр к вашему эталонному образцу при соблюдении правил использования.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q46">Как уменьшить шум, эхо и обрывы при голосовом вводе?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a46">Используйте гарнитуру с близким микрофоном, закрывайте лишние вкладки с тем же микрофоном, проверьте уровень сигнала в системе и разрешите доступ к микрофону только одному клиенту TalkPilot.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q47">Можно ли переводить с английского на русский и с русского на английский?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a47">Да, пара языков задаётся в интерфейсе чата перед беседой; поддерживаются и другие направления из списка языков.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q48">Работает ли TalkPilot со Skype, Discord или стримингом (OBS)?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a48">Если приложение позволяет выбрать системный микрофон, обычно можно направить ту же схему с виртуальным кабелем, что и для Zoom. Точная маршрутизация зависит от настроек звука ОС — см. гайды и поддержку.</div>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </article>
 
-        <!-- Тарифы и оплата -->
-        <div class="faq-category">
-            <h2>💰 Тарифы и оплата</h2>
-            
-            <div class="faq-item">
-                <div class="faq-question">Какие способы оплаты доступны?</div>
-                <div class="faq-answer">
-                    Мы принимаем оплату банковскими картами (Visa, Mastercard) через Stripe, а также криптовалюты (USDT, BTC, ETH) через NowPayments.
+            <article class="faq-group" data-group="security">
+                <button class="faq-group-toggle" type="button">
+                    <span class="faq-group-icon faq-group-icon--safe"><i class="fas fa-shield-alt" aria-hidden="true"></i></span>
+                    <span class="faq-group-head">
+                        <strong data-site-i18n="faq.cat.security">Безопасность и конфиденциальность</strong>
+                        <small data-site-i18n="faq.cat.security_sub">Безопасность ваших данных</small>
+                    </span>
+                    <i class="fas fa-chevron-down faq-group-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="faq-group-body">
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q27">Записываются ли мои звонки на сервере?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a27">Сервис ориентирован на потоковую обработку речи для перевода. Подробности хранения — в политике конфиденциальности или уточните у поддержки для вашего сценария.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q28">Как защищён доступ к аккаунту?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a28">Используется современная аутентификация и авторизация API. Не передавайте пароль и активные сессии третьим лицам.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q29">Можно ли удалить персональные данные?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a29">Запрос на удаление оформляется через поддержку; сроки зависят от объёма данных и применимых норм.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q30">Как сообщить об уязвимости безопасности?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a30">Пишите на support@talkpilot.pro с темой «Security», приложите шаги воспроизведения и не раскрывайте публично до ответа команды.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q31">Передаются ли фразы сторонним ИИ-сервисам?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a31">Облачные функции (перевод, подсказки, улучшение распознавания) могут вызывать внешние модели согласно вашему тарифу и конфигурации сервиса.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q49">Соответствует ли TalkPilot требованиям GDPR и обработке персональных данных?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a49">Юридические условия и описание обработки данных приведены в политике конфиденциальности и пользовательском соглашении на сайте; при специальных регламентах компании запросите уточнение у поддержки.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q50">Можно ли использовать TalkPilot для переговоров с коммерческой тайной?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a50">Оценивайте риски с точки зрения NDA вашей компании: часть функций использует облако и внешние модели. Для строгих режимов согласуйте с юристом политику данных и выделенные условия с вендором.</div>
+                    </div>
                 </div>
-            </div>
+            </article>
 
-            <div class="faq-item">
-                <div class="faq-question">Могу ли я отменить подписку?</div>
-                <div class="faq-answer">
-                    Да, вы можете отменить подписку в любой момент в личном кабинете. Доступ к функциям сохранится до конца оплаченного периода.
+            <article class="faq-group" data-group="support">
+                <button class="faq-group-toggle" type="button">
+                    <span class="faq-group-icon faq-group-icon--help"><i class="fas fa-headset" aria-hidden="true"></i></span>
+                    <span class="faq-group-head">
+                        <strong data-site-i18n="faq.cat.support">Поддержка и помощь</strong>
+                        <small data-site-i18n="faq.cat.support_sub">Как получить помощь</small>
+                    </span>
+                    <i class="fas fa-chevron-down faq-group-chevron" aria-hidden="true"></i>
+                </button>
+                <div class="faq-group-body">
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q32">За какое время отвечает поддержка?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a32">Обычно в течение 24–48 часов в рабочие дни; сложные запросы по биллингу могут занять дольше.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q33">Что указать в письме при ошибке оплаты?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a33">Email аккаунта, время попытки, способ оплаты, текст ошибки и скриншот (без полных номеров карты).</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q34">Где почитать про возможности продукта?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a34">Разделы «Возможности», «Технологии», «Тарифы» на сайте и этот FAQ дополняют друг друга.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q35">Как предложить идею продукта?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a35">Напишите в поддержку краткий сценарий и ожидаемый эффект — это попадает в бэклог продукта.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q36">Какие данные приложить к баг-репорту?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a36">Версия браузера или приложения, ОС, шаги воспроизведения, скрин консоли (F12) и примерное время сбоя.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q51">Есть ли техподдержка и документация на русском языке?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a51">Интерфейс и материалы на сайте рассчитаны на русскоязычную аудиторию; обращения в поддержку можно писать на русском на support@talkpilot.pro.</div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question" type="button" data-site-i18n="faq.q52">Где скачать программу TalkPilot и найти инструкцию по настройке Zoom/Teams?</button>
+                        <div class="faq-answer" data-site-i18n="faq.a52">Ссылки на загрузку и актуальные пошаговые инструкции размещаются на сайте TalkPilot и в разделе кабинета или диалога «настройка звука»; при изменениях интерфейса ориентируйтесь на последнюю версию страницы загрузки.</div>
+                    </div>
                 </div>
-            </div>
+            </article>
+        </section>
 
-            <div class="faq-item">
-                <div class="faq-question">Есть ли возврат средств?</div>
-                <div class="faq-answer">
-                    Возврат средств возможен в течение 14 дней после покупки, если вы не использовали более 10% лимита минут.
-                </div>
+        <section class="faq-support-cta">
+            <div class="faq-support-icon"><i class="far fa-comment-dots" aria-hidden="true"></i></div>
+            <div class="faq-support-copy">
+                <h2 data-site-i18n="faq.contact.title">Не нашли ответ?</h2>
+                <p data-site-i18n="faq.contact.sub">Наша команда поддержки готова помочь вам в любое время</p>
             </div>
-        </div>
-
-        <!-- Технические вопросы -->
-        <div class="faq-category">
-            <h2>🛠️ Технические вопросы</h2>
-            
-            <div class="faq-item">
-                <div class="faq-question">Какие браузеры поддерживаются?</div>
-                <div class="faq-answer">
-                    VoiceFlow работает во всех современных браузерах: Chrome, Firefox, Safari, Edge. Для лучшей производительности рекомендуем Chrome или Edge.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Нужен ли микрофон?</div>
-                <div class="faq-answer">
-                    Да, для голосового ввода требуется микрофон. Также можно вводить текст вручную, если микрофон недоступен.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question">Есть ли API для разработчиков?</div>
-                <div class="faq-answer">
-                    Да, API доступен на тарифах Pro и Team. Документация доступна в личном кабинете после активации подписки.
-                </div>
-            </div>
-        </div>
-
-        <!-- Контакты -->
-        <div class="contact-section">
-            <h2 style="margin-bottom: 1rem;">Не нашли ответ?</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 2rem;">
-                Наша команда поддержки готова помочь вам
-            </p>
-            <a href="mailto:support@voiceflow.com" class="btn btn-primary">📧 Написать в поддержку</a>
-        </div>
-    </section>
+            <button type="button" class="faq-support-btn" data-vf-contact-open data-site-i18n="faq.contact.btn">Написать в поддержку</button>
+        </section>
+    </main>
 
     <footer class="footer">
-    <div class="footer-content">
-        <div class="footer-section">
-            <h4>🎙️ VoiceFlow</h4>
-            <p style="color: var(--text-secondary);">Голосовой переводчик нового поколения на базе искусственного интеллекта.</p>
+        <div class="footer-content">
+            <div class="footer-section">
+                <a href="/" class="logo footer-logo" aria-label="TalkPilot">
+                    <svg class="logo-mark" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="footerMarkGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#2EC7FF"/>
+                                <stop offset="100%" stop-color="#A64DFF"/>
+                            </linearGradient>
+                        </defs>
+                        <rect x="3.5" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#footerMarkGrad)"/>
+                        <rect x="9.5" y="10" width="4" height="20" rx="2" fill="url(#footerMarkGrad)"/>
+                        <rect x="16.5" y="5.5" width="4.5" height="29" rx="2.25" fill="url(#footerMarkGrad)"/>
+                        <rect x="24.5" y="10" width="4" height="20" rx="2" fill="url(#footerMarkGrad)"/>
+                        <rect x="31" y="13.5" width="3.5" height="13" rx="1.75" fill="url(#footerMarkGrad)"/>
+                        <circle cx="10.8" cy="20" r="1.1" fill="url(#footerMarkGrad)"/>
+                        <circle cx="25.9" cy="20" r="1.1" fill="url(#footerMarkGrad)"/>
+                    </svg>
+                    <span class="logo-text">
+                        <span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span>
+                    </span>
+                </a>
+                <p style="color: var(--text-secondary);" data-site-i18n="footer.tagline">Голосовой переводчик нового поколения на базе искусственного интеллекта.</p>
+            </div>
+            <div class="footer-section">
+                <h4 data-site-i18n="footer.product">Продукт</h4>
+                <ul>
+                    <li><a href="/" data-site-i18n="nav.home">Главная</a></li>
+                    <li><a href="/features" data-site-i18n="nav.features">Возможности</a></li>
+                    <li><a href="/technology" data-site-i18n="nav.tech">Технологии</a></li>
+                    <li><a href="/pricing" data-site-i18n="nav.pricing">Тарифы</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 data-site-i18n="footer.support">Поддержка</h4>
+                <ul>
+                    <li><a href="/faq" data-site-i18n="nav.faq">FAQ</a></li>
+                    <li><a href="/contacts" data-site-i18n="footer.contact">Контакты</a></li>
+                    <li><a href="mailto:support@talkpilot.pro">support@talkpilot.pro</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4 data-site-i18n="footer.company">Компания</h4>
+                <ul>
+                    <li><a href="/dashboard" data-site-i18n="auth.cabinet">Личный кабинет</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="footer-section">
-            <h4>Продукт</h4>
-            <ul>
-                <li><a href="/index.html#features">Возможности</a></li>
-                <li><a href="/technology.html">Технологии</a></li>
-                <li><a href="/pricing.html">Тарифы</a></li>
-                <li><a href="/dashboard.html">Личный кабинет</a></li>
-            </ul>
+        <div class="footer-bottom">
+            <p data-site-i18n="footer.copy">&copy; 2026 TalkPilot. Все права защищены.</p>
         </div>
-        <div class="footer-section">
-            <h4>Поддержка</h4>
-            <ul>
-                <li><a href="/faq.html">FAQ</a></li>
-                <li><a href="mailto:support@voiceflow.com">support@voiceflow.com</a></li>
-                <li><a href="#">Документация API</a></li>
-            </ul>
-        </div>
-        <div class="footer-section">
-            <h4>Компания</h4>
-            <ul>
-                <li><a href="#">О нас</a></li>
-                <li><a href="#">Блог</a></li>
-                <li><a href="#">Контакты</a></li>
-            </ul>
-        </div>
-    </div>
-    <div class="footer-bottom">
-        <p>&copy; 2026 VoiceFlow. Все права защищены.</p>
-    </div>
-</footer>
+    </footer>
 
     <script>
-        // Аккордеон для FAQ
-        document.querySelectorAll('.faq-item').forEach(item => {
-            item.addEventListener('click', () => {
-                item.classList.toggle('active');
+        document.querySelectorAll('.faq-group-toggle').forEach(function (toggle) {
+            toggle.addEventListener('click', function () {
+                var group = toggle.closest('.faq-group');
+                if (!group) return;
+                group.classList.toggle('is-open');
             });
         });
+
+        document.querySelectorAll('.faq-question').forEach(function (button) {
+            button.addEventListener('click', function () {
+                var item = button.closest('.faq-item');
+                if (!item) return;
+                item.classList.toggle('is-open');
+            });
+        });
+
+        var searchInput = document.getElementById('faqSearchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                var query = searchInput.value.trim().toLowerCase();
+                document.querySelectorAll('.faq-item').forEach(function (item) {
+                    var question = item.querySelector('.faq-question');
+                    var answer = item.querySelector('.faq-answer');
+                    var text = ((question ? question.textContent : '') + ' ' + (answer ? answer.textContent : '')).toLowerCase();
+                    var match = !query || text.indexOf(query) !== -1;
+                    item.style.display = match ? '' : 'none';
+                });
+            });
+        }
     </script>
-    <script src="/js/auth-check.js"></script>
+    <script src="/js/conversation-lang-options.js?v=2"></script>
+    <script src="/js/site-locale-urls.js?v=1"></script>
+    <script src="/js/site-lang-detect.js?v=2"></script>
+    <script src="/js/site-lang-extra.js?v=1"></script>
+    <script src="/js/site-lang-more.js?v=1"></script>
+    <script src="/js/site-lang-pages.js?v=2"></script>
+    <script src="/js/site-lang.js?v=33"></script>
+    <script src="/js/contact-form.js?v=1"></script>
+    <script src="/js/contact-modal.js?v=1"></script>
+    <script src="/js/site-mobile-nav.js?v=6"></script>
+    <script src="/js/site-desktop-download.js?v=5"></script>
+    <script src="/js/auth-check.js?v=11"></script>
+    <script src="/js/nav-active.js?v=4"></script>
 </body>
 </html>

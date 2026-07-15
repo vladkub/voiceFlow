@@ -2,137 +2,507 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <script>
+    (function () {
+      var h = location.hostname;
+      if (location.protocol === 'http:' && (h === 'talkpilot.pro' || h === 'www.talkpilot.pro')) {
+        location.replace('https://' + location.host + location.pathname + location.search + location.hash);
+      }
+    })();
+    </script>
+    <script>(function(){if(/^\/[a-z]{2}(?:\/|$)/.test(location.pathname||'/'))return;document.documentElement.classList.add('site-lang-loading');})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оформление покупки — VoiceFlow</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>Checkout - TalkPilot</title>
     <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=3">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/landing.css?v=17">
+    <link rel="stylesheet" href="/css/site-navbar.css?v=20">
     <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/desktop-chrome.css?v=20260517k">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body.checkout-page { margin: 0; min-height: 100vh; background: #0f172a; color: #e2e8f0; }
-        .checkout-top { border-bottom: 1px solid rgba(148, 163, 184, 0.2); background: rgba(15, 23, 42, 0.95); }
-        .checkout-top-inner { max-width: 960px; margin: 0 auto; padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-        .checkout-top a { color: #94a3b8; text-decoration: none; font-size: 0.9rem; }
-        .checkout-top a:hover { color: #e2e8f0; }
-        .checkout-main { max-width: 640px; margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
-        .checkout-order-card { background: rgba(30, 41, 59, 0.85); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 14px; padding: 1.25rem 1.35rem; margin-bottom: 1.75rem; }
-        .checkout-order-card h1 { margin: 0 0 0.75rem; font-size: 1.25rem; color: #f8fafc; }
-        .checkout-row { display: flex; justify-content: space-between; gap: 0.75rem; padding: 0.35rem 0; font-size: 0.92rem; color: #cbd5e1; }
-        .checkout-row strong { color: #f8fafc; }
-        .checkout-total { margin-top: 0.65rem; padding-top: 0.75rem; border-top: 1px solid rgba(148, 163, 184, 0.2); font-size: 1.05rem; font-weight: 700; color: #38bdf8; display: flex; justify-content: space-between; }
-        .checkout-hint { margin: 0.75rem 0 0; font-size: 0.82rem; color: #94a3b8; line-height: 1.45; }
+        .checkout-main { max-width: 960px; margin: 0 auto; padding: 1.75rem 1.25rem 3.5rem; }
+        .checkout-pay-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; align-items: stretch; }
+        body.checkout-page .checkout-pay-row .payment-section { margin-bottom: 0; min-width: 0; }
+        body.checkout-page .checkout-pay-row .payment-form { max-width: none; }
+        @media (max-width: 768px) { .checkout-pay-row { grid-template-columns: 1fr; } }
+        .checkout-order-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 1.25rem 1.35rem; margin-bottom: 1.75rem; box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04); }
+        .checkout-order-card h1 { margin: 0 0 0.75rem; font-size: 1.25rem; color: #0f172a; }
+        .checkout-row { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; padding: 0.35rem 0; font-size: 0.92rem; color: #475569; }
+        .checkout-row strong { color: #0f172a; }
+        .checkout-qty-stepper { display: inline-flex; align-items: center; }
+        .checkout-qty-btns {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #f8fafc;
+        }
+        .checkout-qty-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.25rem;
+            height: 2.25rem;
+            padding: 0 0.5rem;
+            border: none;
+            background: #fff;
+            color: #475569;
+            font-size: 1.1rem;
+            line-height: 1;
+            cursor: pointer;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+        .checkout-qty-btn:hover:not(:disabled) {
+            background: #eef2ff;
+            color: #4338ca;
+        }
+        .checkout-qty-btn:disabled {
+            opacity: 0.38;
+            cursor: not-allowed;
+        }
+        .checkout-qty-val {
+            min-width: 2.25rem;
+            padding: 0 0.35rem;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .checkout-qty-stepper.is-busy { opacity: 0.65; pointer-events: none; }
+        .checkout-total { margin-top: 0.65rem; padding-top: 0.75rem; border-top: 1px solid #e2e8f0; font-size: 1.05rem; font-weight: 700; color: #2563eb; display: flex; justify-content: space-between; }
+        .checkout-order-lines { margin: 0 0 0.75rem; }
+        .checkout-order-lines .checkout-row { border-bottom: 1px dashed rgba(148, 163, 184, 0.45); }
+        .checkout-hint { margin: 0.75rem 0 0; font-size: 0.82rem; color: #64748b; line-height: 1.45; }
+        .checkout-crypto-network-hint {
+            margin: 0.4rem 0 0;
+            font-size: 0.8rem;
+            color: #64748b;
+            line-height: 1.4;
+        }
+        body.checkout-page .payment-section { background: #fff; border: 1px solid #e2e8f0; color: #0f172a; box-shadow: 0 2px 12px rgba(15, 23, 42, 0.04); }
+        body.checkout-page .payment-section h3 { color: #0f172a; }
+        body.checkout-page .form-group label { color: #475569; }
+        body.checkout-page .form-group input, body.checkout-page .form-group select { background: #f8fafc; border: 1px solid #e2e8f0; color: #0f172a; }
+        body.checkout-page .form-group input:focus, body.checkout-page .form-group select:focus { border-color: #6366f1; }
+
+        /* Payment modals: light card on checkout (avoid dark-on-dark from dashboard.css) */
+        body.checkout-page .modal-content {
+            background: #ffffff;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.18);
+        }
+        body.checkout-page .modal-content h3 {
+            color: #0f172a;
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: 0 0 0.25rem;
+            padding-right: 2rem;
+        }
+        body.checkout-page .modal-close {
+            color: #64748b;
+        }
+        body.checkout-page .modal-close:hover {
+            color: #0f172a;
+        }
+        body.checkout-page .modal-body label {
+            color: #334155;
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+        body.checkout-page #stripePaymentModal .modal-body {
+            margin-top: 0.75rem;
+        }
+        body.checkout-page #stripePaymentModal .modal-body > .form-group {
+            margin-top: 1.25rem;
+            margin-bottom: 0;
+        }
+        body.checkout-page #stripePaymentModal #stripe-submit-btn {
+            margin-top: 1.35rem;
+            width: 100%;
+        }
+        body.checkout-page .modal-amount {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0;
+            padding: 0.75rem 1rem;
+            background: #f1f5f9;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+        body.checkout-page .modal-amount span {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+        body.checkout-page .modal-amount strong {
+            color: #2563eb;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        body.checkout-page .modal-content .form-group input {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+            border-radius: 8px;
+            padding: 0.55rem 0.75rem;
+        }
+        body.checkout-page .stripe-card-field-wrap {
+            margin-top: 1.25rem;
+            margin-bottom: 0;
+        }
+        body.checkout-page .stripe-card-field-wrap > label {
+            display: block;
+            margin: 0 0 0.55rem;
+            color: #334155;
+            font-weight: 600;
+            font-size: 0.92rem;
+        }
+        body.checkout-page #stripePaymentModal .form-group label {
+            display: block;
+            margin: 0 0 0.45rem;
+        }
+        body.checkout-page .card-element {
+            padding: 0.75rem 0.85rem;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            min-height: 44px;
+        }
+        body.checkout-page .card-element .__PrivateStripeElement,
+        body.checkout-page .card-element iframe {
+            min-height: 22px;
+        }
+        body.checkout-page .checkout-alert {
+            display: none;
+            margin: 0 0 1rem;
+            padding: 0.75rem 0.9rem;
+            border-radius: 10px;
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+        body.checkout-page .checkout-alert.is-visible {
+            display: block !important;
+        }
+        body.checkout-page .checkout-alert--error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+        body.checkout-page .checkout-alert--success {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #047857;
+        }
+        body.checkout-page .checkout-alert--warn {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            color: #b45309;
+        }
+        body.checkout-page .form-group input.is-invalid,
+        body.checkout-page .form-group select.is-invalid {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+        }
+        body.checkout-page .card-element.is-invalid {
+            border-color: #dc2626 !important;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+        }
+        body.checkout-page .form-group label .checkout-required {
+            color: #dc2626;
+            font-weight: 700;
+        }
+        body.checkout-page .crypto-amount span,
+        body.checkout-page .crypto-address > span {
+            color: #64748b;
+            font-size: 0.92rem;
+        }
+        body.checkout-page .crypto-amount strong {
+            color: #2563eb;
+        }
+        body.checkout-page .crypto-wait {
+            color: #475569;
+        }
+        body.checkout-page .address-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+        body.checkout-page .checkout-amount-fixed {
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 600;
+            cursor: default;
+            user-select: none;
+        }
+        body.checkout-page .checkout-amount-fixed:focus {
+            outline: 2px solid #93c5fd;
+            outline-offset: 1px;
+        }
+        body.checkout-page .checkout-crypto-hint {
+            margin: 0 0 1rem;
+            font-size: 0.88rem;
+            line-height: 1.45;
+            color: #64748b;
+        }
+        body.checkout-page .address-box code {
+            color: #0f172a;
+        }
+        .checkout-pay-success {
+            position: fixed;
+            inset: 0;
+            z-index: 10050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            background: rgba(15, 23, 42, 0.55);
+        }
+        .checkout-pay-success[hidden] {
+            display: none !important;
+        }
+        .checkout-pay-success-card {
+            position: relative;
+            max-width: 420px;
+            width: 100%;
+            background: #fff;
+            border-radius: 16px;
+            padding: 2rem 1.75rem;
+            text-align: center;
+            box-shadow: 0 24px 48px rgba(15, 23, 42, 0.2);
+        }
+        .checkout-pay-success-card .modal-close {
+            top: 0.75rem;
+            right: 0.75rem;
+            z-index: 1;
+        }
+        .checkout-pay-success-card i {
+            font-size: 3rem;
+            color: #22c55e;
+            margin-bottom: 0.75rem;
+        }
+        .checkout-pay-success-card h2 {
+            margin: 0 0 0.5rem;
+            padding-right: 1.5rem;
+            color: #0f172a;
+            font-size: 1.45rem;
+        }
+        .checkout-pay-success-card p {
+            margin: 0;
+            color: #64748b;
+            line-height: 1.45;
+        }
+        .checkout-pay-success-card .checkout-pay-success-btn {
+            margin-top: 1.35rem;
+            width: 100%;
+            max-width: 280px;
+        }
     </style>
 </head>
-<body class="checkout-page">
-    <header class="checkout-top">
-        <div class="checkout-top-inner">
-            <a href="/pricing.html"><i class="fas fa-arrow-left"></i> Тарифы</a>
-            <a href="/dashboard.html"><i class="fas fa-user"></i> Личный кабинет</a>
+<body class="checkout-page pricing-page" data-site-title-key="checkout.metaTitle">
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="/" class="logo">
+                <span class="logo-text"><span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" data-site-i18n="nav.home">Home</a></li>
+                <li><a href="/features" data-site-i18n="nav.features">Features</a></li>
+                <li><a href="/technology" data-site-i18n="nav.tech">Technology</a></li>
+                <li><a href="/pricing" data-site-i18n="nav.pricing">Pricing</a></li>
+                <li><a href="/faq" data-site-i18n="nav.faq">FAQ</a></li>
+                <li><a href="/contacts" data-site-i18n="footer.contact">Contacts</a></li>
+            </ul>
+            <div class="nav-right">
+                <button type="button" class="nav-download-btn" id="navDesktopDownloadBtn" data-site-i18n-aria="nav.download" aria-label="Скачать TalkPilot">
+                    <i class="fas fa-download" aria-hidden="true"></i>
+                </button>
+                <div class="nav-lang-wrap">
+                    <span class="nav-lang-sr" id="siteLangSelectLabel" data-site-i18n="nav.lang_label">Language</span>
+                    <div class="nav-lang-pill">
+                        <i class="fas fa-globe nav-lang-globe" aria-hidden="true"></i>
+                        <select id="siteLangSelect" class="nav-lang-select" aria-labelledby="siteLangSelectLabel">
+                            <option value="ru">RU</option>
+                            <option value="en">EN</option>
+                            <option value="de">DE</option>
+                            <option value="fr">FR</option>
+                            <option value="es">ES</option>
+                        </select>
+                        <i class="fas fa-chevron-down nav-lang-chevron" aria-hidden="true"></i>
+                    </div>
+                </div>
+                <div class="nav-buttons" id="navButtons">
+                    <a href="/dashboard" class="btn btn-outline"><span data-site-i18n="auth.login">Log in</span></a>
+                    <a href="/dashboard?register=1" class="btn btn-primary"><span data-site-i18n="auth.register">Sign up</span></a>
+                </div>
+            </div>
         </div>
-    </header>
+    </nav>
 
     <main class="checkout-main">
         <div class="checkout-order-card">
-            <h1 id="checkoutPackTitle">Пакет</h1>
-            <div class="checkout-row"><span>Количество пакетов</span><strong id="checkoutOrderQty">1</strong></div>
-            <div class="checkout-row"><span>Цена за 1 пакет</span><strong id="checkoutUnitPrice">—</strong></div>
-            <div class="checkout-total"><span>К оплате (USD)</span><span id="checkoutOrderTotal">—</span></div>
-            <p class="checkout-hint">Оплатите картой (Stripe) или криптовалютой (NowPayments). Средства зачислятся на баланс в USD по текущей логике сервиса.</p>
-        </div>
-
-        <div class="payment-section">
-            <h3><i class="fas fa-credit-card"></i> Оплата картой (Stripe)</h3>
-            <form id="stripeDepositForm" class="payment-form">
-                <div class="form-group">
-                    <label for="stripeAmount">Сумма (USD)</label>
-                    <input type="number" id="stripeAmount" required min="1" step="0.01" placeholder="Сумма">
+            <h1 id="checkoutPackTitle" data-site-i18n="checkout.orderTitle">Order</h1>
+            <div id="checkoutOrderLines" class="checkout-order-lines" style="display:none;"></div>
+            <div id="checkoutSingleMeta">
+                <div class="checkout-row checkout-row--qty">
+                    <span data-site-i18n="checkout.qtyLabel">Package quantity</span>
+                    <div id="checkoutQtyStepper" class="checkout-qty-stepper" role="group" aria-labelledby="checkoutQtyLabel">
+                        <div class="checkout-qty-btns">
+                            <button type="button" id="checkoutQtyDec" class="checkout-qty-btn" data-site-i18n-aria="pricing.qty_minus" aria-label="Decrease quantity">−</button>
+                            <span id="checkoutOrderQty" class="checkout-qty-val" aria-live="polite">1</span>
+                            <button type="button" id="checkoutQtyInc" class="checkout-qty-btn" data-site-i18n-aria="pricing.qty_plus" aria-label="Increase quantity">+</button>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-credit-card"></i> Оплатить картой
-                </button>
-            </form>
-            <div id="stripeMessage" class="form-message"></div>
-        </div>
-
-        <div class="payment-section">
-            <h3><i class="fab fa-bitcoin"></i> Оплата криптовалютой</h3>
-            <div class="balance-display">
-                <div class="balance-label">Текущий баланс</div>
-                <div class="balance-amount" id="currentBalance">—</div>
-                <div class="balance-currency" id="balanceCurrency">USD</div>
+                <div class="checkout-row"><span data-site-i18n="checkout.unitPriceLabel">Price per package</span><strong id="checkoutUnitPrice">-</strong></div>
             </div>
-            <form id="cryptoDepositForm" class="payment-form">
-                <div class="form-group">
-                    <label for="cryptoAmount">Сумма (USD)</label>
-                    <input type="number" id="cryptoAmount" required min="5" step="0.01" placeholder="Минимум 5 USD">
-                </div>
-                <div class="form-group">
-                    <label for="cryptoCurrency">Криптовалюта</label>
-                    <select id="cryptoCurrency">
-                        <option value="USDT">USDT (TRC20)</option>
-                        <option value="USDC">USDC</option>
-                        <option value="BTC">Bitcoin</option>
-                        <option value="ETH">Ethereum</option>
-                        <option value="TON">TON</option>
-                        <option value="LTC">Litecoin</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-rocket"></i> Создать платёж
-                </button>
-            </form>
-            <div id="cryptoMessage" class="form-message"></div>
+            <div class="checkout-total"><span data-site-i18n="checkout.totalLabel">Total (USD)</span><span id="checkoutOrderTotal">-</span></div>
+            <p class="checkout-hint" data-site-i18n="checkout.hint">Pay by card or crypto.</p>
+        </div>
+
+        <div class="checkout-pay-row">
+            <div class="payment-section">
+                <h3><i class="fas fa-credit-card"></i> <span data-site-i18n="checkout.cardTitle">Оплата картой</span></h3>
+                <p class="checkout-crypto-hint" data-site-i18n="checkout.cardProvidersHint" style="margin-bottom:12px;font-size:0.9rem;color:var(--text-secondary);">Visa, Mastercard, Apple Pay — защищённая платёжная страница.</p>
+                <form id="cardDepositForm" class="payment-form">
+                    <div class="form-group">
+                        <label for="cardPayerEmail" data-site-i18n="checkout.payerEmailLabel">Email для чека</label>
+                        <input type="email" id="cardPayerEmail" name="email" required autocomplete="email" placeholder="you@example.com">
+                        <p class="checkout-crypto-hint" data-site-i18n="checkout.payerEmailHint" style="margin:0.35rem 0 0;font-size:0.8rem;">Укажите email покупателя — он нужен для чека и связи по заказу.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardAmount" data-site-i18n="checkout.amountLabel">Amount (USD)</label>
+                        <input type="text" id="cardAmount" class="checkout-amount-fixed" required readonly inputmode="decimal" autocomplete="off" aria-readonly="true">
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-credit-card"></i> <span data-site-i18n="checkout.cardPayBtn">Pay by card</span>
+                    </button>
+                </form>
+                <div id="cardMessage" class="checkout-alert checkout-alert--error" role="alert" aria-live="polite"></div>
+            </div>
+            <div class="payment-section">
+                <h3><i class="fab fa-bitcoin"></i> <span data-site-i18n="checkout.cryptoTitle">Cryptocurrency payment</span></h3>
+                <p class="checkout-crypto-hint" data-site-i18n="checkout.cryptoHint">Счёт NOWPayments на кошелёк (не Rampex). USDT и USDC — только сеть TRC20 (Tron). Минимум провайдера ~$12 для стейблкоинов; для меньших сумм — оплата картой.</p>
+                <form id="cryptoDepositForm" class="payment-form">
+                    <div class="form-group">
+                        <label for="cryptoAmount" data-site-i18n="checkout.amountLabel">Amount (USD)</label>
+                        <input type="text" id="cryptoAmount" class="checkout-amount-fixed" required readonly inputmode="decimal" autocomplete="off" aria-readonly="true">
+                    </div>
+                    <div class="form-group">
+                        <label for="cryptoCurrency" data-site-i18n="checkout.cryptoCurrencyLabel">Cryptocurrency</label>
+                        <select id="cryptoCurrency" aria-describedby="cryptoNetworkHint"></select>
+                        <p id="cryptoNetworkHint" class="checkout-crypto-network-hint" data-site-i18n="checkout.cryptoNetworkHint">USDT and USDC are accepted on the TRC20 network (Tron). Other coins use their native network (Bitcoin, Ethereum, etc.).</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-rocket"></i> <span data-site-i18n="checkout.cryptoCreateBtn">Create invoice</span>
+                    </button>
+                </form>
+                <div id="cryptoMessage" class="checkout-alert checkout-alert--error" role="alert" aria-live="polite"></div>
+            </div>
         </div>
     </main>
 
-    <div id="stripePaymentModal" class="modal">
-        <div class="modal-content">
-            <button type="button" onclick="closeStripeModal()" class="modal-close">✖</button>
-            <h3>Оплата картой</h3>
-            <div class="modal-body">
-                <div class="modal-amount">
-                    <span>Сумма:</span>
-                    <strong id="stripeModalAmount">0 USD</strong>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <a href="/" class="logo footer-logo" aria-label="TalkPilot"><span class="logo-text"><span class="logo-text-voice">Talk</span><span class="logo-text-flow">Pilot</span></span></a>
+                <p style="color: var(--text-secondary);" data-site-i18n="footer.tagline">AI voice translator.</p>
+            </div>
+            <div class="footer-section">
+                <h4 data-site-i18n="footer.company">Company</h4>
+                <ul>
+                    <li><a href="/privacy" data-site-i18n="footer.privacy">Privacy Policy</a></li>
+                    <li><a href="/terms" data-site-i18n="footer.terms">Terms of Service</a></li>
+                    <li><a href="/contacts" data-site-i18n="footer.contact">Contacts</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p data-site-i18n="footer.copy">&copy; 2026 TalkPilot.</p>
+        </div>
+    </footer>
+
+    <div id="stripePaymentModal" class="modal dash-stripe-modal" style="display:none;" aria-hidden="true">
+        <div class="modal-content dash-stripe-modal__panel">
+            <button type="button" class="modal-close dash-stripe-modal__close" onclick="closeStripeModal()" aria-label="Закрыть">&times;</button>
+            <h3 class="dash-stripe-modal__title">Оплата картой</h3>
+            <div class="modal-body dash-stripe-modal__body">
+                <div class="modal-amount dash-stripe-modal__amount">
+                    <span class="dash-stripe-modal__amount-label">Сумма:</span>
+                    <strong id="stripeModalAmount" class="dash-stripe-modal__amount-value">0 USD</strong>
                 </div>
-                <input type="hidden" id="stripe-client-secret">
-                <div class="form-group">
-                    <label>Имя держателя карты</label>
-                    <input type="text" id="stripe-card-holder" placeholder="John Doe">
+                <input type="hidden" id="stripe-client-secret" value="">
+                <div class="form-group dash-stripe-modal__field">
+                    <label for="stripe-card-holder">Имя на карте <span class="checkout-required">*</span></label>
+                    <input type="text" id="stripe-card-holder" autocomplete="cc-name" placeholder="IVAN IVANOV">
                 </div>
-                <div id="stripe-card-element" class="card-element"></div>
-                <button id="stripe-submit-btn" type="button" onclick="confirmStripePayment()" class="btn btn-primary">Оплатить</button>
-                <div id="stripe-message" class="form-message"></div>
+                <div class="form-group stripe-card-field-wrap dash-stripe-modal__field">
+                    <label for="stripe-card-element">Данные карты</label>
+                    <div id="stripe-card-element" class="card-element dash-stripe-card-element"></div>
+                </div>
+                <div id="stripe-message" class="checkout-alert checkout-alert--error" role="alert" aria-live="polite"></div>
+                <button type="button" id="stripe-submit-btn" class="btn btn-primary dash-stripe-modal__submit">Оплатить</button>
             </div>
         </div>
     </div>
 
     <div id="cryptoPaymentModal" class="modal">
         <div class="modal-content">
-            <button type="button" onclick="closeCryptoModal()" class="modal-close">✖</button>
-            <h3>Оплата криптовалютой</h3>
+            <button type="button" onclick="closeCryptoModal()" class="modal-close" aria-label="Close">&times;</button>
+            <h3 data-site-i18n="checkout.modalCryptoTitle">Cryptocurrency payment</h3>
             <div class="modal-body">
                 <div class="crypto-amount">
-                    <span>Сумма к оплате:</span>
+                    <span data-site-i18n="checkout.modalCryptoAmount">Amount to pay:</span>
                     <strong id="cryptoPaymentAmount">0 USDT</strong>
                 </div>
                 <div class="crypto-address">
-                    <span>Адрес кошелька:</span>
+                    <span data-site-i18n="checkout.modalWallet">Wallet address:</span>
                     <div class="address-box">
                         <code id="cryptoPaymentAddress">-</code>
-                        <button type="button" onclick="copyCryptoAddress()" class="btn-copy">📋</button>
+                        <button type="button" onclick="copyCryptoAddress()" class="btn-copy" title="Copy" aria-label="Copy">Copy</button>
                     </div>
                 </div>
                 <div class="crypto-wait">
                     <i class="fas fa-hourglass-half"></i>
-                    <span>Ожидание платежа…<br>Не закрывайте окно до подтверждения</span>
+                    <span data-site-i18n-html="checkout.modalWait">Waiting for payment<br>to the wallet address</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="/js/auth-check.js?v=7"></script>
-    <script src="/js/stripe-ui.js?v=4"></script>
-    <script src="/js/stripe-dashboard.js?v=1"></script>
-    <script src="/js/payment-ui.js?v=2"></script>
-    <script src="/js/checkout-pack.js?v=1"></script>
+    <div id="checkoutPaymentSuccess" class="checkout-pay-success" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="checkoutPaymentSuccessTitle">
+        <div class="checkout-pay-success-card" role="document">
+            <button type="button" id="checkoutPaymentSuccessClose" class="modal-close" aria-label="Закрыть">&times;</button>
+            <i class="fas fa-circle-check" aria-hidden="true"></i>
+            <h2 id="checkoutPaymentSuccessTitle">Покупка прошла успешно</h2>
+            <p id="checkoutPaymentSuccessSub">Оплата получена. Тариф и минуты зачислены на ваш аккаунт.</p>
+            <button type="button" id="checkoutPaymentSuccessBtn" class="btn btn-primary checkout-pay-success-btn">
+                Перейти в личный кабинет
+            </button>
+        </div>
+    </div>
+
+    <script src="/js/conversation-lang-options.js?v=2"></script>
+    <script src="/js/site-locale-urls.js?v=1"></script>
+    <script src="/js/site-lang-detect.js?v=2"></script>
+    <script src="/js/site-lang-extra.js?v=1"></script>
+    <script src="/js/site-lang-more.js?v=1"></script>
+    <script src="/js/site-lang-pages.js?v=5"></script>
+    <script src="/js/site-lang.js?v=35"></script>
+    <script src="/js/site-mobile-nav.js?v=6"></script>
+    <script src="/js/site-desktop-download.js?v=5"></script>
+    <script src="/js/auth-check.js?v=11"></script>
+    <script src="/js/nav-active.js?v=4"></script>
+    <script src="/js/card-payment-bootstrap.js?v=5"></script>
+    <script src="/js/card-dashboard.js?v=3"></script>
+    <script src="/js/crypto-currency-options.js?v=1"></script>
+    <script src="/js/checkout-pack.js?v=23"></script>
+    <script src="/js/desktop-chrome.js?v=20260517k"></script>
 </body>
 </html>

@@ -2,10 +2,13 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <script>(function(){if(/^\/[a-z]{2}(?:\/|$)/.test(location.pathname||'/'))return;document.documentElement.classList.add('site-lang-loading');})();</script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вход — VoiceFlow</title>
+    <meta name="robots" content="noindex, nofollow">
+    <title>Вход — TalkPilot</title>
     <link rel="icon" type="image/svg+xml" sizes="any" href="/favicon.svg?v=3">
     <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="/css/site-navbar.css?v=3">
     <style>
         body.login-page-body { margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(120% 80% at 50% 0%, #1e293b 0%, #0a0e1a 55%); color: #e2e8f0; font-family: 'Segoe UI', system-ui, sans-serif; }
         .login-shell { width: 100%; max-width: 400px; padding: 1.5rem; box-sizing: border-box; }
@@ -17,120 +20,822 @@
         .login-card input:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
         .login-card button[type="submit"] { width: 100%; margin-top: 0.25rem; padding: 0.75rem 1rem; border: none; border-radius: 10px; font-weight: 600; font-size: 0.95rem; cursor: pointer; color: #fff; background: linear-gradient(90deg, #7c3aed 0%, #2563eb 100%); }
         .login-card button[type="submit"]:disabled { opacity: 0.65; cursor: not-allowed; }
+        .login-captcha-wrap { margin: 0.15rem 0 0.85rem; width: 100%; }
+        .login-lang-bar { display: flex; justify-content: flex-end; margin-bottom: 0.75rem; }
+        .login-lang-bar .nav-lang-wrap { margin: 0; }
+        html.site-lang-loading .login-card { visibility: hidden; }
+        .login-oauth-divider {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin: 1rem 0 0.85rem;
+            color: #64748b;
+            font-size: 0.78rem;
+            text-transform: lowercase;
+        }
+        .login-oauth-divider::before,
+        .login-oauth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(148, 163, 184, 0.28);
+        }
+        .login-google-btn {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            padding: 0.72rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            background: #fff;
+            color: #1e293b;
+            font-size: 0.92rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+        }
+        .login-google-btn:hover:not(:disabled) {
+            background: #f8fafc;
+            border-color: rgba(148, 163, 184, 0.55);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12);
+        }
+        .login-google-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .login-google-btn svg { flex-shrink: 0; }
         #loginPageMessage { display: none; margin-bottom: 0.85rem; padding: 0.55rem 0.65rem; border-radius: 8px; font-size: 0.88rem; }
         #loginPageMessage.is-error { display: block; background: rgba(239, 68, 68, 0.12); color: #fecaca; border: 1px solid rgba(239, 68, 68, 0.35); }
         #loginPageMessage.is-ok { display: block; background: rgba(34, 197, 94, 0.12); color: #bbf7d0; border: 1px solid rgba(34, 197, 94, 0.35); }
         .login-links { margin-top: 1.1rem; font-size: 0.86rem; color: #94a3b8; text-align: center; line-height: 1.6; }
         .login-links a { color: #7dd3fc; text-decoration: none; }
         .login-links a:hover { text-decoration: underline; }
+        .login-panel[hidden] { display: none !important; }
         .login-back { display: inline-block; margin-bottom: 1rem; font-size: 0.88rem; color: #94a3b8; text-decoration: none; }
         .login-back:hover { color: #e2e8f0; }
+        /* Десктоп (Electron): без веб-навигации «Тарифы» / «На главную» */
+        html.vf-desktop-login a.login-back { display: none !important; }
+        html.vf-desktop-login #loginLinksSep,
+        html.vf-desktop-login #loginHomeLink { display: none !important; }
+        html.vf-desktop-login body.login-page-body {
+            padding-top: 40px;
+            box-sizing: border-box;
+        }
+        /* Панель окна Electron (frame: false) — как на экране чата */
+        .login-desktop-titlebar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            z-index: 1000;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 4px 0 0;
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.55) 100%);
+            border-bottom: 1px solid rgba(71, 91, 136, 0.45);
+            -webkit-app-region: drag;
+            app-region: drag;
+        }
+        html.vf-desktop-login .login-desktop-titlebar {
+            display: flex;
+        }
+        .login-desktop-titlebar-spacer {
+            flex: 1;
+            min-width: 8px;
+            -webkit-app-region: drag;
+            app-region: drag;
+        }
+        .login-desktop-window-controls {
+            display: inline-flex;
+            align-items: stretch;
+            gap: 0;
+            -webkit-app-region: no-drag;
+            app-region: no-drag;
+        }
+        .login-desktop-titlebar .desktop-win-btn {
+            box-sizing: border-box;
+            width: 46px;
+            height: 36px;
+            min-width: 46px;
+            max-width: 46px;
+            min-height: 36px;
+            max-height: 36px;
+            padding: 0;
+            margin: 0;
+            border: none;
+            background: transparent;
+            color: #e2e8f0;
+            font-size: 1.05rem;
+            line-height: 1;
+            font-weight: 300;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: background 0.12s, color 0.12s;
+        }
+        .login-desktop-titlebar .desktop-win-min:hover,
+        .login-desktop-titlebar .desktop-win-max:hover {
+            background: rgba(148, 163, 184, 0.22);
+            color: #fff;
+        }
+        .login-desktop-titlebar .desktop-win-max {
+            padding: 0;
+        }
+        .login-desktop-titlebar .desktop-win-max-glyph {
+            display: block;
+            width: 11px;
+            height: 11px;
+            box-sizing: border-box;
+            border: 1px solid currentColor;
+            border-radius: 1px;
+        }
+        .login-desktop-titlebar .desktop-win-max.is-maximized .desktop-win-max-glyph {
+            border: none;
+            width: 12px;
+            height: 11px;
+            position: relative;
+        }
+        .login-desktop-titlebar .desktop-win-max.is-maximized .desktop-win-max-glyph::before,
+        .login-desktop-titlebar .desktop-win-max.is-maximized .desktop-win-max-glyph::after {
+            content: '';
+            position: absolute;
+            box-sizing: border-box;
+            border: 1px solid currentColor;
+            border-radius: 1px;
+            width: 8px;
+            height: 7px;
+        }
+        .login-desktop-titlebar .desktop-win-max.is-maximized .desktop-win-max-glyph::before {
+            left: 0;
+            top: 0;
+        }
+        .login-desktop-titlebar .desktop-win-max.is-maximized .desktop-win-max-glyph::after {
+            right: 0;
+            bottom: 0;
+        }
+        .login-desktop-titlebar .desktop-window-controls {
+            margin-top: 1px;
+            margin-right: 1px;
+            box-sizing: border-box;
+        }
+        .login-desktop-titlebar .desktop-win-close {
+            border-top-right-radius: 8px;
+        }
+        .login-desktop-titlebar .desktop-win-close:hover {
+            background: #e81123;
+            color: #fff;
+            border-top-right-radius: 8px;
+        }
     </style>
+    <script>
+    (function () {
+      try {
+        var ua = typeof navigator !== 'undefined' && navigator.userAgent ? navigator.userAgent : '';
+        if (/VoiceTranslatorDesktop/i.test(ua) || /^file:/i.test(window.location.protocol) || (typeof window !== 'undefined' && window.voiceflowDesktop)) {
+          document.documentElement.classList.add('vf-desktop-login');
+        }
+      } catch (e) { /* ignore */ }
+    })();
+    </script>
 </head>
 <body class="login-page-body">
+    <div class="login-desktop-titlebar">
+        <span class="login-desktop-titlebar-spacer"></span>
+        <div class="login-desktop-window-controls">
+            <button type="button" id="loginDesktopWinMin" class="desktop-win-btn desktop-win-min" title="Свернуть" aria-label="Свернуть">&#8722;</button>
+            <button type="button" id="loginDesktopWinMax" class="desktop-win-btn desktop-win-max" title="Развернуть" aria-label="Развернуть"><span class="desktop-win-max-glyph" aria-hidden="true"></span></button>
+            <button type="button" id="loginDesktopWinClose" class="desktop-win-btn desktop-win-close" title="Закрыть" aria-label="Закрыть">&#215;</button>
+        </div>
+    </div>
     <div class="login-shell">
-        <a class="login-back" href="/pricing.html">← Тарифы</a>
         <div class="login-card">
-            <h1>Вход в личный кабинет</h1>
-            <p class="sub">Введите email и пароль. После входа вы вернётесь к оформлению выбранного тарифа.</p>
+            <div class="login-lang-bar">
+                <div class="nav-lang-wrap">
+                    <label id="siteLangLabel" class="sr-only" data-site-i18n="nav.lang_aria">Язык сайта</label>
+                    <div class="nav-lang-pill" aria-labelledby="siteLangLabel">
+                        <select id="siteLangSelect" class="nav-lang-select" aria-labelledby="siteLangLabel"></select>
+                    </div>
+                </div>
+            </div>
+            <h1 id="loginCardTitle" data-site-i18n="login.page.title_login">Вход в личный кабинет</h1>
+            <p class="sub" id="loginCardSub" data-site-i18n="login.page.sub_login">Введите email и пароль. После входа вы вернётесь к оформлению выбранного тарифа.</p>
             <div id="loginPageMessage" role="alert"></div>
+            <div id="loginPanel" class="login-panel">
             <form id="loginPageForm" autocomplete="on">
-                <label for="loginEmail">Email</label>
+                <label for="loginEmail" data-site-i18n="login.page.email_label">Email</label>
                 <input id="loginEmail" name="email" type="email" autocomplete="username" required>
-                <label for="loginPassword">Пароль</label>
+                <label for="loginPassword" data-site-i18n="login.page.password_label">Пароль</label>
                 <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
-                <button type="submit" id="loginPageSubmit">Войти</button>
+                <button type="submit" id="loginPageSubmit" data-site-i18n="modal.login.submit">Войти</button>
             </form>
+            </div>
+            <div id="registerPanel" class="login-panel" hidden>
+            <form id="registerPageForm" autocomplete="on">
+                <label for="registerName" data-site-i18n="login.page.name_label">Имя</label>
+                <input id="registerName" name="name" type="text" autocomplete="name" required maxlength="80">
+                <label for="registerEmail" data-site-i18n="login.page.email_label">Email</label>
+                <input id="registerEmail" name="email" type="email" autocomplete="email" required>
+                <label for="registerPassword" data-site-i18n="login.page.password_label">Пароль</label>
+                <input id="registerPassword" name="password" type="password" autocomplete="new-password" required minlength="6">
+                <div id="registerCaptcha" class="login-captcha-wrap" aria-hidden="true"></div>
+                <button type="submit" id="registerPageSubmit" data-site-i18n="modal.reg.submit">Зарегистрироваться</button>
+            </form>
+            </div>
+            <div id="loginOAuthDivider" class="login-oauth-divider" data-site-i18n="login.page.or">или</div>
+            <button type="button" id="loginGoogleBtn" class="login-google-btn">
+                <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+                    <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.273 36 24 36c-5.522 0-10-4.477-10-10s4.478-10 10-10c2.52 0 4.817.923 6.603 2.447l6.016-6.016C33.64 9.053 29.082 7 24 7 13.507 7 5 15.507 5 26s8.507 19 19 19 19-8.507 19-19c0-1.278-.133-2.525-.389-3.917z"/>
+                    <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 16.108 18.961 13 24 13c2.52 0 4.817.923 6.603 2.447l6.016-6.016C33.64 9.053 29.082 7 24 7 13.507 7 5 15.507 5 26c0 1.988.48 3.86 1.306 5.691z"/>
+                    <path fill="#4CAF50" d="M24 45c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238C29.211 35.091 26.715 36 24 36c-5.273 0-9.654-3.343-11.303-8H6.306C8.64 38.947 15.708 45 24 45z"/>
+                    <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.03 8-11.303 8-5.273 0-9.654-3.343-11.303-8H6.306C8.64 38.947 15.708 45 24 45c10.493 0 19-8.507 19-19 0-1.278-.133-2.525-.389-3.917z"/>
+                </svg>
+                <span data-site-i18n="modal.login.google">Войти через Google</span>
+            </button>
             <div class="login-links">
-                <a id="loginRegLink" href="/dashboard.html?register=1">Регистрация</a>
-                ·
-                <a href="/">На главную</a>
+                <span id="loginRegPrompt"><span data-site-i18n="modal.login.switch_prefix">Нет аккаунта?</span> <a id="loginRegLink" href="#" data-site-i18n="modal.login.switch_link">Регистрация</a></span>
+                <span id="loginSignInPrompt" hidden><span data-site-i18n="modal.reg.switch_prefix">Уже есть аккаунт?</span> <a id="loginSignInLink" href="#" data-site-i18n="modal.reg.switch_link">Войти</a></span>
+                <span id="loginLinksSep"> · </span>
+                <a id="loginHomeLink" href="/" data-site-i18n="login.page.home">На главную</a>
             </div>
         </div>
     </div>
+    <script src="/js/conversation-lang-options.js?v=2"></script>
+    <script src="/js/site-locale-urls.js?v=1"></script>
+    <script src="/js/site-lang-detect.js?v=2"></script>
+    <script src="/js/site-lang-extra.js?v=2"></script>
+    <script src="/js/site-lang-more.js?v=2"></script>
+    <script src="/js/site-lang-login.js?v=1"></script>
+    <script src="/js/site-lang-pages.js?v=2"></script>
+    <script src="/js/site-lang.js?v=38"></script>
+    <script src="/js/captcha-widget.js?v=4"></script>
     <script>
     (function () {
       'use strict';
 
+      var apiOrigin = '';
+
+      function siteT(key) {
+        if (typeof window.siteLangT === 'function') return window.siteLangT(key);
+        return key;
+      }
+
+      function applyLoginPageI18n(isRegister) {
+        var card = document.querySelector('.login-card');
+        var titleEl = document.getElementById('loginCardTitle');
+        var subEl = document.getElementById('loginCardSub');
+        if (titleEl) {
+          titleEl.setAttribute('data-site-i18n', isRegister ? 'login.page.title_register' : 'login.page.title_login');
+        }
+        if (subEl) {
+          subEl.setAttribute('data-site-i18n', isRegister ? 'login.page.sub_register' : 'login.page.sub_login');
+        }
+        if (typeof window.applySiteLangTo === 'function' && card) {
+          window.applySiteLangTo(card);
+        }
+        document.title = siteT(isRegister ? 'login.page.doc_title_register' : 'login.page.doc_title_login');
+      }
+
+      function localizedPath(path) {
+        if (typeof window.vfLocalizedHref === 'function') return window.vfLocalizedHref(path);
+        return path;
+      }
+
+      function isFileLoginPage() {
+        try {
+          return /^file:/i.test(window.location.protocol);
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function absUrl(path) {
+        var p = path == null ? '' : String(path);
+        if (!p) return p;
+        if (/^https?:\/\//i.test(p)) return p;
+        if (!p.startsWith('/')) p = '/' + p;
+        if (apiOrigin) return apiOrigin + p;
+        return p;
+      }
+
+      function apiFetch(path, init) {
+        var opts = init ? Object.assign({}, init) : {};
+        if (isLoginDesktopShell()) {
+          var hdrs = Object.assign({}, opts.headers || {});
+          hdrs['X-VoiceFlow-Client'] = 'desktop';
+          opts.headers = hdrs;
+        }
+        return fetch(absUrl(path), opts);
+      }
+
       function safeRedirect(raw) {
-        if (!raw || typeof raw !== 'string') return '/dashboard.html';
+        if (!raw || typeof raw !== 'string') return '/dashboard';
         try {
           var s = decodeURIComponent(raw).trim();
-          if (!s.startsWith('/') || s.startsWith('//')) return '/dashboard.html';
+          if (!s.startsWith('/') || s.startsWith('//')) return '/dashboard';
           return s.split('#')[0];
         } catch (e) {
-          return '/dashboard.html';
+          return '/dashboard';
         }
       }
 
-      function registerHrefFromRedirect(redirectRaw) {
-        var base = '/dashboard.html?register=1';
+      function registerPageHref(redirectRaw) {
+        var q = new URLSearchParams();
+        q.set('register', '1');
+        var red = safeRedirect(redirectRaw || '');
+        if (red && red !== '/dashboard') {
+          q.set('redirect', red);
+        }
         try {
           var path = safeRedirect(redirectRaw);
-          var q = path.indexOf('?') >= 0 ? path.slice(path.indexOf('?') + 1) : '';
-          if (!q) return base;
-          var sp = new URLSearchParams(q);
-          var pack = sp.get('pack');
-          var qty = sp.get('qty');
-          if (pack) base += '&pack=' + encodeURIComponent(pack);
-          if (qty) base += '&qty=' + encodeURIComponent(qty);
-          return base;
+          var extra = path.indexOf('?') >= 0 ? path.slice(path.indexOf('?') + 1) : '';
+          if (extra) {
+            var sp = new URLSearchParams(extra);
+            var pack = sp.get('pack');
+            var qty = sp.get('qty');
+            if (pack) q.set('pack', pack);
+            if (qty) q.set('qty', qty);
+          }
         } catch (e) {
-          return base;
+          /* ignore */
+        }
+        return '/login?' + q.toString();
+      }
+
+      function setLoginMode(mode) {
+        var isRegister = mode === 'register';
+        var loginPanel = document.getElementById('loginPanel');
+        var registerPanel = document.getElementById('registerPanel');
+        var titleEl = document.getElementById('loginCardTitle');
+        var subEl = document.getElementById('loginCardSub');
+        var regPrompt = document.getElementById('loginRegPrompt');
+        var signInPrompt = document.getElementById('loginSignInPrompt');
+        if (loginPanel) loginPanel.hidden = isRegister;
+        if (registerPanel) registerPanel.hidden = !isRegister;
+        applyLoginPageI18n(isRegister);
+        if (regPrompt) regPrompt.hidden = isRegister;
+        if (signInPrompt) signInPrompt.hidden = !isRegister;
+        if (isRegister) {
+          var captchaEl = document.getElementById('registerCaptcha');
+          if (captchaEl && window.vfCaptcha) {
+            captchaEl.setAttribute('aria-hidden', 'false');
+            window.vfCaptcha.render(captchaEl);
+          }
+        }
+        try {
+          var url = new URL(window.location.href);
+          if (isRegister) {
+            url.searchParams.set('register', '1');
+          } else {
+            url.searchParams.delete('register');
+          }
+          window.history.replaceState({}, '', url.pathname + url.search);
+        } catch (histErr) {
+          /* ignore */
         }
       }
 
-      var sp = new URLSearchParams(window.location.search);
-      var redirectTarget = safeRedirect(sp.get('redirect') || '');
-      document.getElementById('loginRegLink').setAttribute('href', registerHrefFromRedirect(sp.get('redirect') || ''));
+      function isLoginDesktopShell() {
+        try {
+          var ua = navigator.userAgent || '';
+          if (/VoiceTranslatorDesktop/i.test(ua)) return true;
+          if (isFileLoginPage()) return true;
+          return typeof window.voiceflowDesktop !== 'undefined' && window.voiceflowDesktop;
+        } catch (e) {
+          return false;
+        }
+      }
 
-      var form = document.getElementById('loginPageForm');
-      var msg = document.getElementById('loginPageMessage');
-      var submitBtn = document.getElementById('loginPageSubmit');
+      function initLoginDesktopWindowControls() {
+        if (!isLoginDesktopShell()) return;
+        try {
+          document.documentElement.classList.add('vf-desktop-login');
+        } catch (e) { /* ignore */ }
+        var vd = window.voiceflowDesktop;
+        if (!vd || typeof vd.windowMinimize !== 'function') return;
+        var minBtn = document.getElementById('loginDesktopWinMin');
+        var maxBtn = document.getElementById('loginDesktopWinMax');
+        var closeBtn = document.getElementById('loginDesktopWinClose');
+        if (!minBtn || !maxBtn || !closeBtn) return;
 
-      form.addEventListener('submit', async function (e) {
-        e.preventDefault();
-        var email = (document.getElementById('loginEmail').value || '').trim();
-        var password = document.getElementById('loginPassword').value || '';
-        msg.className = '';
-        msg.style.display = 'none';
-        msg.textContent = '';
-
-        if (!email || !password) {
-          msg.textContent = 'Укажите email и пароль';
-          msg.className = 'is-error';
-          return;
+        function syncMaxUi() {
+          var m = maxBtn.classList.contains('is-maximized');
+          maxBtn.title = m ? 'Восстановить' : 'Развернуть';
+          maxBtn.setAttribute('aria-label', maxBtn.title);
         }
 
-        submitBtn.disabled = true;
+        async function pullMaxState() {
+          try {
+            if (typeof vd.windowIsMaximized !== 'function') return;
+            var m = Boolean(await vd.windowIsMaximized());
+            maxBtn.classList.toggle('is-maximized', m);
+            syncMaxUi();
+          } catch (_) { /* ignore */ }
+        }
+
+        void pullMaxState();
+
+        var unsubMax = null;
         try {
-          var resp = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({ email: email, password: password })
+          if (typeof vd.onWindowMaximizedChanged === 'function') {
+            unsubMax = vd.onWindowMaximizedChanged(function (m) {
+              maxBtn.classList.toggle('is-maximized', Boolean(m));
+              syncMaxUi();
+            });
+          }
+        } catch (_) { /* ignore */ }
+
+        maxBtn.addEventListener('click', async function () {
+          try {
+            if (typeof vd.windowMaximizeToggle !== 'function') return;
+            var m = Boolean(await vd.windowMaximizeToggle());
+            maxBtn.classList.toggle('is-maximized', m);
+            syncMaxUi();
+          } catch (_) { /* ignore */ }
+        });
+
+        minBtn.addEventListener('click', function () {
+          void vd.windowMinimize();
+        });
+        closeBtn.addEventListener('click', function () {
+          void vd.windowClose();
+        });
+
+        window.addEventListener('beforeunload', function () {
+          if (typeof unsubMax === 'function') unsubMax();
+        });
+      }
+
+      async function init() {
+        if (isFileLoginPage()) {
+          document.querySelectorAll('link[href^="/"]').forEach(function (n) {
+            n.remove();
           });
-          var data = await resp.json().catch(function () { return {}; });
-          if (!resp.ok) {
-            var d = data && data.detail;
-            var errText = 'Не удалось войти';
-            if (d != null) {
-              errText = Array.isArray(d) ? d.map(function (x) { return typeof x === 'string' ? x : (x.msg || JSON.stringify(x)); }).join(' ') : String(d);
-            } else if (data && data.error) errText = String(data.error);
-            msg.textContent = errText;
+        }
+
+        if (
+          isFileLoginPage() &&
+          typeof window.voiceflowDesktop !== 'undefined' &&
+          window.voiceflowDesktop &&
+          typeof window.voiceflowDesktop.getChatOrigin === 'function'
+        ) {
+          try {
+            apiOrigin = String(await window.voiceflowDesktop.getChatOrigin() || '')
+              .trim()
+              .replace(/\/$/, '');
+          } catch (e) {
+            apiOrigin = '';
+          }
+        }
+
+        var sp = new URLSearchParams(window.location.search);
+        var redirectTarget = safeRedirect(sp.get('redirect') || '');
+        var regHref = registerPageHref(sp.get('redirect') || redirectTarget);
+        var loginRegLink = document.getElementById('loginRegLink');
+        var loginSignInLink = document.getElementById('loginSignInLink');
+        if (loginRegLink) loginRegLink.setAttribute('href', absUrl(regHref));
+
+        var loginHomeLink = document.getElementById('loginHomeLink');
+        if (loginHomeLink) loginHomeLink.setAttribute('href', localizedPath('/'));
+
+        if (sp.get('register') === '1') {
+          setLoginMode('register');
+        } else {
+          setLoginMode('login');
+        }
+
+        if (loginRegLink) {
+          loginRegLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            setLoginMode('register');
+          });
+        }
+        if (loginSignInLink) {
+          loginSignInLink.addEventListener('click', function (e) {
+            e.preventDefault();
+            setLoginMode('login');
+          });
+        }
+
+        var form = document.getElementById('loginPageForm');
+        var registerForm = document.getElementById('registerPageForm');
+        var registerSubmitBtn = document.getElementById('registerPageSubmit');
+        var msg = document.getElementById('loginPageMessage');
+        var submitBtn = document.getElementById('loginPageSubmit');
+        var googleBtn = document.getElementById('loginGoogleBtn');
+        var oauthDivider = document.getElementById('loginOAuthDivider');
+
+        var oauthErrors = {
+          google_auth_failed: siteT('login.oauth.failed'),
+          google_denied: siteT('login.oauth.denied'),
+          google_no_code: 'Google не вернул код авторизации.',
+          google_token_failed: 'Ошибка обмена кода Google.',
+          google_profile_failed: 'Не удалось получить профиль Google.',
+          google_not_configured: 'Вход через Google не настроен на сервере.',
+        };
+        var urlErr = sp.get('error');
+        if (urlErr && oauthErrors[urlErr]) {
+          msg.textContent = oauthErrors[urlErr];
+          msg.className = 'is-error';
+        }
+
+        if (googleBtn) {
+          googleBtn.addEventListener('click', async function () {
+            googleBtn.disabled = true;
+            if (msg.className !== 'is-error' || !urlErr) {
+              msg.className = '';
+              msg.textContent = '';
+            }
+            try {
+              if (
+                isLoginDesktopShell() &&
+                typeof window.voiceflowDesktop !== 'undefined' &&
+                window.voiceflowDesktop &&
+                typeof window.voiceflowDesktop.startGoogleOAuth === 'function'
+              ) {
+                msg.textContent = 'Откроется окно Google внутри приложения…';
+                msg.className = '';
+                var oResult = await window.voiceflowDesktop.startGoogleOAuth(redirectTarget);
+                if (oResult && oResult.ok) {
+                  if (oResult.navigated) {
+                    msg.textContent = 'Вход выполнен. Открываем приложение…';
+                    msg.className = 'is-ok';
+                    return;
+                  }
+                  window.location.href = absUrl(oResult.redirect || redirectTarget);
+                  return;
+                }
+                var oErr = oResult && oResult.error ? String(oResult.error) : '';
+                var deskMsg = '';
+                if (oErr === 'oauth_timeout') {
+                  deskMsg = 'Время ожидания входа истекло. Попробуйте снова.';
+                } else if (oErr === 'google_denied' || oErr === 'no_token') {
+                  deskMsg = oauthErrors.google_denied;
+                } else if (oauthErrors[oErr]) {
+                  deskMsg = oauthErrors[oErr];
+                } else if (oErr.indexOf('google_start_503') === 0) {
+                  deskMsg =
+                    'Вход через Google не настроен на сервере. Добавьте ключи в .env и перезапустите backend.';
+                } else if (/^google_start_/.test(oErr)) {
+                  var gss = oErr.replace(/^google_start_/, '');
+                  if (gss === '404') {
+                    deskMsg =
+                      'Сервер не знает /api/auth/google. Обновите Node (server.js) на VPS или задайте VOICE_TRANSLATOR_CHAT_URL=https://talkpilot.pro/ui в .env десктопа.';
+                  } else {
+                    deskMsg =
+                      'Сервер вернул ошибку ' +
+                      gss +
+                      ' при запуске Google. Проверьте VOICE_TRANSLATOR_CHAT_URL (нужен тот же TalkPilot, что в Google Console).';
+                  }
+                } else if (oErr === 'oauth_in_progress') {
+                  deskMsg = 'Вход уже выполняется. Дождитесь завершения в браузере.';
+                } else if (oErr === 'session_verify_failed') {
+                  deskMsg =
+                    'Вход в Google прошёл, но сессия в приложении не сохранилась. Обновите server.js / web_server.py и перезапустите сайт и десктоп.';
+                } else if (oErr === 'google_start_no_url') {
+                  deskMsg = 'Сервер не вернул ссылку Google. Убедитесь, что на VPS актуальный server.js с поддержкой десктоп-OAuth.';
+                } else if (oErr.indexOf('complete_') === 0) {
+                  deskMsg =
+                    'Не удалось подтвердить вход в приложении (POST /api/auth/desktop-oauth-complete). Обновите сервер TalkPilot и повторите.';
+                } else if (oErr === 'complete_no_user_id') {
+                  deskMsg = 'Сервер не вернул данные пользователя. Обновите backend и повторите вход.';
+                } else if (oErr === 'loopback_bind_failed') {
+                  deskMsg = 'Не удалось открыть локальный порт для возврата из Google. Перезапустите ПК или закройте лишние приложения.';
+                } else if (oErr === 'oauth_window_closed') {
+                  deskMsg = 'Окно входа закрыто до завершения. Попробуйте снова.';
+                } else if (oErr === 'no_window') {
+                  deskMsg = 'Окно приложения недоступно. Перезапустите десктоп.';
+                } else if (
+                  /failed to fetch|networkerror|net::err|load failed/i.test(oErr) ||
+                  oErr.indexOf('fetch') >= 0
+                ) {
+                  deskMsg =
+                    'Нет связи с сервером. В .env укажите VOICE_TRANSLATOR_CHAT_URL=https://talkpilot.pro/ui (см. docs/GOOGLE_OAUTH.md) и проверьте интернет.';
+                } else if (oErr) {
+                  deskMsg = 'Не удалось завершить вход через Google (' + oErr + ')';
+                } else {
+                  deskMsg = 'Не удалось завершить вход через Google';
+                }
+                msg.textContent = deskMsg;
+                msg.className = 'is-error';
+                googleBtn.disabled = false;
+                return;
+              }
+
+              var gResp = await apiFetch(
+                '/api/auth/google?redirect=' + encodeURIComponent(redirectTarget)
+              );
+              var gData = await gResp.json().catch(function () { return {}; });
+              if (!gResp.ok) {
+                var gDet = gData && gData.detail;
+                var errText = 'Вход через Google недоступен';
+                if (gResp.status === 404) {
+                  errText =
+                    'На сервере нет маршрута Google-входа. Перезапустите backend: python backend/web_server.py';
+                } else if (gResp.status === 503) {
+                  errText =
+                    gDet != null
+                      ? String(gDet)
+                      : 'Добавьте GOOGLE_CLIENT_ID и GOOGLE_CLIENT_SECRET в .env и перезапустите сервер';
+                } else if (gDet != null) {
+                  errText = String(gDet);
+                }
+                msg.textContent = errText;
+                msg.className = 'is-error';
+                googleBtn.disabled = false;
+                return;
+              }
+              if (gData && gData.url) {
+                if (isLoginDesktopShell()) {
+                  msg.textContent =
+                    'Перезапустите десктоп-приложение (npm start в папке desktop) и повторите вход.';
+                  msg.className = 'is-error';
+                  googleBtn.disabled = false;
+                  return;
+                }
+                window.location.href = gData.url;
+                return;
+              }
+              msg.textContent = 'Не удалось открыть страницу Google';
+              msg.className = 'is-error';
+            } catch (gErr) {
+              msg.textContent = siteT('login.err.network');
+              msg.className = 'is-error';
+            }
+            googleBtn.disabled = false;
+          });
+        }
+
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          var email = (document.getElementById('loginEmail').value || '').trim();
+          var password = document.getElementById('loginPassword').value || '';
+          msg.className = '';
+          msg.style.display = 'none';
+          msg.textContent = '';
+
+          if (!email || !password) {
+            msg.textContent = siteT('login.err.email_password');
             msg.className = 'is-error';
-            submitBtn.disabled = false;
             return;
           }
-          msg.textContent = 'Вход выполнен, перенаправление…';
-          msg.className = 'is-ok';
-          window.location.href = redirectTarget;
-        } catch (err) {
-          msg.textContent = 'Ошибка сети. Попробуйте ещё раз.';
-          msg.className = 'is-error';
-          submitBtn.disabled = false;
+
+          submitBtn.disabled = true;
+          try {
+            var data;
+            var ok = false;
+            if (
+              isFileLoginPage() &&
+              typeof window.voiceflowDesktop !== 'undefined' &&
+              window.voiceflowDesktop &&
+              typeof window.voiceflowDesktop.authLogin === 'function'
+            ) {
+              var out = await window.voiceflowDesktop.authLogin({ email: email, password: password });
+              data = out && out.body != null ? out.body : {};
+              ok = Boolean(out && out.ok);
+              if (!ok && out && out.error && !data.detail) {
+                data = { detail: String(out.error) };
+              }
+            } else {
+              var resp = await apiFetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ email: email, password: password })
+              });
+              data = await resp.json().catch(function () { return {}; });
+              ok = resp.ok;
+            }
+            if (!ok) {
+              var d = data && data.detail;
+              var errText = siteT('login.err.login_failed');
+              if (d != null) {
+                errText = Array.isArray(d) ? d.map(function (x) { return typeof x === 'string' ? x : (x.msg || JSON.stringify(x)); }).join(' ') : String(d);
+              } else if (data && data.error) errText = String(data.error);
+              msg.textContent = errText;
+              msg.className = 'is-error';
+              submitBtn.disabled = false;
+              return;
+            }
+            msg.textContent = siteT('login.ok.login_redirect');
+            msg.className = 'is-ok';
+            window.location.href = absUrl(redirectTarget);
+          } catch (err) {
+            msg.textContent = siteT('login.err.network');
+            msg.className = 'is-error';
+            submitBtn.disabled = false;
+          }
+        });
+
+        if (registerForm && registerSubmitBtn) {
+          registerForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var name = (document.getElementById('registerName').value || '').trim();
+            var email = (document.getElementById('registerEmail').value || '').trim();
+            var password = document.getElementById('registerPassword').value || '';
+            msg.className = '';
+            msg.style.display = 'none';
+            msg.textContent = '';
+
+            if (!name || !email || !password) {
+              msg.textContent = siteT('login.err.fill_all');
+              msg.className = 'is-error';
+              return;
+            }
+            if (password.length < 6) {
+              msg.textContent = siteT('login.err.password_min');
+              msg.className = 'is-error';
+              return;
+            }
+
+            var captchaEl = document.getElementById('registerCaptcha');
+            var captchaPayload = null;
+            if (captchaEl && window.vfCaptcha) {
+              try {
+                var captchaEnabled = await window.vfCaptcha.isEnabled();
+                if (captchaEnabled) {
+                  captchaPayload = window.vfCaptcha.getPayload(captchaEl);
+                  if (!captchaPayload || !captchaPayload.captchaAnswer) {
+                    msg.textContent = siteT('login.err.captcha_required');
+                    msg.className = 'is-error';
+                    return;
+                  }
+                }
+              } catch (captchaCfgErr) { /* ignore */ }
+            }
+
+            registerSubmitBtn.disabled = true;
+            try {
+              var regBody = { name: name, email: email, password: password };
+              if (captchaPayload) {
+                regBody.captchaId = captchaPayload.captchaId;
+                regBody.captchaAnswer = captchaPayload.captchaAnswer;
+              }
+              var regResp = await apiFetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(regBody),
+              });
+              var regData = await regResp.json().catch(function () { return {}; });
+              if (!regResp.ok) {
+                var rd = regData && (regData.error || regData.detail);
+                msg.textContent =
+                  rd != null
+                    ? Array.isArray(rd)
+                      ? rd.map(function (x) {
+                          return typeof x === 'string' ? x : x.msg || JSON.stringify(x);
+                        }).join(' ')
+                      : String(rd)
+                    : siteT('login.err.register_failed');
+                msg.className = 'is-error';
+                if (captchaEl && window.vfCaptcha) window.vfCaptcha.reset(captchaEl);
+                registerSubmitBtn.disabled = false;
+                return;
+              }
+
+              var loginResp = await apiFetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ email: email, password: password }),
+              });
+              if (!loginResp.ok) {
+                msg.textContent = siteT('login.ok.register_login_manual');
+                msg.className = 'is-ok';
+                setLoginMode('login');
+                document.getElementById('loginEmail').value = email;
+                registerSubmitBtn.disabled = false;
+                return;
+              }
+
+              msg.textContent = siteT('login.ok.register_redirect');
+              msg.className = 'is-ok';
+              window.location.href = absUrl(redirectTarget);
+            } catch (regErr) {
+              msg.textContent = siteT('login.err.network');
+              msg.className = 'is-error';
+              if (captchaEl && window.vfCaptcha) window.vfCaptcha.reset(captchaEl);
+              registerSubmitBtn.disabled = false;
+            }
+          });
         }
-      });
+
+        initLoginDesktopWindowControls();
+      }
+
+      function bootLoginPage() {
+        if (window.siteLangReady && typeof window.siteLangReady.then === 'function') {
+          window.siteLangReady.then(function () { void init(); });
+        } else {
+          void init();
+        }
+      }
+
+      bootLoginPage();
     })();
     </script>
 </body>
