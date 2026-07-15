@@ -2605,7 +2605,23 @@
     });
   }
 
+  function isDesktopApp() {
+    try {
+      if (typeof document !== 'undefined' && document.documentElement) {
+        if (document.documentElement.classList.contains('vf-desktop-app')) return true;
+        if (document.documentElement.classList.contains('vf-desktop-login')) return true;
+      }
+      return /VoiceTranslatorDesktop/i.test(
+        (typeof navigator !== 'undefined' && navigator.userAgent) || ''
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
   function enhanceNavLangSelect() {
+    /* Electron: кастомный dropdown прячет <select> — на десктопе оставляем нативный список */
+    if (isDesktopApp()) return;
     const sel = document.getElementById('siteLangSelect');
     if (!sel || sel.dataset.navLangUi === '1') return;
     const wrap = sel.closest('.nav-lang-wrap');
@@ -2792,8 +2808,16 @@
       sel.addEventListener('change', function () {
         try {
           localStorage.setItem(USER_SET_KEY, '1');
+          localStorage.setItem('voiceTranslator_lang', sel.value);
         } catch (e) { /* ignore */ }
         setLang(sel.value);
+        if (isDesktopApp()) {
+          applyToRoot(document);
+          try {
+            location.reload();
+          } catch (_) { /* ignore */ }
+          return;
+        }
         if (typeof window.vfSwapPathLocale === 'function') {
           window.location.href = window.vfSwapPathLocale(sel.value);
           return;

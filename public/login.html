@@ -31,6 +31,52 @@
         .login-captcha-wrap { margin: 0.15rem 0 0.85rem; width: 100%; }
         .login-lang-bar { display: flex; justify-content: flex-end; margin-bottom: 0.75rem; }
         .login-lang-bar .nav-lang-wrap { margin: 0; }
+        /* Десктоп Electron: всегда видимый нативный select (кастомный UI часто скрывает язык) */
+        html.vf-desktop-login .login-lang-bar {
+            display: flex !important;
+            visibility: visible !important;
+            position: relative;
+            z-index: 5;
+        }
+        html.vf-desktop-login .nav-lang-pill {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.55rem;
+            background: rgba(2, 6, 23, 0.65) !important;
+            border: 1px solid rgba(148, 163, 184, 0.45) !important;
+            border-radius: 10px;
+            color: #e2e8f0;
+        }
+        html.vf-desktop-login .nav-lang-select,
+        html.vf-desktop-login .nav-lang-select.nav-lang-select--native {
+            position: static !important;
+            width: auto !important;
+            min-width: 7.5rem !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0.28rem 0.45rem !important;
+            overflow: visible !important;
+            clip: auto !important;
+            clip-path: none !important;
+            white-space: normal !important;
+            border: none !important;
+            border-radius: 6px !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            appearance: auto !important;
+            -webkit-appearance: menulist !important;
+            font-size: 0.88rem !important;
+            font-weight: 600 !important;
+            color: #f8fafc !important;
+            background: #0f172a !important;
+            color-scheme: dark;
+        }
+        html.vf-desktop-login .nav-lang-trigger,
+        html.vf-desktop-login .nav-lang-dropdown,
+        html.vf-desktop-login .nav-lang-chevron {
+            display: none !important;
+        }
         html.site-lang-loading .login-card { visibility: hidden; }
         /* file:// / desktop: i18n-скрипты сняты — форму нельзя оставлять скрытой */
         html.vf-desktop-login.site-lang-loading .login-card { visibility: visible; }
@@ -228,7 +274,22 @@
                 <div class="nav-lang-wrap">
                     <label id="siteLangLabel" class="sr-only" data-site-i18n="nav.lang_aria">Язык сайта</label>
                     <div class="nav-lang-pill" aria-labelledby="siteLangLabel">
-                        <select id="siteLangSelect" class="nav-lang-select" aria-labelledby="siteLangLabel"></select>
+                        <select id="siteLangSelect" class="nav-lang-select" aria-labelledby="siteLangLabel">
+                            <option value="en">English</option>
+                            <option value="ru">Русский</option>
+                            <option value="de">Deutsch</option>
+                            <option value="fr">Français</option>
+                            <option value="es">Español</option>
+                            <option value="it">Italiano</option>
+                            <option value="pt">Português</option>
+                            <option value="uk">Українська</option>
+                            <option value="zh">中文</option>
+                            <option value="ja">日本語</option>
+                            <option value="ko">한국어</option>
+                            <option value="ar">العربية</option>
+                            <option value="tr">Türkçe</option>
+                            <option value="pl">Polski</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -281,7 +342,7 @@
     <script src="/js/site-lang-more.js?v=2"></script>
     <script src="/js/site-lang-login.js?v=1"></script>
     <script src="/js/site-lang-pages.js?v=2"></script>
-    <script src="/js/site-lang.js?v=39"></script>
+    <script src="/js/site-lang.js?v=40"></script>
     <script src="/js/captcha-widget.js?v=4"></script>
     <script>
     (function () {

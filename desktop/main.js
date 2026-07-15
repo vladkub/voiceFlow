@@ -1095,8 +1095,14 @@ async function forceDesktopLoginVisible(wc) {
         if(!document.getElementById(id)){
           var s=document.createElement('style');
           s.id=id;
-          s.textContent='html.site-lang-loading body,html.site-lang-loading .login-card{visibility:visible!important;opacity:1!important}body.login-page-body{visibility:visible!important}';
+          s.textContent='html.site-lang-loading body,html.site-lang-loading .login-card{visibility:visible!important;opacity:1!important}body.login-page-body{visibility:visible!important}.login-lang-bar{display:flex!important;visibility:visible!important;justify-content:flex-end;margin-bottom:.75rem}html.vf-desktop-login .nav-lang-select,html.vf-desktop-login .nav-lang-select.nav-lang-select--native{position:static!important;width:auto!important;min-width:7.5rem!important;height:auto!important;opacity:1!important;pointer-events:auto!important;clip:auto!important;appearance:auto!important;-webkit-appearance:menulist!important;color:#f8fafc!important;background:#0f172a!important;padding:.28rem .45rem!important}html.vf-desktop-login .nav-lang-trigger,html.vf-desktop-login .nav-lang-dropdown{display:none!important}';
           (document.head||h).appendChild(s);
+        }
+        var sel=document.getElementById('siteLangSelect');
+        if(sel && !sel.options.length){
+          [['en','English'],['ru','Русский'],['de','Deutsch'],['fr','Français'],['es','Español'],['uk','Українська']].forEach(function(p){
+            var o=document.createElement('option'); o.value=p[0]; o.textContent=p[1]; sel.appendChild(o);
+          });
         }
       })();`,
       true
